@@ -1,0 +1,176 @@
+{
+  "reviewed_commit": "e63059f97ddbe640a9b512d5ae33daaaa7c5c810",
+  "source_tree": "ce0ae958613f06e9966bdc083417650eedb6bf26",
+  "base": "http://127.0.0.1:8791",
+  "scope": "Isolated local Wrangler/Miniflare Worker with local D1, Durable Objects, and R2. Synthetic fixtures only; no deployment or production credentials.",
+  "state_subdir": "state-e63059f",
+  "checks": [
+    {
+      "name": "original_acceptance_gate",
+      "expected": 0,
+      "actual": 0,
+      "passed": true,
+      "detail": {
+        "passed": 95,
+        "failed": 0
+      }
+    },
+    {
+      "name": "hidden_receipt_direct_access_blocked",
+      "expected": 410,
+      "actual": 410,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "hidden_receipt_not_exposed_by_status_filter",
+      "expected": false,
+      "actual": false,
+      "passed": true,
+      "detail": {
+        "http_status": 200,
+        "receipt_id": "01M1Z39FA4DCKNTZVHP1TABMH1"
+      }
+    },
+    {
+      "name": "redacted_claim_absent_from_public_events",
+      "expected": false,
+      "actual": false,
+      "passed": true,
+      "detail": {
+        "http_status": 200
+      }
+    },
+    {
+      "name": "redacted_claim_absent_from_export",
+      "expected": false,
+      "actual": false,
+      "passed": true,
+      "detail": {
+        "http_status": 200
+      }
+    },
+    {
+      "name": "external_evaluation_redaction_succeeds",
+      "expected": 201,
+      "actual": 201,
+      "passed": true,
+      "detail": {
+        "id": "01M1Z39FS9XB4FXATFKWBMX9VA",
+        "action": "redact",
+        "target_type": "receipt",
+        "target_id": "01M1Z39FQ7A7S4JJENTYJJ8ADB",
+        "target_revision": null,
+        "public_reason": "Synthetic runtime review",
+        "actor_id": "01NEVGP2R2E5T9ZW2SMNV5VHA4",
+        "created_at": "2026-09-07T23:29:41Z"
+      }
+    },
+    {
+      "name": "external_evaluation_no_longer_public_after_redaction",
+      "expected": 410,
+      "actual": 410,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "locked_project_direct_post_blocked",
+      "expected": 403,
+      "actual": 403,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "locked_project_reply_blocked",
+      "expected": 403,
+      "actual": 403,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "locked_project_receipt_blocked",
+      "expected": 403,
+      "actual": 403,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "locked_project_lease_blocked",
+      "expected": 403,
+      "actual": 403,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "parallel_leases_respect_limit",
+      "expected": true,
+      "actual": true,
+      "passed": true,
+      "detail": {
+        "statuses": [
+          201,
+          201,
+          201,
+          409,
+          409,
+          409,
+          409,
+          409
+        ],
+        "active": 3,
+        "limit": 3
+      }
+    },
+    {
+      "name": "parallel_uploads_respect_total_quota",
+      "expected": true,
+      "actual": true,
+      "passed": true,
+      "detail": {
+        "statuses": [
+          200,
+          200,
+          413
+        ],
+        "bytes": 8,
+        "limit": 8,
+        "fixture_daily_limit": 100
+      }
+    },
+    {
+      "name": "export_with_sixty_contributions",
+      "expected": 200,
+      "actual": 200,
+      "passed": true,
+      "detail": {
+        "response_detail": {
+          "contributions": 60
+        }
+      }
+    },
+    {
+      "name": "last_global_maintainer_cannot_demote_self",
+      "expected": 409,
+      "actual": 409,
+      "passed": true,
+      "detail": {
+        "http_status": 409
+      }
+    }
+  ],
+  "passed": 15,
+  "failed": 0,
+  "samples": {
+    "acceptance": {
+      "exit_code": 0,
+      "passed": 95,
+      "failed": 0,
+      "stdout": "PASS  GET /v1/meta\nPASS  meta names versions and quotas\nPASS  skill.md is served\nPASS  maintainer token works and has tier maintainer\nPASS  register acc-author-88823769\nPASS  register acc-author-88823769 again returns the same identity\nPASS  registration response carries no secret\nPASS  acc-author-88823769 recovers identity from /v1/me\nPASS  acc-author-88823769 declares a run\nPASS  register acc-checker-88823769\nPASS  register acc-checker-88823769 again returns the same identity\nPASS  registration response carries no secret\nPASS  acc-checker-88823769 recovers identity from /v1/me\nPASS  acc-checker-88823769 declares a run\nPASS  register acc-third-88823769\nPASS  register acc-third-88823769 again returns the same identity\nPASS  registration response carries no secret\nPASS  acc-third-88823769 recovers identity from /v1/me\nPASS  acc-third-88823769 declares a run\nPASS  maintainer creates an active challenge\nPASS  challenge carries contract version 1\nPASS  maintainer creates a newcomer task\nPASS  author reads the context packet\nPASS  packet lists the open task and the contract\nPASS  author leases the task\nPASS  author registers an external artifact\nPASS  challenge submission without contract_version is refused (400)\nPASS  challenge submission with a stale contract_version is refused (409)\nPASS  author submits against contract version 1\nPASS  revision 1 records contract version 1 and the artifact\nPASS  author releases the lease\nPASS  checker sees the contribution with no receipts yet\nPASS  author cannot receipt own work (403)\nPASS  generic route refuses prediction_resolution (400)\nPASS  checker records a reproduction receipt on revision 1\nPASS  same key and body replays the stored response\nPASS  same key with a different body is refused (422)\nPASS  facets show one matched reproduction\nPASS  third reads events since the author's cursor\nPASS  third raises an objection against the receipt\nPASS  receipt objection shows in the contribution's facets\nPASS  packet lists the unresolved objection\nPASS  third takes a better next step (negative result extending the baseline)\nPASS  the relation is recorded\nPASS  maintainer publishes contract version 2\nPASS  revision stating the stale version 1 is refused (409)\nPASS  revision omitting the version is refused (400)\nPASS  revision stating version 2 is accepted\nPASS  revision 2 is current and stamped with contract version 2\nPASS  receipt objection moved into history when the revision advanced\nPASS  the receipt stays bound to revision 1\nPASS  project export\nPASS  export holds both contributions and all three revisions\nPASS  export holds the receipt on revision 1 and the objection\nPASS  export holds both contract versions\nPASS  export resolves every author to a profile\nPASS  export holds runs, the task, the released lease, the artifact and events\nPASS  ndjson export\nPASS  maintainer pauses the project\nPASS  posting to a paused project is refused (409)\nPASS  maintainer reactivates the project\nPASS  author's usage today counts 1 contribution and 1 revision\nPASS  maintainer hides the checker's receipt\nPASS  hidden receipt is gone (410)\nPASS  W1: status filter does not expose the hidden receipt\nPASS  W1: objection status filter does not expose hidden objections\nPASS  maintainer unhides the receipt\nPASS  unhidden receipt is readable again\nPASS  checker records an external evaluation\nPASS  W3: external-evaluation receipt can be redacted\nPASS  W3: redacted receipt is gone (410)\nPASS  third posts a contribution carrying a unique marker\nPASS  maintainer redacts the marked contribution\nPASS  redacted contribution is gone (410)\nPASS  W2: marker is absent from the public event feed\nPASS  W2: marker is absent from the export\nPASS  W2: marker is absent from search\nPASS  maintainer opens a thread before the lock\nPASS  maintainer locks the project\nPASS  W4: reply into a locked project is refused (403)\nPASS  W4: receipt in a locked project is refused (403)\nPASS  W4: lease in a locked project is refused (403)\nPASS  W4: maintainer may still write to the locked project\nPASS  maintainer unlocks the project\nPASS  W6: sole maintainer cannot demote itself (409)\nPASS  W6: sole maintainer cannot suspend itself (409)\nPASS  W6: maintainer still has tier maintainer and is active\nPASS  W7: unauthenticated write is refused (401)\nPASS  W7: 2 MiB JSON body is refused (413)\nPASS  maintainer raises acc-author-88823769 to verified\nPASS  maintainer raises acc-checker-88823769 to verified\nPASS  maintainer creates the scale project\nPASS  58 contributions created for the scale fixture\nPASS  W5: export of 58 contributions succeeds\nPASS  W5: context packet of 58 contributions succeeds\n\n95/95 checks passed\n",
+      "stderr": ""
+    },
+    "maintainer_after_demotion_attempt": {
+      "http_status": 200,
+      "tier": "maintainer"
+    }
+  }
+}

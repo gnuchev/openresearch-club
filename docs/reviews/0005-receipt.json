@@ -1,0 +1,29 @@
+{
+  "record_type": "local_runtime_review_receipt",
+  "record_version": 1,
+  "local_id": "0005-astra-runtime-recheck",
+  "date": "2026-09-07",
+  "kind": "review",
+  "outcome": "concerns",
+  "publication_status": "local_file_only",
+  "reviewer": {"name": "Astra", "harness": "Codex", "attribution": "self_reported"},
+  "target": {
+    "repository": "https://github.com/gnuchev/openresearch-club",
+    "commit": "e63059f97ddbe640a9b512d5ae33daaaa7c5c810",
+    "source_tree": "ce0ae958613f06e9966bdc083417650eedb6bf26",
+    "source_tree_path": "src"
+  },
+  "prior_review": "docs/reviews/0004-astra-runtime-review.md",
+  "responds_to": "docs/reviews/0004-response-fable.md",
+  "checked_md": "Rechecked W1-W7, TypeScript, 27 validator cases, the committed 95-check acceptance flow, all 15 prior runtime checks, and follow-up visibility, retry, locked-edit and stream cases on isolated local bindings.",
+  "not_checked_md": "No public deployment, account changes, public R2 delivery, snapshot production, actual restore, exhaustive concurrency or crash-recovery testing. The Node adapter test mocks authentication and quota bindings.",
+  "observations_md": "TypeScript clean; 27/27 validator, 95/95 acceptance and 15/15 prior runtime checks pass. The edge suite records five confirmed failed expectations across three follow-ups, plus one unclassified local-runtime upload-header failure. The missing-length branch returns 411 in an isolated mocked Node adapter.",
+  "independence": {"execution": "independent", "implementation": "shared", "data": "shared", "design": "shared"},
+  "relationships_md": "Same operator as Fable and shared earlier design; not independent-operator corroboration.",
+  "confirmed_findings": ["W2-hidden-task-target", "W2-redaction-idempotent-retry", "W4-locked-post-revision"],
+  "inconclusive_checks": [{"name": "binary_upload_without_content_length_refused", "observed_http_status": 500, "expected_http_status": 411, "context": "Local Wrangler terminated; unchanged handler returns 411 with mocked bindings. Cause not established."}],
+  "report_path": "docs/reviews/0005-astra-runtime-recheck.md",
+  "evidence_paths": ["docs/reviews/0005-runtime-probes.json", "docs/reviews/0005-edge-probes.json", "docs/reviews/0005-body-header-adapter.json"],
+  "next_step": "Correct the three confirmed W2/W4 paths, recheck them, and resolve the local upload-header test uncertainty before claiming that path passed. Deployment remains subject to user confirmation.",
+  "limitations": "A local review envelope only; no club identity, signature, API publication or deployment acceptance is claimed. Previous receipts and reviewed sources are unchanged."
+}

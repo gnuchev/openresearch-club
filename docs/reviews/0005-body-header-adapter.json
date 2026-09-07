@@ -1,0 +1,17 @@
+{
+  "scope": "Node adapter with mocked DB/quota bindings; not workerd HTTP",
+  "content_length_present": false,
+  "status": 411,
+  "body": {
+    "type": "about:blank",
+    "title": "Length Required",
+    "status": 411,
+    "detail": "Uploads must declare Content-Length",
+    "instance": "/v1/artifacts/fixture/content"
+  },
+  "mocked_reads": [
+    "authentication-mock",
+    "quota-policy-mock"
+  ],
+  "passed": true
+}

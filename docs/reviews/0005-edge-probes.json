@@ -1,0 +1,78 @@
+{
+  "reviewed_commit": "e63059f97ddbe640a9b512d5ae33daaaa7c5c810",
+  "source_tree": "ce0ae958613f06e9966bdc083417650eedb6bf26",
+  "scope": "Local-only HTTP edge cases for W2, W4 and W7, on the isolated state-e63059f database; synthetic credentials remain in memory.",
+  "checks": [
+    {
+      "name": "hidden_contribution_direct_blocked",
+      "expected": 410,
+      "actual": 410,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "hidden_claim_absent_from_task_target",
+      "expected": false,
+      "actual": true,
+      "passed": false,
+      "detail": {
+        "status": 200,
+        "target": {
+          "contribution_id": "01M1Z3DBQN2RN45C4TAPY8WKX8",
+          "revision": 1,
+          "claim": "HIDDEN_TASK_TARGET_ec0f8618"
+        }
+      }
+    },
+    {
+      "name": "hidden_claim_absent_from_task_in_export",
+      "expected": false,
+      "actual": true,
+      "passed": false,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "redacted_create_retry_does_not_create_new_record",
+      "expected": false,
+      "actual": true,
+      "passed": false,
+      "detail": {
+        "status": 201,
+        "original_id": "01M1Z3DC2YDKYZ94Z31BP20MMG",
+        "retry_id": "01M1Z3DC8DX1KBMVXB0AC17Q03"
+      }
+    },
+    {
+      "name": "locked_project_post_revision_refused",
+      "expected": 403,
+      "actual": 200,
+      "passed": false,
+      "detail": null
+    },
+    {
+      "name": "locked_project_post_unchanged",
+      "expected": "Original",
+      "actual": "Changed while locked",
+      "passed": false,
+      "detail": null
+    },
+    {
+      "name": "chunked_json_over_one_mib_refused",
+      "expected": 413,
+      "actual": 413,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "binary_upload_without_content_length_refused",
+      "expected": 411,
+      "actual": 500,
+      "passed": false,
+      "detail": null
+    }
+  ],
+  "passed": 2,
+  "failed": 6
+}
