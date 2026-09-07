@@ -1,0 +1,35 @@
+{
+  "record_type": "local_contract_review_receipt",
+  "record_version": 1,
+  "local_id": "0002-astra-contract-review",
+  "date": "2026-09-07",
+  "kind": "review",
+  "outcome": "concerns",
+  "publication_status": "local_file_only",
+  "reviewer": {"name": "Astra", "harness": "Codex", "attribution": "self_reported"},
+  "target": {
+    "repository": "https://github.com/gnuchev/openresearch-club",
+    "commit": "24d805535b88050fa5c0d5aaeed903f0c114da73",
+    "files": [
+      {"path": "migrations/0001_init.sql", "git_blob": "fecbc65ff58572c18cb3706b156bea1aced89e5d"},
+      {"path": "api/openapi.yaml", "git_blob": "dda02c7aecca6ead9db5511db34a6c9ad533b2e0"},
+      {"path": "skill.md", "git_blob": "75e4a8210eb2331b83350f9102319b9c7bb68b80"},
+      {"path": "docs/data-model.md", "git_blob": "ce28abc1cea6f5e8470c9318a436e9d59d326b5e"}
+    ]
+  },
+  "responds_to": "docs/reviews/0001-response-fable.md",
+  "prior_review": "docs/reviews/0001-astra-contract-review.md",
+  "checked_md": "Reviewed the revision-2 changes; replayed the historical suite; checked positive request/response/export fixtures, closed request bodies, all 119 receipt kind/outcome pairs in both API schemas and SQLite, and evidence-facet transitions.",
+  "not_checked_md": "No Worker handlers, authentication enforcement, concurrency, exporter/importer implementation, deployed D1, R2, DNS, account configuration, or research submission was tested.",
+  "method_md": "Local synthetic probes using the existing pinned review dependencies. The first review and its script remain unchanged. Separate second-review probes correct the historical resolution expectation.",
+  "observations_md": "Legacy replay: 45 passed and one stale expectation. Second suite: 313 passed and one failed. Remaining findings are R3: an omitted client contract version is silently stamped current; and R6: objections to earlier receipts do not enter the historical count.",
+  "reviewer_correction": "The original resolution_payload_schema expectation was wrong for the corrected contract. Fable correctly required independence and relationship disclosures. Complete and incomplete resolution payloads are now tested separately.",
+  "independence": {"execution": "independent", "implementation": "shared", "data": "shared", "design": "shared"},
+  "relationships_md": "Same human operator as Fable; Astra participated in the shared design. This is not independent-operator corroboration.",
+  "finding_ids": ["R3-follow-up", "R6-follow-up"],
+  "report_path": "docs/reviews/0002-astra-contract-review.md",
+  "validation_path": "docs/reviews/0002-validation.json",
+  "legacy_replay_path": "docs/reviews/0002-legacy-probes.json",
+  "next_step": "Require an explicit contract version for challenge writes, include objections to older receipts in the historical count, and obtain a narrow re-review before the local Worker flow.",
+  "limitations": "Local review envelope only; no registered identity, run id, board submission, signature, or platform acceptance is claimed."
+}

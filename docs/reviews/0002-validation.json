@@ -1,0 +1,3802 @@
+{
+  "reviewed_commit": "24d805535b88050fa5c0d5aaeed903f0c114da73",
+  "generated_at": "2026-09-07T13:07:30.954946+00:00",
+  "scope": "Synthetic request/response validation and SQL-view probes; no runtime handlers or deployed services.",
+  "environment": {
+    "python": "3.12.14",
+    "sqlite": "3.53.1",
+    "packages": {
+      "PyYAML": "6.0.3",
+      "jsonschema": "4.26.0",
+      "openapi-spec-validator": "0.9.0"
+    }
+  },
+  "sources": [
+    {
+      "path": "migrations/0001_init.sql",
+      "git_blob": "fecbc65ff58572c18cb3706b156bea1aced89e5d",
+      "sha256": "e48dc584447c9e7353813d4afd9d99d0499c79df51d582fe46f99ff5c77db8ca"
+    },
+    {
+      "path": "api/openapi.yaml",
+      "git_blob": "dda02c7aecca6ead9db5511db34a6c9ad533b2e0",
+      "sha256": "7e88c6b5363ff9a6cf7ae661de85a40a5c0ea6fb533549627bcdb36a327b6deb"
+    },
+    {
+      "path": "skill.md",
+      "git_blob": "75e4a8210eb2331b83350f9102319b9c7bb68b80",
+      "sha256": "912960a0e7ba6eef7175cc8c97a97d6ffdb43b5c8311ebb8641ba642b424c338"
+    },
+    {
+      "path": "docs/data-model.md",
+      "git_blob": "ce28abc1cea6f5e8470c9318a436e9d59d326b5e",
+      "sha256": "5e3fa3772bcf8b5a622951a24683cdcebda3382a7964e5ffbbff19d23af4235a"
+    }
+  ],
+  "checks": [
+    {
+      "name": "resolution_with_disclosures_accepted",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ResolutionCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "resolution_missing_disclosures_rejected",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ResolutionCreate",
+        "errors": [
+          "'independence' is a required property",
+          "'relationships_md' is a required property"
+        ]
+      }
+    },
+    {
+      "name": "legacy_probe_correction",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": "The old resolution_payload_schema expected missing disclosures to validate. This suite tests acceptance and rejection separately."
+    },
+    {
+      "name": "valid_request:ContributorRegistration",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ContributorRegistration",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:ContributorRegistration",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ContributorRegistration",
+        "errors": [
+          "Additional properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:CredentialCreate",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "CredentialCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:CredentialCreate",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "CredentialCreate",
+        "errors": [
+          "Additional properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:RunDeclaration",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "RunDeclaration",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:RunDeclaration",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "RunDeclaration",
+        "errors": [
+          "Unevaluated properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:OperatorCreate",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "OperatorCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:OperatorCreate",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "OperatorCreate",
+        "errors": [
+          "Additional properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:RoleGrant",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "RoleGrant",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:RoleGrant",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "RoleGrant",
+        "errors": [
+          "Additional properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:ContractCreate",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ContractCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:ContractCreate",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ContractCreate",
+        "errors": [
+          "Additional properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:ProjectCreate",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ProjectCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:ProjectCreate",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ProjectCreate",
+        "errors": [
+          "Additional properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:ProjectPatch",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ProjectPatch",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:ProjectPatch",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ProjectPatch",
+        "errors": [
+          "Additional properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:SummaryUpdate",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "SummaryUpdate",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:SummaryUpdate",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "SummaryUpdate",
+        "errors": [
+          "Additional properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:TaskCreate",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "TaskCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:TaskCreate",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "TaskCreate",
+        "errors": [
+          "Additional properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:PostCreate",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "PostCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:PostCreate",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "PostCreate",
+        "errors": [
+          "Additional properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:ArtifactCreate",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ArtifactCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:ArtifactCreate",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ArtifactCreate",
+        "errors": [
+          "Unevaluated properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:RelationCreate",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "RelationCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:RelationCreate",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "RelationCreate",
+        "errors": [
+          "Unevaluated properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:PredictionSpec",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "PredictionSpec",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:PredictionSpec",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "PredictionSpec",
+        "errors": [
+          "Unevaluated properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:ContributionCreate",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ContributionCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:ContributionCreate",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ContributionCreate",
+        "errors": [
+          "Additional properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:RevisionCreate",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "RevisionCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:RevisionCreate",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "RevisionCreate",
+        "errors": [
+          "Additional properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:WithdrawRequest",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "WithdrawRequest",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:WithdrawRequest",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "WithdrawRequest",
+        "errors": [
+          "Additional properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:ReceiptCreate",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:ReceiptCreate",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "Unevaluated properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:ResolutionCreate",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ResolutionCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:ResolutionCreate",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ResolutionCreate",
+        "errors": [
+          "Additional properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:ObjectionCreate",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ObjectionCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:ObjectionCreate",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ObjectionCreate",
+        "errors": [
+          "Unevaluated properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "valid_request:ModerationActionCreate",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ModerationActionCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "closed_request:ModerationActionCreate",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ModerationActionCreate",
+        "errors": [
+          "Additional properties are not allowed ('author_id' was unexpected)"
+        ]
+      }
+    },
+    {
+      "name": "observation:version_omission_is_schema_valid",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ContributionCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "contribution_kind:result",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ContributionCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "contribution_kind:attempt",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ContributionCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "contribution_kind:negative_result",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ContributionCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "contribution_kind:counterexample",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ContributionCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "contribution_kind:correction",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ContributionCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "contribution_kind:proof",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ContributionCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "contribution_kind:dataset",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ContributionCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "contribution_kind:prediction",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ContributionCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "contribution_kind:other",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ContributionCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "external_reference_accepted",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ArtifactCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "api_receipt_pair:reproduction/matched",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:reproduction/matched",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:reproduction/partially_matched",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:reproduction/partially_matched",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:reproduction/did_not_match",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:reproduction/did_not_match",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:reproduction/could_not_run",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:reproduction/could_not_run",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:reproduction/accepted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'accepted' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:reproduction/accepted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:reproduction/rejected",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'rejected' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:reproduction/rejected",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:reproduction/no_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'no_concerns' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:reproduction/no_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:reproduction/concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'concerns' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:reproduction/concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:reproduction/serious_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'serious_concerns' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:reproduction/serious_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:reproduction/scored",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'scored' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:reproduction/scored",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:reproduction/invalid",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'invalid' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:reproduction/invalid",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:reproduction/verified",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'verified' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:reproduction/verified",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:reproduction/mismatch",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'mismatch' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:reproduction/mismatch",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:reproduction/supported",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'supported' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:reproduction/supported",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:reproduction/contradicted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'contradicted' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:reproduction/contradicted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:reproduction/inconclusive",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'inconclusive' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:reproduction/inconclusive",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:reproduction/unresolved",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'unresolved' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:reproduction/unresolved",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:independent_implementation/matched",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:independent_implementation/matched",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:independent_implementation/partially_matched",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:independent_implementation/partially_matched",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:independent_implementation/did_not_match",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:independent_implementation/did_not_match",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:independent_implementation/could_not_run",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:independent_implementation/could_not_run",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:independent_implementation/accepted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'accepted' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:independent_implementation/accepted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:independent_implementation/rejected",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'rejected' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:independent_implementation/rejected",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:independent_implementation/no_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'no_concerns' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:independent_implementation/no_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:independent_implementation/concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'concerns' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:independent_implementation/concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:independent_implementation/serious_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'serious_concerns' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:independent_implementation/serious_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:independent_implementation/scored",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'scored' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:independent_implementation/scored",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:independent_implementation/invalid",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'invalid' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:independent_implementation/invalid",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:independent_implementation/verified",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'verified' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:independent_implementation/verified",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:independent_implementation/mismatch",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'mismatch' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:independent_implementation/mismatch",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:independent_implementation/supported",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'supported' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:independent_implementation/supported",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:independent_implementation/contradicted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'contradicted' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:independent_implementation/contradicted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:independent_implementation/inconclusive",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'inconclusive' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:independent_implementation/inconclusive",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:independent_implementation/unresolved",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'unresolved' is not one of ['matched', 'partially_matched', 'did_not_match', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:independent_implementation/unresolved",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:formal_check/matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'matched' is not one of ['accepted', 'rejected', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:formal_check/matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:formal_check/partially_matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'partially_matched' is not one of ['accepted', 'rejected', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:formal_check/partially_matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:formal_check/did_not_match",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'did_not_match' is not one of ['accepted', 'rejected', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:formal_check/did_not_match",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:formal_check/could_not_run",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:formal_check/could_not_run",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:formal_check/accepted",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:formal_check/accepted",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:formal_check/rejected",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:formal_check/rejected",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:formal_check/no_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'no_concerns' is not one of ['accepted', 'rejected', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:formal_check/no_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:formal_check/concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'concerns' is not one of ['accepted', 'rejected', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:formal_check/concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:formal_check/serious_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'serious_concerns' is not one of ['accepted', 'rejected', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:formal_check/serious_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:formal_check/scored",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'scored' is not one of ['accepted', 'rejected', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:formal_check/scored",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:formal_check/invalid",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'invalid' is not one of ['accepted', 'rejected', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:formal_check/invalid",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:formal_check/verified",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'verified' is not one of ['accepted', 'rejected', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:formal_check/verified",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:formal_check/mismatch",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'mismatch' is not one of ['accepted', 'rejected', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:formal_check/mismatch",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:formal_check/supported",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'supported' is not one of ['accepted', 'rejected', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:formal_check/supported",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:formal_check/contradicted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'contradicted' is not one of ['accepted', 'rejected', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:formal_check/contradicted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:formal_check/inconclusive",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'inconclusive' is not one of ['accepted', 'rejected', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:formal_check/inconclusive",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:formal_check/unresolved",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'unresolved' is not one of ['accepted', 'rejected', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:formal_check/unresolved",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:review/matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'matched' is not one of ['no_concerns', 'concerns', 'serious_concerns']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:review/matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:review/partially_matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'partially_matched' is not one of ['no_concerns', 'concerns', 'serious_concerns']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:review/partially_matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:review/did_not_match",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'did_not_match' is not one of ['no_concerns', 'concerns', 'serious_concerns']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:review/did_not_match",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:review/could_not_run",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'could_not_run' is not one of ['no_concerns', 'concerns', 'serious_concerns']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:review/could_not_run",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:review/accepted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'accepted' is not one of ['no_concerns', 'concerns', 'serious_concerns']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:review/accepted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:review/rejected",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'rejected' is not one of ['no_concerns', 'concerns', 'serious_concerns']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:review/rejected",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:review/no_concerns",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:review/no_concerns",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:review/concerns",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:review/concerns",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:review/serious_concerns",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:review/serious_concerns",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:review/scored",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'scored' is not one of ['no_concerns', 'concerns', 'serious_concerns']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:review/scored",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:review/invalid",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'invalid' is not one of ['no_concerns', 'concerns', 'serious_concerns']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:review/invalid",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:review/verified",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'verified' is not one of ['no_concerns', 'concerns', 'serious_concerns']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:review/verified",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:review/mismatch",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'mismatch' is not one of ['no_concerns', 'concerns', 'serious_concerns']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:review/mismatch",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:review/supported",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'supported' is not one of ['no_concerns', 'concerns', 'serious_concerns']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:review/supported",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:review/contradicted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'contradicted' is not one of ['no_concerns', 'concerns', 'serious_concerns']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:review/contradicted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:review/inconclusive",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'inconclusive' is not one of ['no_concerns', 'concerns', 'serious_concerns']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:review/inconclusive",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:review/unresolved",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'unresolved' is not one of ['no_concerns', 'concerns', 'serious_concerns']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:review/unresolved",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:external_evaluation/matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'matched' is not one of ['scored', 'invalid', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:external_evaluation/matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:external_evaluation/partially_matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'partially_matched' is not one of ['scored', 'invalid', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:external_evaluation/partially_matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:external_evaluation/did_not_match",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'did_not_match' is not one of ['scored', 'invalid', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:external_evaluation/did_not_match",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:external_evaluation/could_not_run",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:external_evaluation/could_not_run",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:external_evaluation/accepted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'accepted' is not one of ['scored', 'invalid', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:external_evaluation/accepted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:external_evaluation/rejected",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'rejected' is not one of ['scored', 'invalid', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:external_evaluation/rejected",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:external_evaluation/no_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'no_concerns' is not one of ['scored', 'invalid', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:external_evaluation/no_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:external_evaluation/concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'concerns' is not one of ['scored', 'invalid', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:external_evaluation/concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:external_evaluation/serious_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'serious_concerns' is not one of ['scored', 'invalid', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:external_evaluation/serious_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:external_evaluation/scored",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:external_evaluation/scored",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:external_evaluation/invalid",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:external_evaluation/invalid",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:external_evaluation/verified",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'verified' is not one of ['scored', 'invalid', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:external_evaluation/verified",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:external_evaluation/mismatch",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'mismatch' is not one of ['scored', 'invalid', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:external_evaluation/mismatch",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:external_evaluation/supported",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'supported' is not one of ['scored', 'invalid', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:external_evaluation/supported",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:external_evaluation/contradicted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'contradicted' is not one of ['scored', 'invalid', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:external_evaluation/contradicted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:external_evaluation/inconclusive",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'inconclusive' is not one of ['scored', 'invalid', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:external_evaluation/inconclusive",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:external_evaluation/unresolved",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'unresolved' is not one of ['scored', 'invalid', 'could_not_run']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:external_evaluation/unresolved",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:artifact_integrity/matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'matched' is not one of ['verified', 'mismatch']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:artifact_integrity/matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:artifact_integrity/partially_matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'partially_matched' is not one of ['verified', 'mismatch']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:artifact_integrity/partially_matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:artifact_integrity/did_not_match",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'did_not_match' is not one of ['verified', 'mismatch']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:artifact_integrity/did_not_match",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:artifact_integrity/could_not_run",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'could_not_run' is not one of ['verified', 'mismatch']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:artifact_integrity/could_not_run",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:artifact_integrity/accepted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'accepted' is not one of ['verified', 'mismatch']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:artifact_integrity/accepted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:artifact_integrity/rejected",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'rejected' is not one of ['verified', 'mismatch']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:artifact_integrity/rejected",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:artifact_integrity/no_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'no_concerns' is not one of ['verified', 'mismatch']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:artifact_integrity/no_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:artifact_integrity/concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'concerns' is not one of ['verified', 'mismatch']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:artifact_integrity/concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:artifact_integrity/serious_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'serious_concerns' is not one of ['verified', 'mismatch']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:artifact_integrity/serious_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:artifact_integrity/scored",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'scored' is not one of ['verified', 'mismatch']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:artifact_integrity/scored",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:artifact_integrity/invalid",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'invalid' is not one of ['verified', 'mismatch']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:artifact_integrity/invalid",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:artifact_integrity/verified",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:artifact_integrity/verified",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:artifact_integrity/mismatch",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:artifact_integrity/mismatch",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:artifact_integrity/supported",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'supported' is not one of ['verified', 'mismatch']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:artifact_integrity/supported",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:artifact_integrity/contradicted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'contradicted' is not one of ['verified', 'mismatch']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:artifact_integrity/contradicted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:artifact_integrity/inconclusive",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'inconclusive' is not one of ['verified', 'mismatch']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:artifact_integrity/inconclusive",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:artifact_integrity/unresolved",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'unresolved' is not one of ['verified', 'mismatch']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:artifact_integrity/unresolved",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:prediction_resolution/matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'matched' is not one of ['supported', 'contradicted', 'inconclusive', 'unresolved']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:prediction_resolution/matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:prediction_resolution/partially_matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'partially_matched' is not one of ['supported', 'contradicted', 'inconclusive', 'unresolved']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:prediction_resolution/partially_matched",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:prediction_resolution/did_not_match",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'did_not_match' is not one of ['supported', 'contradicted', 'inconclusive', 'unresolved']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:prediction_resolution/did_not_match",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:prediction_resolution/could_not_run",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'could_not_run' is not one of ['supported', 'contradicted', 'inconclusive', 'unresolved']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:prediction_resolution/could_not_run",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:prediction_resolution/accepted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'accepted' is not one of ['supported', 'contradicted', 'inconclusive', 'unresolved']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:prediction_resolution/accepted",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:prediction_resolution/rejected",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'rejected' is not one of ['supported', 'contradicted', 'inconclusive', 'unresolved']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:prediction_resolution/rejected",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:prediction_resolution/no_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'no_concerns' is not one of ['supported', 'contradicted', 'inconclusive', 'unresolved']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:prediction_resolution/no_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:prediction_resolution/concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'concerns' is not one of ['supported', 'contradicted', 'inconclusive', 'unresolved']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:prediction_resolution/concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:prediction_resolution/serious_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'serious_concerns' is not one of ['supported', 'contradicted', 'inconclusive', 'unresolved']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:prediction_resolution/serious_concerns",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:prediction_resolution/scored",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'scored' is not one of ['supported', 'contradicted', 'inconclusive', 'unresolved']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:prediction_resolution/scored",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:prediction_resolution/invalid",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'invalid' is not one of ['supported', 'contradicted', 'inconclusive', 'unresolved']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:prediction_resolution/invalid",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:prediction_resolution/verified",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'verified' is not one of ['supported', 'contradicted', 'inconclusive', 'unresolved']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:prediction_resolution/verified",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:prediction_resolution/mismatch",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": [
+          "'mismatch' is not one of ['supported', 'contradicted', 'inconclusive', 'unresolved']"
+        ]
+      }
+    },
+    {
+      "name": "sql_receipt_pair:prediction_resolution/mismatch",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:prediction_resolution/supported",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:prediction_resolution/supported",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:prediction_resolution/contradicted",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:prediction_resolution/contradicted",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:prediction_resolution/inconclusive",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:prediction_resolution/inconclusive",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "api_receipt_pair:prediction_resolution/unresolved",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "errors": []
+      }
+    },
+    {
+      "name": "sql_receipt_pair:prediction_resolution/unresolved",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "current_receipt_objection_visible",
+      "passed": true,
+      "expected": 1,
+      "actual": 1,
+      "detail": null
+    },
+    {
+      "name": "older_receipt_objection_visible_in_history",
+      "passed": false,
+      "expected": 1,
+      "actual": 0,
+      "detail": {
+        "before": {
+          "contribution_id": "00000000000000000000000006",
+          "revision": 1,
+          "evidence_attached": 0,
+          "reproductions_reported": 1,
+          "reproductions_matched": 1,
+          "reproductions_did_not_match": 0,
+          "independent_implementations_reported": 0,
+          "formal_checks_reported": 0,
+          "formal_checks_accepted": 0,
+          "reviews_reported": 0,
+          "external_evaluations_scored": 0,
+          "receipts_on_earlier_revisions": 0,
+          "contribution_objections_unresolved": 0,
+          "receipt_objections_unresolved": 1,
+          "historical_objections_unresolved": 0,
+          "objections_unresolved": 1,
+          "prediction_outcome": null,
+          "withdrawn": 0,
+          "superseded": 0
+        },
+        "after": {
+          "contribution_id": "00000000000000000000000006",
+          "revision": 2,
+          "evidence_attached": 0,
+          "reproductions_reported": 0,
+          "reproductions_matched": 0,
+          "reproductions_did_not_match": 0,
+          "independent_implementations_reported": 0,
+          "formal_checks_reported": 0,
+          "formal_checks_accepted": 0,
+          "reviews_reported": 0,
+          "external_evaluations_scored": 0,
+          "receipts_on_earlier_revisions": 1,
+          "contribution_objections_unresolved": 0,
+          "receipt_objections_unresolved": 0,
+          "historical_objections_unresolved": 0,
+          "objections_unresolved": 0,
+          "prediction_outcome": null,
+          "withdrawn": 0,
+          "superseded": 0
+        },
+        "change": "Only current_revision changed from 1 to 2; objection is still open."
+      }
+    },
+    {
+      "name": "active_resolution_facet",
+      "passed": true,
+      "expected": "supported",
+      "actual": "supported",
+      "detail": null
+    },
+    {
+      "name": "inactive_resolution_clears_facet:withdrawn",
+      "passed": true,
+      "expected": null,
+      "actual": null,
+      "detail": null
+    },
+    {
+      "name": "inactive_resolution_clears_facet:hidden",
+      "passed": true,
+      "expected": null,
+      "actual": null,
+      "detail": null
+    },
+    {
+      "name": "inactive_resolution_clears_facet:redacted",
+      "passed": true,
+      "expected": null,
+      "actual": null,
+      "detail": null
+    },
+    {
+      "name": "inactive_resolution_clears_facet:corrected",
+      "passed": true,
+      "expected": null,
+      "actual": null,
+      "detail": null
+    },
+    {
+      "name": "valid_response:RegistrationResult",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "RegistrationResult",
+        "errors": []
+      }
+    },
+    {
+      "name": "valid_response:Run",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "Run",
+        "errors": []
+      }
+    },
+    {
+      "name": "valid_response:Contract",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "Contract",
+        "errors": []
+      }
+    },
+    {
+      "name": "valid_response:Project",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "Project",
+        "errors": []
+      }
+    },
+    {
+      "name": "valid_response:Receipt",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "Receipt",
+        "errors": []
+      }
+    },
+    {
+      "name": "valid_response:Post",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "Post",
+        "errors": []
+      }
+    },
+    {
+      "name": "valid_response:Revision",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "Revision",
+        "errors": []
+      }
+    },
+    {
+      "name": "valid_response:Prediction",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "Prediction",
+        "errors": []
+      }
+    },
+    {
+      "name": "valid_response:Contribution",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "Contribution",
+        "errors": []
+      }
+    },
+    {
+      "name": "valid_response:ContextPacket",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ContextPacket",
+        "errors": []
+      }
+    },
+    {
+      "name": "valid_response:ProjectExport",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ProjectExport",
+        "errors": []
+      }
+    },
+    {
+      "name": "export_fixture_json_roundtrip",
+      "passed": true,
+      "expected": {
+        "exported_at": "2026-09-07T12:00:00Z",
+        "event_cursor": 0,
+        "project": {
+          "id": "00000000000000000000000005",
+          "slug": "fixture-project",
+          "title": "Fixture",
+          "kind": "challenge",
+          "status": "active",
+          "brief_md": "Fixture",
+          "contract": {
+            "project_id": "00000000000000000000000005",
+            "version": 1,
+            "body_md": "Frozen rules",
+            "change_summary": "Initial",
+            "author_id": "00000000000000000000000001",
+            "created_at": "2026-09-07T12:00:00Z"
+          },
+          "current_summary_version": 0,
+          "safety_locked": false,
+          "roles": [],
+          "created_at": "2026-09-07T12:00:00Z",
+          "updated_at": "2026-09-07T12:00:00Z"
+        },
+        "contributors": [
+          {
+            "id": "00000000000000000000000001",
+            "handle": "fixture-1",
+            "display_name": "Fixture",
+            "kind": "agent",
+            "tier": "new",
+            "status": "active",
+            "created_at": "2026-09-07T12:00:00Z"
+          },
+          {
+            "id": "00000000000000000000000002",
+            "handle": "fixture-2",
+            "display_name": "Fixture",
+            "kind": "agent",
+            "tier": "new",
+            "status": "active",
+            "created_at": "2026-09-07T12:00:00Z"
+          }
+        ],
+        "runs": [
+          {
+            "id": "00000000000000000000000003",
+            "contributor_id": "00000000000000000000000001",
+            "created_at": "2026-09-07T12:00:00Z"
+          },
+          {
+            "id": "00000000000000000000000004",
+            "contributor_id": "00000000000000000000000002",
+            "created_at": "2026-09-07T12:00:00Z"
+          }
+        ],
+        "contracts": [
+          {
+            "project_id": "00000000000000000000000005",
+            "version": 1,
+            "body_md": "Frozen rules",
+            "change_summary": "Initial",
+            "author_id": "00000000000000000000000001",
+            "created_at": "2026-09-07T12:00:00Z"
+          }
+        ],
+        "summaries": [],
+        "tasks": [],
+        "leases": [],
+        "posts": [
+          {
+            "id": "00000000000000000000000008",
+            "project_id": "00000000000000000000000005",
+            "parent_post_id": null,
+            "objection_id": null,
+            "title": "Fixture",
+            "body_md": "Second text",
+            "current_revision": 2,
+            "author_id": "00000000000000000000000001",
+            "status": "visible",
+            "created_at": "2026-09-07T12:00:00Z",
+            "revisions": [
+              {
+                "revision": 1,
+                "body_md": "First text",
+                "created_at": "2026-09-07T12:00:00Z"
+              },
+              {
+                "revision": 2,
+                "body_md": "Second text",
+                "created_at": "2026-09-07T12:00:00Z"
+              }
+            ]
+          }
+        ],
+        "contributions": [
+          {
+            "id": "00000000000000000000000006",
+            "project_id": "00000000000000000000000005",
+            "kind": "prediction",
+            "status": "active",
+            "current_revision": 2,
+            "title": "Fixture",
+            "claim": "Fixture",
+            "author_id": "00000000000000000000000001",
+            "facets": {
+              "revision": 2,
+              "evidence_attached": false,
+              "reproductions_reported": 0,
+              "reproductions_matched": 0,
+              "reproductions_did_not_match": 0,
+              "independent_implementations_reported": 0,
+              "formal_checks_reported": 0,
+              "formal_checks_accepted": 0,
+              "reviews_reported": 0,
+              "external_evaluations_scored": 0,
+              "receipts_on_earlier_revisions": 2,
+              "contribution_objections_unresolved": 0,
+              "receipt_objections_unresolved": 0,
+              "historical_objections_unresolved": 0,
+              "objections_unresolved": 0,
+              "prediction_outcome": "supported",
+              "withdrawn": false,
+              "superseded": false,
+              "open_check_requests": 0
+            },
+            "receipts": [],
+            "relations": [],
+            "created_at": "2026-09-07T12:00:00Z",
+            "task_id": null,
+            "license": "CC-BY-4.0",
+            "revision": {
+              "contribution_id": "00000000000000000000000006",
+              "revision": 2,
+              "title": "Fixture",
+              "claim": "Fixture",
+              "note": {
+                "tried": "Synthetic review",
+                "happened": "Fixture only",
+                "limitations": "No HTTP runtime",
+                "next_step": "Inspect"
+              },
+              "fields": {},
+              "contract_version": 1,
+              "author_id": "00000000000000000000000001",
+              "run": {
+                "id": "00000000000000000000000003",
+                "contributor_id": "00000000000000000000000001",
+                "created_at": "2026-09-07T12:00:00Z"
+              },
+              "artifacts": [],
+              "receipts": [],
+              "created_at": "2026-09-07T12:00:00Z"
+            },
+            "prediction": {
+              "statement": "Frozen",
+              "outcome_spec_md": "Fixture",
+              "criteria_md": "Fixture",
+              "prior_access_md": "Synthetic",
+              "deadline": "2027-01-01",
+              "resolver_id": "00000000000000000000000002",
+              "contribution_id": "00000000000000000000000006",
+              "registered_at": "2026-09-07T12:00:00Z",
+              "resolver_agreed_at": "2026-09-07T12:00:00Z",
+              "status": "resolved",
+              "outcome": "supported",
+              "resolved_by_receipt_id": "00000000000000000000000011",
+              "resolved_at": "2026-09-07T12:00:00Z"
+            }
+          }
+        ],
+        "revisions": [
+          {
+            "contribution_id": "00000000000000000000000006",
+            "revision": 1,
+            "title": "Fixture",
+            "claim": "Fixture",
+            "note": {
+              "tried": "Synthetic review",
+              "happened": "Fixture only",
+              "limitations": "No HTTP runtime",
+              "next_step": "Inspect"
+            },
+            "fields": {},
+            "contract_version": 1,
+            "author_id": "00000000000000000000000001",
+            "run": {
+              "id": "00000000000000000000000003",
+              "contributor_id": "00000000000000000000000001",
+              "created_at": "2026-09-07T12:00:00Z"
+            },
+            "artifacts": [],
+            "receipts": [
+              {
+                "run_id": "00000000000000000000000004",
+                "checked_md": "Fixture",
+                "not_checked_md": "No server",
+                "method_md": "Local probe",
+                "observations_md": "Synthetic",
+                "independence": {
+                  "execution": "independent",
+                  "implementation": "shared",
+                  "data": "shared",
+                  "design": "shared"
+                },
+                "relationships_md": "Same operator",
+                "id": "00000000000000000000000007",
+                "contribution_id": "00000000000000000000000006",
+                "revision": 1,
+                "kind": "reproduction",
+                "outcome": "matched",
+                "author_id": "00000000000000000000000002",
+                "run": {
+                  "id": "00000000000000000000000004",
+                  "contributor_id": "00000000000000000000000002",
+                  "created_at": "2026-09-07T12:00:00Z"
+                },
+                "status": "active",
+                "created_at": "2026-09-07T12:00:00Z"
+              },
+              {
+                "run_id": "00000000000000000000000004",
+                "checked_md": "Fixture",
+                "not_checked_md": "No server",
+                "method_md": "Local probe",
+                "observations_md": "Synthetic",
+                "independence": {
+                  "execution": "independent",
+                  "implementation": "shared",
+                  "data": "shared",
+                  "design": "shared"
+                },
+                "relationships_md": "Same operator",
+                "id": "00000000000000000000000011",
+                "contribution_id": "00000000000000000000000006",
+                "revision": 1,
+                "kind": "prediction_resolution",
+                "outcome": "supported",
+                "author_id": "00000000000000000000000002",
+                "run": {
+                  "id": "00000000000000000000000004",
+                  "contributor_id": "00000000000000000000000002",
+                  "created_at": "2026-09-07T12:00:00Z"
+                },
+                "status": "active",
+                "created_at": "2026-09-07T12:00:00Z"
+              }
+            ],
+            "created_at": "2026-09-07T12:00:00Z"
+          },
+          {
+            "contribution_id": "00000000000000000000000006",
+            "revision": 2,
+            "title": "Fixture",
+            "claim": "Fixture",
+            "note": {
+              "tried": "Synthetic review",
+              "happened": "Fixture only",
+              "limitations": "No HTTP runtime",
+              "next_step": "Inspect"
+            },
+            "fields": {},
+            "contract_version": 1,
+            "author_id": "00000000000000000000000001",
+            "run": {
+              "id": "00000000000000000000000003",
+              "contributor_id": "00000000000000000000000001",
+              "created_at": "2026-09-07T12:00:00Z"
+            },
+            "artifacts": [],
+            "receipts": [],
+            "created_at": "2026-09-07T12:00:00Z"
+          }
+        ],
+        "relations": [],
+        "receipts": [
+          {
+            "run_id": "00000000000000000000000004",
+            "checked_md": "Fixture",
+            "not_checked_md": "No server",
+            "method_md": "Local probe",
+            "observations_md": "Synthetic",
+            "independence": {
+              "execution": "independent",
+              "implementation": "shared",
+              "data": "shared",
+              "design": "shared"
+            },
+            "relationships_md": "Same operator",
+            "id": "00000000000000000000000007",
+            "contribution_id": "00000000000000000000000006",
+            "revision": 1,
+            "kind": "reproduction",
+            "outcome": "matched",
+            "author_id": "00000000000000000000000002",
+            "run": {
+              "id": "00000000000000000000000004",
+              "contributor_id": "00000000000000000000000002",
+              "created_at": "2026-09-07T12:00:00Z"
+            },
+            "status": "active",
+            "created_at": "2026-09-07T12:00:00Z"
+          },
+          {
+            "run_id": "00000000000000000000000004",
+            "checked_md": "Fixture",
+            "not_checked_md": "No server",
+            "method_md": "Local probe",
+            "observations_md": "Synthetic",
+            "independence": {
+              "execution": "independent",
+              "implementation": "shared",
+              "data": "shared",
+              "design": "shared"
+            },
+            "relationships_md": "Same operator",
+            "id": "00000000000000000000000011",
+            "contribution_id": "00000000000000000000000006",
+            "revision": 1,
+            "kind": "prediction_resolution",
+            "outcome": "supported",
+            "author_id": "00000000000000000000000002",
+            "run": {
+              "id": "00000000000000000000000004",
+              "contributor_id": "00000000000000000000000002",
+              "created_at": "2026-09-07T12:00:00Z"
+            },
+            "status": "active",
+            "created_at": "2026-09-07T12:00:00Z"
+          }
+        ],
+        "predictions": [
+          {
+            "statement": "Frozen",
+            "outcome_spec_md": "Fixture",
+            "criteria_md": "Fixture",
+            "prior_access_md": "Synthetic",
+            "deadline": "2027-01-01",
+            "resolver_id": "00000000000000000000000002",
+            "contribution_id": "00000000000000000000000006",
+            "registered_at": "2026-09-07T12:00:00Z",
+            "resolver_agreed_at": "2026-09-07T12:00:00Z",
+            "status": "resolved",
+            "outcome": "supported",
+            "resolved_by_receipt_id": "00000000000000000000000011",
+            "resolved_at": "2026-09-07T12:00:00Z"
+          }
+        ],
+        "objections": [
+          {
+            "id": "00000000000000000000000010",
+            "target_type": "receipt",
+            "target_id": "00000000000000000000000007",
+            "kind": "provenance",
+            "body_md": "Disputed logs",
+            "author_id": "00000000000000000000000001",
+            "status": "open",
+            "responses": [],
+            "created_at": "2026-09-07T12:00:00Z"
+          }
+        ],
+        "artifacts": [],
+        "moderation": [],
+        "events": []
+      },
+      "actual": {
+        "exported_at": "2026-09-07T12:00:00Z",
+        "event_cursor": 0,
+        "project": {
+          "id": "00000000000000000000000005",
+          "slug": "fixture-project",
+          "title": "Fixture",
+          "kind": "challenge",
+          "status": "active",
+          "brief_md": "Fixture",
+          "contract": {
+            "project_id": "00000000000000000000000005",
+            "version": 1,
+            "body_md": "Frozen rules",
+            "change_summary": "Initial",
+            "author_id": "00000000000000000000000001",
+            "created_at": "2026-09-07T12:00:00Z"
+          },
+          "current_summary_version": 0,
+          "safety_locked": false,
+          "roles": [],
+          "created_at": "2026-09-07T12:00:00Z",
+          "updated_at": "2026-09-07T12:00:00Z"
+        },
+        "contributors": [
+          {
+            "id": "00000000000000000000000001",
+            "handle": "fixture-1",
+            "display_name": "Fixture",
+            "kind": "agent",
+            "tier": "new",
+            "status": "active",
+            "created_at": "2026-09-07T12:00:00Z"
+          },
+          {
+            "id": "00000000000000000000000002",
+            "handle": "fixture-2",
+            "display_name": "Fixture",
+            "kind": "agent",
+            "tier": "new",
+            "status": "active",
+            "created_at": "2026-09-07T12:00:00Z"
+          }
+        ],
+        "runs": [
+          {
+            "id": "00000000000000000000000003",
+            "contributor_id": "00000000000000000000000001",
+            "created_at": "2026-09-07T12:00:00Z"
+          },
+          {
+            "id": "00000000000000000000000004",
+            "contributor_id": "00000000000000000000000002",
+            "created_at": "2026-09-07T12:00:00Z"
+          }
+        ],
+        "contracts": [
+          {
+            "project_id": "00000000000000000000000005",
+            "version": 1,
+            "body_md": "Frozen rules",
+            "change_summary": "Initial",
+            "author_id": "00000000000000000000000001",
+            "created_at": "2026-09-07T12:00:00Z"
+          }
+        ],
+        "summaries": [],
+        "tasks": [],
+        "leases": [],
+        "posts": [
+          {
+            "id": "00000000000000000000000008",
+            "project_id": "00000000000000000000000005",
+            "parent_post_id": null,
+            "objection_id": null,
+            "title": "Fixture",
+            "body_md": "Second text",
+            "current_revision": 2,
+            "author_id": "00000000000000000000000001",
+            "status": "visible",
+            "created_at": "2026-09-07T12:00:00Z",
+            "revisions": [
+              {
+                "revision": 1,
+                "body_md": "First text",
+                "created_at": "2026-09-07T12:00:00Z"
+              },
+              {
+                "revision": 2,
+                "body_md": "Second text",
+                "created_at": "2026-09-07T12:00:00Z"
+              }
+            ]
+          }
+        ],
+        "contributions": [
+          {
+            "id": "00000000000000000000000006",
+            "project_id": "00000000000000000000000005",
+            "kind": "prediction",
+            "status": "active",
+            "current_revision": 2,
+            "title": "Fixture",
+            "claim": "Fixture",
+            "author_id": "00000000000000000000000001",
+            "facets": {
+              "revision": 2,
+              "evidence_attached": false,
+              "reproductions_reported": 0,
+              "reproductions_matched": 0,
+              "reproductions_did_not_match": 0,
+              "independent_implementations_reported": 0,
+              "formal_checks_reported": 0,
+              "formal_checks_accepted": 0,
+              "reviews_reported": 0,
+              "external_evaluations_scored": 0,
+              "receipts_on_earlier_revisions": 2,
+              "contribution_objections_unresolved": 0,
+              "receipt_objections_unresolved": 0,
+              "historical_objections_unresolved": 0,
+              "objections_unresolved": 0,
+              "prediction_outcome": "supported",
+              "withdrawn": false,
+              "superseded": false,
+              "open_check_requests": 0
+            },
+            "receipts": [],
+            "relations": [],
+            "created_at": "2026-09-07T12:00:00Z",
+            "task_id": null,
+            "license": "CC-BY-4.0",
+            "revision": {
+              "contribution_id": "00000000000000000000000006",
+              "revision": 2,
+              "title": "Fixture",
+              "claim": "Fixture",
+              "note": {
+                "tried": "Synthetic review",
+                "happened": "Fixture only",
+                "limitations": "No HTTP runtime",
+                "next_step": "Inspect"
+              },
+              "fields": {},
+              "contract_version": 1,
+              "author_id": "00000000000000000000000001",
+              "run": {
+                "id": "00000000000000000000000003",
+                "contributor_id": "00000000000000000000000001",
+                "created_at": "2026-09-07T12:00:00Z"
+              },
+              "artifacts": [],
+              "receipts": [],
+              "created_at": "2026-09-07T12:00:00Z"
+            },
+            "prediction": {
+              "statement": "Frozen",
+              "outcome_spec_md": "Fixture",
+              "criteria_md": "Fixture",
+              "prior_access_md": "Synthetic",
+              "deadline": "2027-01-01",
+              "resolver_id": "00000000000000000000000002",
+              "contribution_id": "00000000000000000000000006",
+              "registered_at": "2026-09-07T12:00:00Z",
+              "resolver_agreed_at": "2026-09-07T12:00:00Z",
+              "status": "resolved",
+              "outcome": "supported",
+              "resolved_by_receipt_id": "00000000000000000000000011",
+              "resolved_at": "2026-09-07T12:00:00Z"
+            }
+          }
+        ],
+        "revisions": [
+          {
+            "contribution_id": "00000000000000000000000006",
+            "revision": 1,
+            "title": "Fixture",
+            "claim": "Fixture",
+            "note": {
+              "tried": "Synthetic review",
+              "happened": "Fixture only",
+              "limitations": "No HTTP runtime",
+              "next_step": "Inspect"
+            },
+            "fields": {},
+            "contract_version": 1,
+            "author_id": "00000000000000000000000001",
+            "run": {
+              "id": "00000000000000000000000003",
+              "contributor_id": "00000000000000000000000001",
+              "created_at": "2026-09-07T12:00:00Z"
+            },
+            "artifacts": [],
+            "receipts": [
+              {
+                "run_id": "00000000000000000000000004",
+                "checked_md": "Fixture",
+                "not_checked_md": "No server",
+                "method_md": "Local probe",
+                "observations_md": "Synthetic",
+                "independence": {
+                  "execution": "independent",
+                  "implementation": "shared",
+                  "data": "shared",
+                  "design": "shared"
+                },
+                "relationships_md": "Same operator",
+                "id": "00000000000000000000000007",
+                "contribution_id": "00000000000000000000000006",
+                "revision": 1,
+                "kind": "reproduction",
+                "outcome": "matched",
+                "author_id": "00000000000000000000000002",
+                "run": {
+                  "id": "00000000000000000000000004",
+                  "contributor_id": "00000000000000000000000002",
+                  "created_at": "2026-09-07T12:00:00Z"
+                },
+                "status": "active",
+                "created_at": "2026-09-07T12:00:00Z"
+              },
+              {
+                "run_id": "00000000000000000000000004",
+                "checked_md": "Fixture",
+                "not_checked_md": "No server",
+                "method_md": "Local probe",
+                "observations_md": "Synthetic",
+                "independence": {
+                  "execution": "independent",
+                  "implementation": "shared",
+                  "data": "shared",
+                  "design": "shared"
+                },
+                "relationships_md": "Same operator",
+                "id": "00000000000000000000000011",
+                "contribution_id": "00000000000000000000000006",
+                "revision": 1,
+                "kind": "prediction_resolution",
+                "outcome": "supported",
+                "author_id": "00000000000000000000000002",
+                "run": {
+                  "id": "00000000000000000000000004",
+                  "contributor_id": "00000000000000000000000002",
+                  "created_at": "2026-09-07T12:00:00Z"
+                },
+                "status": "active",
+                "created_at": "2026-09-07T12:00:00Z"
+              }
+            ],
+            "created_at": "2026-09-07T12:00:00Z"
+          },
+          {
+            "contribution_id": "00000000000000000000000006",
+            "revision": 2,
+            "title": "Fixture",
+            "claim": "Fixture",
+            "note": {
+              "tried": "Synthetic review",
+              "happened": "Fixture only",
+              "limitations": "No HTTP runtime",
+              "next_step": "Inspect"
+            },
+            "fields": {},
+            "contract_version": 1,
+            "author_id": "00000000000000000000000001",
+            "run": {
+              "id": "00000000000000000000000003",
+              "contributor_id": "00000000000000000000000001",
+              "created_at": "2026-09-07T12:00:00Z"
+            },
+            "artifacts": [],
+            "receipts": [],
+            "created_at": "2026-09-07T12:00:00Z"
+          }
+        ],
+        "relations": [],
+        "receipts": [
+          {
+            "run_id": "00000000000000000000000004",
+            "checked_md": "Fixture",
+            "not_checked_md": "No server",
+            "method_md": "Local probe",
+            "observations_md": "Synthetic",
+            "independence": {
+              "execution": "independent",
+              "implementation": "shared",
+              "data": "shared",
+              "design": "shared"
+            },
+            "relationships_md": "Same operator",
+            "id": "00000000000000000000000007",
+            "contribution_id": "00000000000000000000000006",
+            "revision": 1,
+            "kind": "reproduction",
+            "outcome": "matched",
+            "author_id": "00000000000000000000000002",
+            "run": {
+              "id": "00000000000000000000000004",
+              "contributor_id": "00000000000000000000000002",
+              "created_at": "2026-09-07T12:00:00Z"
+            },
+            "status": "active",
+            "created_at": "2026-09-07T12:00:00Z"
+          },
+          {
+            "run_id": "00000000000000000000000004",
+            "checked_md": "Fixture",
+            "not_checked_md": "No server",
+            "method_md": "Local probe",
+            "observations_md": "Synthetic",
+            "independence": {
+              "execution": "independent",
+              "implementation": "shared",
+              "data": "shared",
+              "design": "shared"
+            },
+            "relationships_md": "Same operator",
+            "id": "00000000000000000000000011",
+            "contribution_id": "00000000000000000000000006",
+            "revision": 1,
+            "kind": "prediction_resolution",
+            "outcome": "supported",
+            "author_id": "00000000000000000000000002",
+            "run": {
+              "id": "00000000000000000000000004",
+              "contributor_id": "00000000000000000000000002",
+              "created_at": "2026-09-07T12:00:00Z"
+            },
+            "status": "active",
+            "created_at": "2026-09-07T12:00:00Z"
+          }
+        ],
+        "predictions": [
+          {
+            "statement": "Frozen",
+            "outcome_spec_md": "Fixture",
+            "criteria_md": "Fixture",
+            "prior_access_md": "Synthetic",
+            "deadline": "2027-01-01",
+            "resolver_id": "00000000000000000000000002",
+            "contribution_id": "00000000000000000000000006",
+            "registered_at": "2026-09-07T12:00:00Z",
+            "resolver_agreed_at": "2026-09-07T12:00:00Z",
+            "status": "resolved",
+            "outcome": "supported",
+            "resolved_by_receipt_id": "00000000000000000000000011",
+            "resolved_at": "2026-09-07T12:00:00Z"
+          }
+        ],
+        "objections": [
+          {
+            "id": "00000000000000000000000010",
+            "target_type": "receipt",
+            "target_id": "00000000000000000000000007",
+            "kind": "provenance",
+            "body_md": "Disputed logs",
+            "author_id": "00000000000000000000000001",
+            "status": "open",
+            "responses": [],
+            "created_at": "2026-09-07T12:00:00Z"
+          }
+        ],
+        "artifacts": [],
+        "moderation": [],
+        "events": []
+      },
+      "detail": "Representation test only; no server exporter/importer exists."
+    },
+    {
+      "name": "sqlite_foreign_key_check",
+      "passed": true,
+      "expected": [],
+      "actual": [],
+      "detail": null
+    }
+  ],
+  "passed": 313,
+  "failed": 1
+}

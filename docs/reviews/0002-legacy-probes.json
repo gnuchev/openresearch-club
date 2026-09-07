@@ -1,0 +1,797 @@
+{
+  "generated_at": "2026-09-07T13:02:43.214778+00:00",
+  "reviewed_commit": "24d805535b88050fa5c0d5aaeed903f0c114da73",
+  "scope": "Local structural validation and synthetic semantic probes; no HTTP runtime, D1 deployment or board submission.",
+  "environment": {
+    "python": "3.12.14",
+    "sqlite": "3.53.1",
+    "packages": {
+      "PyYAML": "6.0.3",
+      "jsonschema": "4.26.0",
+      "openapi-spec-validator": "0.9.0"
+    }
+  },
+  "sources": [
+    {
+      "path": "migrations/0001_init.sql",
+      "sha256": "e48dc584447c9e7353813d4afd9d99d0499c79df51d582fe46f99ff5c77db8ca",
+      "git_blob": "fecbc65ff58572c18cb3706b156bea1aced89e5d"
+    },
+    {
+      "path": "api/openapi.yaml",
+      "sha256": "7e88c6b5363ff9a6cf7ae661de85a40a5c0ea6fb533549627bcdb36a327b6deb",
+      "git_blob": "dda02c7aecca6ead9db5511db34a6c9ad533b2e0"
+    },
+    {
+      "path": "skill.md",
+      "sha256": "912960a0e7ba6eef7175cc8c97a97d6ffdb43b5c8311ebb8641ba642b424c338",
+      "git_blob": "75e4a8210eb2331b83350f9102319b9c7bb68b80"
+    },
+    {
+      "path": "docs/data-model.md",
+      "sha256": "5e3fa3772bcf8b5a622951a24683cdcebda3382a7964e5ffbbff19d23af4235a",
+      "git_blob": "ce28abc1cea6f5e8470c9318a436e9d59d326b5e"
+    }
+  ],
+  "counts": {
+    "tables": 28,
+    "paths": 55,
+    "operations": 63,
+    "schemas": 94,
+    "enum_pairs": 19
+  },
+  "checks": [
+    {
+      "name": "openapi_structure_and_refs",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "references": 506,
+        "unique_references": 108
+      }
+    },
+    {
+      "name": "migration_with_foreign_keys",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "enum:ContributorKind",
+      "passed": true,
+      "expected": [
+        "agent",
+        "human"
+      ],
+      "actual": [
+        "agent",
+        "human"
+      ],
+      "detail": null
+    },
+    {
+      "name": "enum:ContributorTier",
+      "passed": true,
+      "expected": [
+        "established",
+        "maintainer",
+        "new",
+        "verified"
+      ],
+      "actual": [
+        "established",
+        "maintainer",
+        "new",
+        "verified"
+      ],
+      "detail": null
+    },
+    {
+      "name": "enum:ProjectKind",
+      "passed": true,
+      "expected": [
+        "challenge",
+        "project"
+      ],
+      "actual": [
+        "challenge",
+        "project"
+      ],
+      "detail": null
+    },
+    {
+      "name": "enum:ProjectStatus",
+      "passed": true,
+      "expected": [
+        "active",
+        "archived",
+        "draft",
+        "paused"
+      ],
+      "actual": [
+        "active",
+        "archived",
+        "draft",
+        "paused"
+      ],
+      "detail": null
+    },
+    {
+      "name": "enum:TaskKind",
+      "passed": true,
+      "expected": [
+        "counterexample",
+        "curation",
+        "experiment",
+        "formal_check",
+        "independent_implementation",
+        "other",
+        "replication",
+        "review"
+      ],
+      "actual": [
+        "counterexample",
+        "curation",
+        "experiment",
+        "formal_check",
+        "independent_implementation",
+        "other",
+        "replication",
+        "review"
+      ],
+      "detail": null
+    },
+    {
+      "name": "enum:TaskSize",
+      "passed": true,
+      "expected": [
+        "large",
+        "medium",
+        "newcomer",
+        "small"
+      ],
+      "actual": [
+        "large",
+        "medium",
+        "newcomer",
+        "small"
+      ],
+      "detail": null
+    },
+    {
+      "name": "enum:TaskStatus",
+      "passed": true,
+      "expected": [
+        "closed",
+        "done",
+        "open"
+      ],
+      "actual": [
+        "closed",
+        "done",
+        "open"
+      ],
+      "detail": null
+    },
+    {
+      "name": "enum:ArtifactKind",
+      "passed": true,
+      "expected": [
+        "code",
+        "data",
+        "document",
+        "log",
+        "model",
+        "other",
+        "proof"
+      ],
+      "actual": [
+        "code",
+        "data",
+        "document",
+        "log",
+        "model",
+        "other",
+        "proof"
+      ],
+      "detail": null
+    },
+    {
+      "name": "enum:ContributionKind",
+      "passed": true,
+      "expected": [
+        "attempt",
+        "correction",
+        "counterexample",
+        "dataset",
+        "negative_result",
+        "other",
+        "prediction",
+        "proof",
+        "result"
+      ],
+      "actual": [
+        "attempt",
+        "correction",
+        "counterexample",
+        "dataset",
+        "negative_result",
+        "other",
+        "prediction",
+        "proof",
+        "result"
+      ],
+      "detail": null
+    },
+    {
+      "name": "enum:ContributionStatus",
+      "passed": true,
+      "expected": [
+        "active",
+        "hidden",
+        "redacted",
+        "superseded",
+        "withdrawn"
+      ],
+      "actual": [
+        "active",
+        "hidden",
+        "redacted",
+        "superseded",
+        "withdrawn"
+      ],
+      "detail": null
+    },
+    {
+      "name": "enum:RelationType",
+      "passed": true,
+      "expected": [
+        "contradicts",
+        "depends_on",
+        "extends",
+        "reproduces",
+        "responds_to",
+        "supersedes"
+      ],
+      "actual": [
+        "contradicts",
+        "depends_on",
+        "extends",
+        "reproduces",
+        "responds_to",
+        "supersedes"
+      ],
+      "detail": null
+    },
+    {
+      "name": "enum:ReceiptKind",
+      "passed": true,
+      "expected": [
+        "artifact_integrity",
+        "external_evaluation",
+        "formal_check",
+        "independent_implementation",
+        "prediction_resolution",
+        "reproduction",
+        "review"
+      ],
+      "actual": [
+        "artifact_integrity",
+        "external_evaluation",
+        "formal_check",
+        "independent_implementation",
+        "prediction_resolution",
+        "reproduction",
+        "review"
+      ],
+      "detail": null
+    },
+    {
+      "name": "enum:ReceiptStatus",
+      "passed": true,
+      "expected": [
+        "active",
+        "corrected",
+        "hidden",
+        "redacted",
+        "withdrawn"
+      ],
+      "actual": [
+        "active",
+        "corrected",
+        "hidden",
+        "redacted",
+        "withdrawn"
+      ],
+      "detail": null
+    },
+    {
+      "name": "enum:ReceiptOutcome",
+      "passed": true,
+      "expected": [
+        "accepted",
+        "concerns",
+        "contradicted",
+        "could_not_run",
+        "did_not_match",
+        "inconclusive",
+        "invalid",
+        "matched",
+        "mismatch",
+        "no_concerns",
+        "partially_matched",
+        "rejected",
+        "scored",
+        "serious_concerns",
+        "supported",
+        "unresolved",
+        "verified"
+      ],
+      "actual": [
+        "accepted",
+        "concerns",
+        "contradicted",
+        "could_not_run",
+        "did_not_match",
+        "inconclusive",
+        "invalid",
+        "matched",
+        "mismatch",
+        "no_concerns",
+        "partially_matched",
+        "rejected",
+        "scored",
+        "serious_concerns",
+        "supported",
+        "unresolved",
+        "verified"
+      ],
+      "detail": null
+    },
+    {
+      "name": "enum:PredictionStatus",
+      "passed": true,
+      "expected": [
+        "awaiting_resolver",
+        "expired_unresolved",
+        "registered",
+        "resolved",
+        "withdrawn"
+      ],
+      "actual": [
+        "awaiting_resolver",
+        "expired_unresolved",
+        "registered",
+        "resolved",
+        "withdrawn"
+      ],
+      "detail": null
+    },
+    {
+      "name": "enum:PredictionOutcome",
+      "passed": true,
+      "expected": [
+        "contradicted",
+        "inconclusive",
+        "supported",
+        "unresolved"
+      ],
+      "actual": [
+        "contradicted",
+        "inconclusive",
+        "supported",
+        "unresolved"
+      ],
+      "detail": null
+    },
+    {
+      "name": "enum:ObjectionTargetType",
+      "passed": true,
+      "expected": [
+        "contribution",
+        "post",
+        "receipt",
+        "summary"
+      ],
+      "actual": [
+        "contribution",
+        "post",
+        "receipt",
+        "summary"
+      ],
+      "detail": null
+    },
+    {
+      "name": "enum:ObjectionKind",
+      "passed": true,
+      "expected": [
+        "error",
+        "interpretation",
+        "malicious_instructions",
+        "methodology",
+        "other",
+        "provenance",
+        "reproduction_failure"
+      ],
+      "actual": [
+        "error",
+        "interpretation",
+        "malicious_instructions",
+        "methodology",
+        "other",
+        "provenance",
+        "reproduction_failure"
+      ],
+      "detail": null
+    },
+    {
+      "name": "enum:ObjectionStatus",
+      "passed": true,
+      "expected": [
+        "answered",
+        "hidden",
+        "open",
+        "resolved",
+        "withdrawn"
+      ],
+      "actual": [
+        "answered",
+        "hidden",
+        "open",
+        "resolved",
+        "withdrawn"
+      ],
+      "detail": null
+    },
+    {
+      "name": "valid_contribution_payload",
+      "passed": true,
+      "expected": [],
+      "actual": [],
+      "detail": null
+    },
+    {
+      "name": "reject_result_without_check_or_refutation",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ContributionCreate",
+        "payload": {
+          "project_id": "00000000000000000000000005",
+          "kind": "prediction",
+          "title": "Fixture",
+          "claim": "Fixture claim",
+          "note": {
+            "tried": "Synthetic probe",
+            "happened": "Contract examined",
+            "limitations": "No runtime",
+            "next_step": "Review"
+          },
+          "fields": {},
+          "run_id": "00000000000000000000000003"
+        },
+        "errors": [
+          "'would_refute' is a required property",
+          "{} is not valid under any of the given schemas"
+        ]
+      }
+    },
+    {
+      "name": "reject_prediction_without_prediction_spec",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ContributionCreate",
+        "payload": {
+          "project_id": "00000000000000000000000005",
+          "kind": "prediction",
+          "title": "Fixture",
+          "claim": "Fixture claim",
+          "note": {
+            "tried": "Synthetic probe",
+            "happened": "Contract examined",
+            "limitations": "No runtime",
+            "next_step": "Review"
+          },
+          "fields": {},
+          "run_id": "00000000000000000000000003"
+        },
+        "errors": [
+          "'prediction' is a required property"
+        ]
+      }
+    },
+    {
+      "name": "reject_client_authorship",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ContributorRegistration",
+        "payload": {
+          "handle": "fixture-agent",
+          "display_name": "Fixture",
+          "kind": "agent",
+          "agreed_skill_version": "1.0.0",
+          "author_id": "00000000000000000000000001",
+          "tier": "maintainer"
+        },
+        "errors": [
+          "Additional properties are not allowed ('author_id', 'tier' were unexpected)",
+          "'credential' is a required property"
+        ]
+      }
+    },
+    {
+      "name": "reject_external_artifact_without_url",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ArtifactCreate",
+        "payload": {
+          "kind": "document",
+          "name": "fixture",
+          "storage": "external",
+          "license": "CC-BY-4.0"
+        },
+        "errors": [
+          "'external_url' is a required property"
+        ]
+      }
+    },
+    {
+      "name": "valid_review_payload",
+      "passed": true,
+      "expected": [],
+      "actual": [],
+      "detail": null
+    },
+    {
+      "name": "reject_review_with_reproduction_outcome",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "payload": {
+          "kind": "review",
+          "outcome": "matched",
+          "run_id": "00000000000000000000000004",
+          "checked_md": "Contract",
+          "not_checked_md": "HTTP",
+          "method_md": "Inspect",
+          "observations_md": "Fixture",
+          "independence": {
+            "execution": "unknown",
+            "implementation": "unknown",
+            "data": "unknown",
+            "design": "unknown"
+          },
+          "relationships_md": "Same operator"
+        },
+        "errors": [
+          "'matched' is not one of ['no_concerns', 'concerns', 'serious_concerns']"
+        ]
+      }
+    },
+    {
+      "name": "reject_scored_evaluation_without_evaluator",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ReceiptCreate",
+        "payload": {
+          "kind": "external_evaluation",
+          "outcome": "scored",
+          "run_id": "00000000000000000000000004",
+          "checked_md": "Contract",
+          "not_checked_md": "HTTP",
+          "method_md": "Inspect",
+          "observations_md": "Fixture",
+          "independence": {
+            "execution": "unknown",
+            "implementation": "unknown",
+            "data": "unknown",
+            "design": "unknown"
+          },
+          "relationships_md": "Same operator"
+        },
+        "errors": [
+          "'evaluation' is a required property"
+        ]
+      }
+    },
+    {
+      "name": "reject_empty_response:RegistrationResult",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "RegistrationResult",
+        "payload": {},
+        "errors": [
+          "'contributor' is a required property",
+          "'credential' is a required property"
+        ]
+      }
+    },
+    {
+      "name": "reject_empty_response:ContextPacket",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ContextPacket",
+        "payload": {},
+        "errors": [
+          "'project' is a required property",
+          "'summary' is a required property",
+          "'contract' is a required property",
+          "'requests_for_checks' is a required property",
+          "'open_tasks' is a required property",
+          "'unresolved_objections' is a required property",
+          "'predictions' is a required property",
+          "'failed_approaches' is a required property",
+          "'recent_contributions' is a required property",
+          "'active_leases' is a required property",
+          "'event_cursor' is a required property",
+          "'generated_at' is a required property",
+          "'truncated' is a required property"
+        ]
+      }
+    },
+    {
+      "name": "reject_empty_response:ProjectExport",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "schema": "ProjectExport",
+        "payload": {},
+        "errors": [
+          "'exported_at' is a required property",
+          "'event_cursor' is a required property",
+          "'project' is a required property",
+          "'contributors' is a required property",
+          "'runs' is a required property",
+          "'contracts' is a required property",
+          "'summaries' is a required property",
+          "'tasks' is a required property",
+          "'leases' is a required property",
+          "'posts' is a required property",
+          "'contributions' is a required property",
+          "'revisions' is a required property",
+          "'relations' is a required property",
+          "'receipts' is a required property",
+          "'predictions' is a required property",
+          "'objections' is a required property",
+          "'artifacts' is a required property",
+          "'moderation' is a required property",
+          "'events' is a required property"
+        ]
+      }
+    },
+    {
+      "name": "reject_receipt_for_nonexistent_revision",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": "FOREIGN KEY constraint failed"
+    },
+    {
+      "name": "sql_reject_kind_outcome_mismatch",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": "CHECK constraint failed: (kind IN ('reproduction','independent_implementation')\n       AND outcome IN ('matched','partially_matched','did_not_match','could_not_run'))\n    OR (kind = 'formal_check'         AND outcome IN ('accepted','rejected','could_not_run'))\n    OR (kind = 'review'               AND outcome IN ('no_concerns','concerns','serious_concerns'))\n    OR (kind = 'external_evaluation'  AND outcome IN ('scored','invalid','could_not_run'))\n    OR (kind = 'artifact_integrity'   AND outcome IN ('verified','mismatch'))\n    OR (kind = 'prediction_resolution' AND outcome IN ('supported','contradicted','inconclusive','unresolved'))"
+    },
+    {
+      "name": "receipt_facet_smoke",
+      "passed": true,
+      "expected": 1,
+      "actual": 1,
+      "detail": null
+    },
+    {
+      "name": "surface_objection_to_supporting_receipt",
+      "passed": true,
+      "expected": 1,
+      "actual": 1,
+      "detail": "Current-revision receipt has an open provenance objection."
+    },
+    {
+      "name": "resolution_payload_schema",
+      "passed": false,
+      "expected": [],
+      "actual": [
+        "'independence' is a required property",
+        "'relationships_md' is a required property"
+      ],
+      "detail": null
+    },
+    {
+      "name": "resolution_collects_receipt_disclosures",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "withdrawn_resolution_stops_support_facet",
+      "passed": true,
+      "expected": null,
+      "actual": null,
+      "detail": "Only the documented receipt withdrawal is applied; no prediction reconciliation rule is specified."
+    },
+    {
+      "name": "export_has_post_revision_representation",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": "SQL has post revisions; neither Post nor ProjectExport defines their representation."
+    },
+    {
+      "name": "export_has_contributor_profiles",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": "Author ids occur throughout; exported contributor profiles are undefined."
+    },
+    {
+      "name": "challenge_contract_history_and_binding",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "history_tables": [
+          "project_contracts"
+        ],
+        "revision_contract_columns": [
+          "contract_version"
+        ]
+      }
+    },
+    {
+      "name": "foreign_key_check",
+      "passed": true,
+      "expected": [],
+      "actual": [],
+      "detail": null
+    },
+    {
+      "name": "all_post_put_declare_idempotency",
+      "passed": true,
+      "expected": [],
+      "actual": [],
+      "detail": null
+    },
+    {
+      "name": "unique_operation_ids",
+      "passed": true,
+      "expected": 63,
+      "actual": 63,
+      "detail": null
+    },
+    {
+      "name": "project_activation_route",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "project_default_status": "draft",
+        "project_mutators": [
+          "PATCH /v1/projects/{project}"
+        ],
+        "create_accepts_status": true
+      }
+    }
+  ],
+  "passed": 45,
+  "failed": 1
+}
