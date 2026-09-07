@@ -19,8 +19,8 @@ CREATE TABLE schema_meta (
 );
 INSERT INTO schema_meta (key, value) VALUES
   ('schema_version', '1'),
-  ('api_version',    '1.1.0'),
-  ('skill_version',  '1.1.0');
+  ('api_version',    '1.1.1'),
+  ('skill_version',  '1.1.1');
 
 ------------------------------------------------------------------------------
 -- Identity
@@ -300,12 +300,35 @@ CREATE TABLE contribution_revisions (
                     -- would_refute, method_md, data_sources, inputs, code_ref, environment_md,
                     -- command, metrics, baseline, seeds, repeated_runs, project_fields
   change_summary    TEXT,                     -- required for revision >= 2: what changed since the previous revision
-  contract_version  INTEGER,                  -- challenges: the project_contracts version this revision was submitted against
+  contract_version  INTEGER,                  -- challenges: the project_contracts version the work answered;
+                                              -- stated by the client, required and current (triggers below)
   author_id         TEXT NOT NULL REFERENCES contributors(id),
   run_id            TEXT NOT NULL REFERENCES runs(id),
   created_at        TEXT NOT NULL,
   PRIMARY KEY (contribution_id, revision)
 );
+
+-- Challenge provenance is enforced in the same transaction as the write. A revision in a challenge
+-- must state the contract version the work answered, and it must be the current one. The Worker
+-- answers an omitted version with 400 and a stale one with 409; these triggers make the database
+-- refuse both regardless of code path, so a version is never inferred. Ordinary projects omit it.
+CREATE TRIGGER contribution_revisions_require_contract_version
+BEFORE INSERT ON contribution_revisions
+WHEN NEW.contract_version IS NULL
+ AND (SELECT p.kind FROM projects p JOIN contributions c ON c.project_id = p.id
+      WHERE c.id = NEW.contribution_id) = 'challenge'
+BEGIN
+  SELECT RAISE(ABORT, 'contract_version is required for challenge submissions');
+END;
+
+CREATE TRIGGER contribution_revisions_contract_version_current
+BEFORE INSERT ON contribution_revisions
+WHEN NEW.contract_version IS NOT NULL
+ AND NEW.contract_version <> (SELECT p.contract_version FROM projects p JOIN contributions c ON c.project_id = p.id
+                              WHERE c.id = NEW.contribution_id)
+BEGIN
+  SELECT RAISE(ABORT, 'contract_version is not the current contract version');
+END;
 
 CREATE TABLE contribution_artifacts (
   contribution_id  TEXT NOT NULL REFERENCES contributions(id),
@@ -579,11 +602,16 @@ CREATE TABLE snapshots (
 -- Facets are separately filterable facts about the CURRENT revision of a contribution. They are
 -- counts and booleans. Nothing here is a score, and nothing combines them into one.
 --
--- Objection scopes:
---   contribution_objections_unresolved  open objections on the current revision (or on the
---                                       contribution as a whole, target_revision NULL)
---   receipt_objections_unresolved       open objections on active receipts of the current revision
---   historical_objections_unresolved    open objections on earlier revisions
+-- Objection scopes (an objection is unresolved while its status is open or answered):
+--   contribution_objections_unresolved  on the current revision, or on the contribution as a whole
+--                                       (target_revision NULL)
+--   receipt_objections_unresolved       on receipts of the current revision whose status is active,
+--                                       corrected or withdrawn; hidden and redacted receipts are
+--                                       moderated out of public summaries
+--   historical_objections_unresolved    on earlier revisions, and on receipts (same statuses) of
+--                                       earlier revisions. Advancing current_revision moves a
+--                                       receipt objection from receipt_objections_unresolved to
+--                                       here; it never leaves every count
 --   objections_unresolved               contribution_objections_unresolved + receipt_objections_unresolved,
 --                                       i.e. every unresolved dispute that touches the current revision
 -- prediction_outcome comes from the ACTIVE resolution receipt, not from a cached column.
@@ -618,16 +646,22 @@ SELECT
      AND o.status IN ('open','answered')) AS contribution_objections_unresolved,
   (SELECT COUNT(*) FROM objections o JOIN receipts r ON r.id = o.target_id
      WHERE o.target_type = 'receipt' AND r.contribution_id = c.id AND r.revision = c.current_revision
-     AND r.status = 'active' AND o.status IN ('open','answered')) AS receipt_objections_unresolved,
+     AND r.status IN ('active','corrected','withdrawn')
+     AND o.status IN ('open','answered')) AS receipt_objections_unresolved,
   (SELECT COUNT(*) FROM objections o WHERE o.target_type = 'contribution' AND o.target_id = c.id
      AND o.target_revision IS NOT NULL AND o.target_revision < c.current_revision
+     AND o.status IN ('open','answered'))
+  + (SELECT COUNT(*) FROM objections o JOIN receipts r ON r.id = o.target_id
+     WHERE o.target_type = 'receipt' AND r.contribution_id = c.id AND r.revision < c.current_revision
+     AND r.status IN ('active','corrected','withdrawn')
      AND o.status IN ('open','answered')) AS historical_objections_unresolved,
   (SELECT COUNT(*) FROM objections o WHERE o.target_type = 'contribution' AND o.target_id = c.id
      AND (o.target_revision IS NULL OR o.target_revision = c.current_revision)
      AND o.status IN ('open','answered'))
   + (SELECT COUNT(*) FROM objections o JOIN receipts r ON r.id = o.target_id
      WHERE o.target_type = 'receipt' AND r.contribution_id = c.id AND r.revision = c.current_revision
-     AND r.status = 'active' AND o.status IN ('open','answered')) AS objections_unresolved,
+     AND r.status IN ('active','corrected','withdrawn')
+     AND o.status IN ('open','answered')) AS objections_unresolved,
   (SELECT r.outcome FROM predictions p JOIN receipts r ON r.id = p.resolved_by_receipt_id
      WHERE p.contribution_id = c.id AND r.status = 'active') AS prediction_outcome,
   (c.status = 'withdrawn')  AS withdrawn,

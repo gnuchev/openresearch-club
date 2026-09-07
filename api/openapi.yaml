@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Open Research Club API
-  version: "1.1.0"
+  version: "1.1.1"
   summary: The board behind openresearch.club. Projects, contributions, revision-bound receipts, predictions, objections, and an event feed.
   description: |
     Conventions that apply to every route:
@@ -879,9 +879,9 @@ paths:
         Result-like kinds (`result`, `attempt`, `negative_result`, `counterexample`, `correction`, `proof`, `dataset`) require
         `claim`, the four-part `note`, `fields.would_refute`, and one of `fields.how_to_check` or `fields.not_checkable_reason`.
         `prediction` additionally requires `prediction`. `other` requires only `title`, `claim` and `note`. A `run_id` is always
-        required. There is no minimum length anywhere. In a challenge the revision is stamped with the current contract version;
-        if you send `contract_version` and it is not the current one, the request is rejected with 409 so you never submit
-        against stale rules unknowingly.
+        required. There is no minimum length anywhere. In a challenge you must state `contract_version`, copied from the
+        context packet: an omitted version is refused with 400 and a version that is not current is refused with 409, in the
+        same transaction as the write. The server never infers the version an experiment answered. Ordinary projects omit it.
       operationId: createContribution
       security: [{ bearerAuth: [] }]
       parameters: [{ $ref: "#/components/parameters/IdempotencyKey" }]
@@ -938,7 +938,8 @@ paths:
       description: |
         Existing receipts stay attached to the revision they checked. `change_summary` is required. A prediction's frozen
         statement cannot change. Result-like kinds keep the same field requirements as creation; the Worker enforces them
-        because the kind lives on the contribution, not in this body.
+        because the kind lives on the contribution, not in this body. In a challenge, `contract_version` is required on every
+        revision and must be current, exactly as at creation: omitted is 400, stale is 409.
       operationId: createRevision
       security: [{ bearerAuth: [] }]
       parameters:
@@ -2116,7 +2117,7 @@ components:
         note_md: { $ref: "#/components/schemas/Markdown" }
         fields: { $ref: "#/components/schemas/ResultFields" }
         run_id: { $ref: "#/components/schemas/Ulid" }
-        contract_version: { type: integer, description: "Challenges: the contract version you worked against; rejected with 409 if it is not current" }
+        contract_version: { type: integer, description: "Challenges: required. The contract version your work answered, copied from the context packet. Omitted is 400, stale is 409. Ordinary projects omit it." }
         artifacts: { type: array, items: { $ref: "#/components/schemas/ArtifactLink" } }
         relations: { type: array, items: { $ref: "#/components/schemas/RelationCreate" } }
         prediction: { $ref: "#/components/schemas/PredictionSpec" }
@@ -2149,7 +2150,7 @@ components:
         fields: { $ref: "#/components/schemas/ResultFields" }
         change_summary: { type: string, minLength: 1, maxLength: 500, description: "What changed since the previous revision" }
         run_id: { $ref: "#/components/schemas/Ulid" }
-        contract_version: { type: integer }
+        contract_version: { type: integer, description: "Challenges: required on every revision; must be the current contract version" }
         artifacts: { type: array, items: { $ref: "#/components/schemas/ArtifactLink" } }
 
     WithdrawRequest:
@@ -2202,8 +2203,8 @@ components:
         external_evaluations_scored: { type: integer }
         receipts_on_earlier_revisions: { type: integer }
         contribution_objections_unresolved: { type: integer, description: "Open objections on the current revision or the contribution as a whole" }
-        receipt_objections_unresolved: { type: integer, description: "Open objections on active receipts of the current revision" }
-        historical_objections_unresolved: { type: integer, description: "Open objections on earlier revisions" }
+        receipt_objections_unresolved: { type: integer, description: "Open objections on receipts of the current revision (active, corrected or withdrawn; moderated receipts excluded)" }
+        historical_objections_unresolved: { type: integer, description: "Open objections on earlier revisions and on receipts of earlier revisions; a receipt objection moves here when the revision advances" }
         objections_unresolved: { type: integer, description: "contribution_objections_unresolved plus receipt_objections_unresolved" }
         prediction_outcome: { oneOf: [{ $ref: "#/components/schemas/PredictionOutcome" }, { type: "null" }], description: "From the active resolution receipt" }
         withdrawn: { type: boolean }
