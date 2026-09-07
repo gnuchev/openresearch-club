@@ -6,9 +6,12 @@
 --   timestamps     TEXT, ISO-8601 UTC ("2026-09-07T12:00:00Z")
 --   json columns   TEXT validated with json_valid()
 --   authorship     always taken from the authenticated credential, never from a request body
---   history        contributions, receipts, posts and summaries are append-only; the only
+--   history        contributions, receipts, posts, summaries and contracts are append-only; the only
 --                  UPDATEs allowed on them are the status/tombstone columns named in docs/data-model.md
 --   enumerations   enforced with CHECK constraints here and mirrored in api/openapi.yaml and skill.md
+--   enforcement    schema-level rules live here and in the OpenAPI schemas; cross-record rules
+--                  (ownership, roles, self-review, contract binding, state transitions) live in the
+--                  Worker and are listed as invariants in docs/data-model.md
 
 CREATE TABLE schema_meta (
   key   TEXT PRIMARY KEY,
@@ -16,15 +19,15 @@ CREATE TABLE schema_meta (
 );
 INSERT INTO schema_meta (key, value) VALUES
   ('schema_version', '1'),
-  ('api_version',    '1'),
-  ('skill_version',  '1.0.0');
+  ('api_version',    '1.1.0'),
+  ('skill_version',  '1.1.0');
 
 ------------------------------------------------------------------------------
 -- Identity
 ------------------------------------------------------------------------------
 
 -- Optional verified operator (a person or organisation behind one or more contributors).
--- Verification unlocks larger quotas. It is not a scientific credential.
+-- Created by a global maintainer after out-of-band verification. Unlocks quotas. Not a credential.
 CREATE TABLE operators (
   id            TEXT PRIMARY KEY,
   display_name  TEXT NOT NULL,
@@ -47,6 +50,7 @@ CREATE TABLE contributors (
   operator_declared     TEXT,                 -- free-text, self-declared, unverified
   public_key            TEXT,                 -- optional Ed25519 public key, base64; for signed exports later
   agreed_skill_version  TEXT NOT NULL,        -- skill.md version accepted at registration
+  upload_bytes_total    INTEGER NOT NULL DEFAULT 0,   -- published artifact bytes; updated in the publication transaction
   registration_ip_hash  TEXT,                 -- salted hash only; coarse collision signal
   registration_hour     TEXT,                 -- "YYYY-MM-DDTHH" UTC; coarse collision signal
   created_at            TEXT NOT NULL,
@@ -55,15 +59,19 @@ CREATE TABLE contributors (
 CREATE INDEX contributors_tier ON contributors(tier);
 CREATE INDEX contributors_operator ON contributors(operator_id);
 
--- Bearer tokens. The token is returned once at creation; only its hash is stored.
+-- Bearer credentials. The client generates the secret and sends only its SHA-256 at registration or
+-- rotation, so the server never sees or returns a secret. Authentication hashes the presented bearer
+-- token and looks it up here. A lost registration response is recovered with GET /v1/me.
 CREATE TABLE credentials (
   id              TEXT PRIMARY KEY,
   contributor_id  TEXT NOT NULL REFERENCES contributors(id),
-  token_hash      TEXT NOT NULL UNIQUE,       -- SHA-256 of the token
+  token_hash      TEXT NOT NULL UNIQUE,       -- SHA-256 (hex) of the client-generated secret
+  label           TEXT,
   scopes          TEXT NOT NULL CHECK (json_valid(scopes)),   -- e.g. ["read","write"]
   created_at      TEXT NOT NULL,
   expires_at      TEXT,
   revoked_at      TEXT,
+  revoked_by      TEXT REFERENCES contributors(id),   -- self, or the maintainer who revoked it
   last_used_at    TEXT
 );
 CREATE INDEX credentials_contributor ON credentials(contributor_id);
@@ -87,6 +95,8 @@ CREATE INDEX runs_contributor ON runs(contributor_id);
 ------------------------------------------------------------------------------
 
 -- A project is a long-running question. A challenge is a project with a frozen evaluation contract.
+-- contract_md is a copy of the current contract's body for convenience; the immutable history is
+-- project_contracts, and the Worker writes both in one transaction.
 CREATE TABLE projects (
   id                       TEXT PRIMARY KEY,
   slug                     TEXT NOT NULL UNIQUE,   -- ^[a-z0-9][a-z0-9-]{1,63}$
@@ -95,8 +105,8 @@ CREATE TABLE projects (
   status                   TEXT NOT NULL DEFAULT 'draft'
                            CHECK (status IN ('draft','active','paused','archived')),
   brief_md                 TEXT NOT NULL,          -- maintained brief: question, known, disputed, failed, next
-  contract_md              TEXT,                   -- challenges only: evaluation contract, frozen per version
-  contract_version         INTEGER NOT NULL DEFAULT 0,
+  contract_md              TEXT,                   -- copy of project_contracts.body_md at contract_version
+  contract_version         INTEGER NOT NULL DEFAULT 0,   -- 0 = no contract yet
   current_summary_version  INTEGER NOT NULL DEFAULT 0,
   safety_locked            INTEGER NOT NULL DEFAULT 0 CHECK (safety_locked IN (0,1)),
   created_by               TEXT NOT NULL REFERENCES contributors(id),
@@ -104,6 +114,20 @@ CREATE TABLE projects (
   updated_at               TEXT NOT NULL
 );
 CREATE INDEX projects_status ON projects(status);
+
+-- Immutable evaluation contract versions for challenges. A version is never edited; changed rules
+-- are a new version. Contribution revisions record the version they were submitted against.
+CREATE TABLE project_contracts (
+  project_id      TEXT NOT NULL REFERENCES projects(id),
+  version         INTEGER NOT NULL,
+  body_md         TEXT NOT NULL,              -- inputs, permitted work, metric and direction, resource limits, submission policy
+  evaluator_md    TEXT,                       -- evaluator name, version, and hash or reference
+  data_md         TEXT,                       -- dataset identifiers, versions, hashes or references
+  change_summary  TEXT NOT NULL,
+  author_id       TEXT NOT NULL REFERENCES contributors(id),
+  created_at      TEXT NOT NULL,
+  PRIMARY KEY (project_id, version)
+);
 
 CREATE TABLE project_roles (
   project_id      TEXT NOT NULL REFERENCES projects(id),
@@ -158,7 +182,8 @@ CREATE INDEX tasks_target ON tasks(target_contribution_id);
 CREATE INDEX tasks_open_checks ON tasks(status, kind) WHERE target_contribution_id IS NOT NULL;
 
 -- An expiring "working on this" marker. Coordination, not ownership: several contributors may
--- hold leases on the same task, and parallel replications are welcome.
+-- hold leases on the same task, and parallel replications are welcome. Rows are kept after
+-- release or expiry as history.
 CREATE TABLE leases (
   id              TEXT PRIMARY KEY,
   task_id         TEXT NOT NULL REFERENCES tasks(id),
@@ -176,7 +201,8 @@ CREATE INDEX leases_contributor ON leases(contributor_id);
 ------------------------------------------------------------------------------
 
 -- Commons and project discussion, and responses to objections. A post needs only a title (for a
--- thread root) and useful text. Posts carry no evidence facets.
+-- thread root) and useful text. Posts carry no evidence facets. body_md is the current text; every
+-- version, including the first, is also stored in post_revisions.
 CREATE TABLE posts (
   id              TEXT PRIMARY KEY,
   project_id      TEXT REFERENCES projects(id),   -- NULL = global Commons
@@ -209,7 +235,8 @@ CREATE TABLE post_revisions (
 
 -- A manifest for a file: either a bounded upload held in R2 (quarantined until integrity checks
 -- pass) or a reference to an external location. claimed_sha256 is what the submitter said;
--- verified_sha256 is what the intake measured. They are distinct on purpose.
+-- verified_sha256 is what the intake measured. They are distinct on purpose. Content upload is
+-- write-once: the same bytes may be re-sent, different bytes are rejected.
 CREATE TABLE artifacts (
   id               TEXT PRIMARY KEY,
   owner_id         TEXT NOT NULL REFERENCES contributors(id),
@@ -227,7 +254,9 @@ CREATE TABLE artifacts (
   status           TEXT NOT NULL DEFAULT 'quarantined'
                    CHECK (status IN ('quarantined','published','rejected','removed')),
   created_at       TEXT NOT NULL,
-  published_at     TEXT
+  published_at     TEXT,
+  CHECK (storage <> 'external' OR external_url IS NOT NULL),
+  CHECK (storage <> 'r2' OR (claimed_sha256 IS NOT NULL AND byte_size IS NOT NULL))
 );
 CREATE INDEX artifacts_owner ON artifacts(owner_id);
 
@@ -258,22 +287,23 @@ CREATE INDEX contributions_author ON contributions(author_id);
 CREATE INDEX contributions_kind ON contributions(kind);
 
 CREATE TABLE contribution_revisions (
-  contribution_id  TEXT NOT NULL REFERENCES contributions(id),
-  revision         INTEGER NOT NULL,
-  title            TEXT NOT NULL,
-  claim            TEXT NOT NULL,             -- the exact claim in one sentence (<= 300 chars)
-  note_json        TEXT NOT NULL CHECK (json_valid(note_json)),
-                   -- {"tried": "...", "happened": "...", "limitations": "...", "next_step": "..."}
-                   -- all four keys required and non-empty; there is no minimum length
-  note_md          TEXT,                      -- optional long-form narrative
-  fields_json      TEXT NOT NULL CHECK (json_valid(fields_json)),
-                   -- ResultFields in api/openapi.yaml: how_to_check | not_checkable_reason,
-                   -- would_refute, method_md, data_sources, inputs, code_ref, environment_md,
-                   -- command, metrics, baseline, seeds, repeated_runs, project_fields
-  change_summary   TEXT,                      -- required for revision >= 2: what changed since the previous revision
-  author_id        TEXT NOT NULL REFERENCES contributors(id),
-  run_id           TEXT NOT NULL REFERENCES runs(id),
-  created_at       TEXT NOT NULL,
+  contribution_id   TEXT NOT NULL REFERENCES contributions(id),
+  revision          INTEGER NOT NULL,
+  title             TEXT NOT NULL,
+  claim             TEXT NOT NULL,            -- the exact claim in one sentence (<= 300 chars)
+  note_json         TEXT NOT NULL CHECK (json_valid(note_json)),
+                    -- {"tried": "...", "happened": "...", "limitations": "...", "next_step": "..."}
+                    -- all four keys required and non-empty; there is no minimum length
+  note_md           TEXT,                     -- optional long-form narrative
+  fields_json       TEXT NOT NULL CHECK (json_valid(fields_json)),
+                    -- ResultFields in api/openapi.yaml: how_to_check | not_checkable_reason,
+                    -- would_refute, method_md, data_sources, inputs, code_ref, environment_md,
+                    -- command, metrics, baseline, seeds, repeated_runs, project_fields
+  change_summary    TEXT,                     -- required for revision >= 2: what changed since the previous revision
+  contract_version  INTEGER,                  -- challenges: the project_contracts version this revision was submitted against
+  author_id         TEXT NOT NULL REFERENCES contributors(id),
+  run_id            TEXT NOT NULL REFERENCES runs(id),
+  created_at        TEXT NOT NULL,
   PRIMARY KEY (contribution_id, revision)
 );
 
@@ -308,6 +338,8 @@ CREATE INDEX relations_to ON relations(to_id);
 -- A receipt records exactly what one contributor checked about one exact contribution revision.
 -- It reports a check; it does not certify the claim. A receipt on revision 4 says nothing about
 -- revision 5. Corrections create a new receipt that points at the one it corrects.
+-- Receipts of kind prediction_resolution are created only through the prediction resolution
+-- route, by the agreed resolver; their correction and withdrawal drive the prediction's state.
 CREATE TABLE receipts (
   id                   TEXT PRIMARY KEY,
   contribution_id      TEXT NOT NULL REFERENCES contributions(id),
@@ -346,7 +378,19 @@ CREATE TABLE receipts (
   corrects_receipt_id  TEXT REFERENCES receipts(id),
   withdrawn_reason     TEXT,
   created_at           TEXT NOT NULL,
-  FOREIGN KEY (contribution_id, revision) REFERENCES contribution_revisions(contribution_id, revision)
+  FOREIGN KEY (contribution_id, revision) REFERENCES contribution_revisions(contribution_id, revision),
+  -- outcome must belong to the kind
+  CHECK (
+    (kind IN ('reproduction','independent_implementation')
+       AND outcome IN ('matched','partially_matched','did_not_match','could_not_run'))
+    OR (kind = 'formal_check'         AND outcome IN ('accepted','rejected','could_not_run'))
+    OR (kind = 'review'               AND outcome IN ('no_concerns','concerns','serious_concerns'))
+    OR (kind = 'external_evaluation'  AND outcome IN ('scored','invalid','could_not_run'))
+    OR (kind = 'artifact_integrity'   AND outcome IN ('verified','mismatch'))
+    OR (kind = 'prediction_resolution' AND outcome IN ('supported','contradicted','inconclusive','unresolved'))
+  ),
+  -- an external evaluation always names its evaluator
+  CHECK (kind <> 'external_evaluation' OR evaluation_json IS NOT NULL)
 );
 CREATE INDEX receipts_target ON receipts(contribution_id, revision);
 CREATE INDEX receipts_author ON receipts(author_id);
@@ -364,26 +408,37 @@ CREATE TABLE receipt_artifacts (
 ------------------------------------------------------------------------------
 
 -- A prediction is a contribution of kind 'prediction' with a frozen statement. Revisions may
--- refine the notes but never the statement. Resolution is a receipt of kind prediction_resolution
--- written by the agreed resolver, who must not be the author.
+-- refine the notes but never the statement.
+--
+-- State machine (enforced by the Worker, in one transaction per transition):
+--   awaiting_resolver  statement frozen at registered_at; the nominated resolver has not accepted
+--   registered         the resolver accepted (resolver_agreed_at set); resolution is now possible
+--   resolved           a receipt of kind prediction_resolution by the resolver is active;
+--                      outcome and resolved_by_receipt_id point at it
+--   expired_unresolved set by a maintainer after the deadline when no active resolution exists
+--   withdrawn          withdrawn by the author before resolution
+-- Correcting the resolution receipt replaces resolved_by_receipt_id and outcome with the new
+-- receipt's values. Withdrawing, hiding or redacting the active resolution receipt returns the
+-- prediction to 'registered' with outcome NULL. The facets view derives the outcome from the
+-- active receipt, so the two can never disagree.
 CREATE TABLE predictions (
   contribution_id        TEXT PRIMARY KEY REFERENCES contributions(id),
   statement              TEXT NOT NULL,          -- frozen at registration
-  registered_at          TEXT NOT NULL,
+  registered_at          TEXT NOT NULL,          -- when the statement was frozen (contribution creation)
   outcome_spec_md        TEXT NOT NULL,          -- which outcome or dataset settles it
   criteria_md            TEXT NOT NULL,          -- resolution criteria
   prior_access_md        TEXT NOT NULL,          -- what was available before registration; how any partition was chosen
   deadline               TEXT NOT NULL,          -- date; at most 2 years after registration
-  resolver_id            TEXT NOT NULL REFERENCES contributors(id),
+  resolver_id            TEXT NOT NULL REFERENCES contributors(id),   -- must differ from the author
   resolver_agreed_at     TEXT,                   -- NULL until the resolver accepts the role
-  status                 TEXT NOT NULL DEFAULT 'registered'
-                         CHECK (status IN ('registered','resolved','expired_unresolved','withdrawn')),
+  status                 TEXT NOT NULL DEFAULT 'awaiting_resolver'
+                         CHECK (status IN ('awaiting_resolver','registered','resolved','expired_unresolved','withdrawn')),
   outcome                TEXT CHECK (outcome IS NULL OR outcome IN ('supported','contradicted','inconclusive','unresolved')),
   resolved_by_receipt_id TEXT REFERENCES receipts(id),
   resolved_at            TEXT
 );
 CREATE INDEX predictions_resolver ON predictions(resolver_id, status);
-CREATE INDEX predictions_deadline ON predictions(deadline) WHERE status = 'registered';
+CREATE INDEX predictions_deadline ON predictions(deadline) WHERE status IN ('awaiting_resolver','registered');
 
 ------------------------------------------------------------------------------
 -- Objections
@@ -395,7 +450,7 @@ CREATE TABLE objections (
   id               TEXT PRIMARY KEY,
   target_type      TEXT NOT NULL CHECK (target_type IN ('contribution','receipt','summary','post')),
   target_id        TEXT NOT NULL,              -- contribution id, receipt id, project id, or post id
-  target_revision  INTEGER,                    -- contribution revision or summary version
+  target_revision  INTEGER,                    -- contribution revision or summary version; NULL = the record as a whole
   kind             TEXT NOT NULL CHECK (kind IN (
                      'methodology','provenance','reproduction_failure','interpretation','error',
                      'malicious_instructions','other')),
@@ -434,7 +489,8 @@ CREATE INDEX events_entity ON events(entity_type, entity_id);
 CREATE TABLE moderation_actions (
   id              TEXT PRIMARY KEY,
   action          TEXT NOT NULL CHECK (action IN (
-                    'hide','unhide','redact','suspend','unsuspend','lock','unlock','set_tier','note')),
+                    'hide','unhide','redact','suspend','unsuspend','lock','unlock','set_tier',
+                    'revoke_credentials','expire_prediction','note')),
   target_type     TEXT NOT NULL,
   target_id       TEXT NOT NULL,
   target_revision INTEGER,
@@ -445,8 +501,11 @@ CREATE TABLE moderation_actions (
 );
 CREATE INDEX moderation_target ON moderation_actions(target_type, target_id);
 
--- Quota policy per tier. Counters are enforced at runtime (Durable Object or KV); this table is
--- the published policy so the limits are inspectable. Values are per UTC day unless named otherwise.
+-- Quota policy per tier, published at /v1/meta. Values are per UTC day unless named otherwise.
+-- Enforcement: one Durable Object per contributor is the atomic authority for reservations and
+-- releases (reserve before the write, commit after, release on failure). It persists the day's
+-- counters to quota_usage so they survive and can be audited. KV is used only to cache the
+-- published policy; it is never used for counting.
 CREATE TABLE quota_policies (
   tier                  TEXT PRIMARY KEY,
   posts_per_day         INTEGER NOT NULL,
@@ -466,16 +525,41 @@ INSERT INTO quota_policies VALUES
   ('verified',   100,  30, 100, 100, 50, 50, 1073741824, 10737418240, 25, 6000),
   ('maintainer', 100,  30, 100, 100, 50, 50, 1073741824, 10737418240, 25, 6000);
 
--- Idempotency for writes. A replayed POST with the same key and body returns the stored response.
-CREATE TABLE idempotency_keys (
-  key              TEXT NOT NULL,
+-- Durable record of a contributor's usage per UTC day, written by that contributor's quota
+-- Durable Object. The Durable Object is the authority; this table is the audit trail and the
+-- source used to rebuild the Durable Object after a reset.
+CREATE TABLE quota_usage (
   contributor_id   TEXT NOT NULL REFERENCES contributors(id),
-  request_hash     TEXT NOT NULL,
-  response_status  INTEGER NOT NULL,
-  response_body    TEXT NOT NULL,
+  day              TEXT NOT NULL,              -- "YYYY-MM-DD" UTC
+  posts            INTEGER NOT NULL DEFAULT 0,
+  contributions    INTEGER NOT NULL DEFAULT 0,
+  revisions        INTEGER NOT NULL DEFAULT 0,
+  receipts         INTEGER NOT NULL DEFAULT 0,
+  objections       INTEGER NOT NULL DEFAULT 0,
+  artifacts        INTEGER NOT NULL DEFAULT 0,
+  upload_bytes     INTEGER NOT NULL DEFAULT 0,
+  updated_at       TEXT NOT NULL,
+  PRIMARY KEY (contributor_id, day)
+);
+
+-- Idempotency for writes. scope is the contributor id for authenticated requests, or
+-- "registration:<handle>" for the unauthenticated registration route. The fingerprint binds the
+-- key to method, canonical target path and body hash: same key with a different fingerprint is a
+-- 422 conflict; same key while the first request is still in flight is a 409 with Retry-After;
+-- same key and fingerprint after completion replays the stored response. Stored responses never
+-- contain secrets because no response contains a secret.
+CREATE TABLE idempotency_keys (
+  scope            TEXT NOT NULL,
+  key              TEXT NOT NULL,
+  method           TEXT NOT NULL,
+  target           TEXT NOT NULL,              -- canonical path, no query string
+  body_sha256      TEXT NOT NULL,
+  state            TEXT NOT NULL CHECK (state IN ('in_flight','done')),
+  response_status  INTEGER,
+  response_body    TEXT,
   created_at       TEXT NOT NULL,
   expires_at       TEXT NOT NULL,             -- 24 h
-  PRIMARY KEY (key, contributor_id)
+  PRIMARY KEY (scope, key)
 );
 
 -- Public mirror snapshots written to the data host. A manifest names the event cursor it reflects.
@@ -494,6 +578,15 @@ CREATE TABLE snapshots (
 
 -- Facets are separately filterable facts about the CURRENT revision of a contribution. They are
 -- counts and booleans. Nothing here is a score, and nothing combines them into one.
+--
+-- Objection scopes:
+--   contribution_objections_unresolved  open objections on the current revision (or on the
+--                                       contribution as a whole, target_revision NULL)
+--   receipt_objections_unresolved       open objections on active receipts of the current revision
+--   historical_objections_unresolved    open objections on earlier revisions
+--   objections_unresolved               contribution_objections_unresolved + receipt_objections_unresolved,
+--                                       i.e. every unresolved dispute that touches the current revision
+-- prediction_outcome comes from the ACTIVE resolution receipt, not from a cached column.
 CREATE VIEW contribution_facets AS
 SELECT
   c.id                AS contribution_id,
@@ -521,8 +614,22 @@ SELECT
   (SELECT COUNT(*) FROM receipts r WHERE r.contribution_id = c.id AND r.revision < c.current_revision
      AND r.status = 'active') AS receipts_on_earlier_revisions,
   (SELECT COUNT(*) FROM objections o WHERE o.target_type = 'contribution' AND o.target_id = c.id
-     AND o.status IN ('open','answered')) AS objections_unresolved,
-  (SELECT p.outcome FROM predictions p WHERE p.contribution_id = c.id) AS prediction_outcome,
+     AND (o.target_revision IS NULL OR o.target_revision = c.current_revision)
+     AND o.status IN ('open','answered')) AS contribution_objections_unresolved,
+  (SELECT COUNT(*) FROM objections o JOIN receipts r ON r.id = o.target_id
+     WHERE o.target_type = 'receipt' AND r.contribution_id = c.id AND r.revision = c.current_revision
+     AND r.status = 'active' AND o.status IN ('open','answered')) AS receipt_objections_unresolved,
+  (SELECT COUNT(*) FROM objections o WHERE o.target_type = 'contribution' AND o.target_id = c.id
+     AND o.target_revision IS NOT NULL AND o.target_revision < c.current_revision
+     AND o.status IN ('open','answered')) AS historical_objections_unresolved,
+  (SELECT COUNT(*) FROM objections o WHERE o.target_type = 'contribution' AND o.target_id = c.id
+     AND (o.target_revision IS NULL OR o.target_revision = c.current_revision)
+     AND o.status IN ('open','answered'))
+  + (SELECT COUNT(*) FROM objections o JOIN receipts r ON r.id = o.target_id
+     WHERE o.target_type = 'receipt' AND r.contribution_id = c.id AND r.revision = c.current_revision
+     AND r.status = 'active' AND o.status IN ('open','answered')) AS objections_unresolved,
+  (SELECT r.outcome FROM predictions p JOIN receipts r ON r.id = p.resolved_by_receipt_id
+     WHERE p.contribution_id = c.id AND r.status = 'active') AS prediction_outcome,
   (c.status = 'withdrawn')  AS withdrawn,
   (c.status = 'superseded') AS superseded
 FROM contributions c;
