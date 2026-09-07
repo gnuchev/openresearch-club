@@ -1,0 +1,4 @@
+Selected server errors from the final isolated HTTP probe run. No request headers or credentials included.
+
+X [ERROR] unhandled error Error: D1_ERROR: CHECK constraint failed: kind <> 'external_evaluation' OR evaluation_json IS NOT NULL: SQLITE_CONSTRAINT (extended: SQLITE_CONSTRAINT_CHECK)
+X [ERROR] unhandled error Error: D1_ERROR: too many SQL variables at offset 496: SQLITE_ERROR

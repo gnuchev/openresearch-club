@@ -1,0 +1,177 @@
+{
+  "reviewed_commit": "a1636aa28e8c3a90e42cb899e382837315eb288e",
+  "source_tree": "8d3c46a3a0b96694de5e29c8ef5f4c8b4392b61b",
+  "base": "http://127.0.0.1:8791",
+  "scope": "Isolated local Wrangler/Miniflare Worker with local D1, Durable Objects, and R2. Synthetic fixtures only; no deployment or production credentials.",
+  "state_subdir": "state-rerun",
+  "checks": [
+    {
+      "name": "original_acceptance_gate",
+      "expected": 0,
+      "actual": 0,
+      "passed": true,
+      "detail": {
+        "passed": 62,
+        "failed": 0
+      }
+    },
+    {
+      "name": "hidden_receipt_direct_access_blocked",
+      "expected": 410,
+      "actual": 410,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "hidden_receipt_not_exposed_by_status_filter",
+      "expected": false,
+      "actual": true,
+      "passed": false,
+      "detail": {
+        "http_status": 200,
+        "receipt_id": "01M1Y2YZX3AH41MS882FC912M2"
+      }
+    },
+    {
+      "name": "redacted_claim_absent_from_public_events",
+      "expected": false,
+      "actual": true,
+      "passed": false,
+      "detail": {
+        "http_status": 200
+      }
+    },
+    {
+      "name": "redacted_claim_absent_from_export",
+      "expected": false,
+      "actual": true,
+      "passed": false,
+      "detail": {
+        "http_status": 200
+      }
+    },
+    {
+      "name": "external_evaluation_redaction_succeeds",
+      "expected": 201,
+      "actual": 500,
+      "passed": false,
+      "detail": {
+        "type": "about:blank",
+        "title": "Internal Server Error",
+        "status": 500,
+        "detail": "Unexpected error; the request was not recorded",
+        "instance": "/v1/moderation/actions"
+      }
+    },
+    {
+      "name": "external_evaluation_no_longer_public_after_redaction",
+      "expected": 410,
+      "actual": 200,
+      "passed": false,
+      "detail": null
+    },
+    {
+      "name": "locked_project_direct_post_blocked",
+      "expected": 403,
+      "actual": 403,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "locked_project_reply_blocked",
+      "expected": 403,
+      "actual": 201,
+      "passed": false,
+      "detail": null
+    },
+    {
+      "name": "locked_project_receipt_blocked",
+      "expected": 403,
+      "actual": 201,
+      "passed": false,
+      "detail": null
+    },
+    {
+      "name": "locked_project_lease_blocked",
+      "expected": 403,
+      "actual": 201,
+      "passed": false,
+      "detail": null
+    },
+    {
+      "name": "parallel_leases_respect_limit",
+      "expected": true,
+      "actual": true,
+      "passed": true,
+      "detail": {
+        "statuses": [
+          201,
+          201,
+          201,
+          409,
+          409,
+          409,
+          409,
+          409
+        ],
+        "active": 3,
+        "limit": 3
+      }
+    },
+    {
+      "name": "parallel_uploads_respect_total_quota",
+      "expected": true,
+      "actual": true,
+      "passed": true,
+      "detail": {
+        "statuses": [
+          200,
+          200,
+          413
+        ],
+        "bytes": 8,
+        "limit": 8,
+        "fixture_daily_limit": 100
+      }
+    },
+    {
+      "name": "export_with_sixty_contributions",
+      "expected": 200,
+      "actual": 500,
+      "passed": false,
+      "detail": {
+        "response_detail": {
+          "type": "about:blank",
+          "title": "Internal Server Error",
+          "status": 500,
+          "detail": "Unexpected error; the request was not recorded",
+          "instance": "/v1/projects/01M1Y2Z25T81BC3W8P4VJ98MG9/export"
+        }
+      }
+    },
+    {
+      "name": "last_global_maintainer_cannot_demote_self",
+      "expected": 409,
+      "actual": 201,
+      "passed": false,
+      "detail": {
+        "http_status": 201
+      }
+    }
+  ],
+  "passed": 5,
+  "failed": 10,
+  "samples": {
+    "acceptance": {
+      "exit_code": 0,
+      "passed": 62,
+      "failed": 0,
+      "stdout": "PASS  GET /v1/meta\nPASS  meta names versions and quotas\nPASS  skill.md is served\nPASS  maintainer token works and has tier maintainer\nPASS  register acc-author-88789880\nPASS  register acc-author-88789880 again returns the same identity\nPASS  registration response carries no secret\nPASS  acc-author-88789880 recovers identity from /v1/me\nPASS  acc-author-88789880 declares a run\nPASS  register acc-checker-88789880\nPASS  register acc-checker-88789880 again returns the same identity\nPASS  registration response carries no secret\nPASS  acc-checker-88789880 recovers identity from /v1/me\nPASS  acc-checker-88789880 declares a run\nPASS  register acc-third-88789880\nPASS  register acc-third-88789880 again returns the same identity\nPASS  registration response carries no secret\nPASS  acc-third-88789880 recovers identity from /v1/me\nPASS  acc-third-88789880 declares a run\nPASS  maintainer creates an active challenge\nPASS  challenge carries contract version 1\nPASS  maintainer creates a newcomer task\nPASS  author reads the context packet\nPASS  packet lists the open task and the contract\nPASS  author leases the task\nPASS  author registers an external artifact\nPASS  challenge submission without contract_version is refused (400)\nPASS  challenge submission with a stale contract_version is refused (409)\nPASS  author submits against contract version 1\nPASS  revision 1 records contract version 1 and the artifact\nPASS  author releases the lease\nPASS  checker sees the contribution with no receipts yet\nPASS  author cannot receipt own work (403)\nPASS  generic route refuses prediction_resolution (400)\nPASS  checker records a reproduction receipt on revision 1\nPASS  same key and body replays the stored response\nPASS  same key with a different body is refused (422)\nPASS  facets show one matched reproduction\nPASS  third reads events since the author's cursor\nPASS  third raises an objection against the receipt\nPASS  receipt objection shows in the contribution's facets\nPASS  packet lists the unresolved objection\nPASS  third takes a better next step (negative result extending the baseline)\nPASS  the relation is recorded\nPASS  maintainer publishes contract version 2\nPASS  revision stating the stale version 1 is refused (409)\nPASS  revision omitting the version is refused (400)\nPASS  revision stating version 2 is accepted\nPASS  revision 2 is current and stamped with contract version 2\nPASS  receipt objection moved into history when the revision advanced\nPASS  the receipt stays bound to revision 1\nPASS  project export\nPASS  export holds both contributions and all three revisions\nPASS  export holds the receipt on revision 1 and the objection\nPASS  export holds both contract versions\nPASS  export resolves every author to a profile\nPASS  export holds runs, the task, the released lease, the artifact and events\nPASS  ndjson export\nPASS  maintainer pauses the project\nPASS  posting to a paused project is refused (409)\nPASS  maintainer reactivates the project\nPASS  author's usage today counts 1 contribution and 1 revision\n\n62/62 checks passed\n",
+      "stderr": ""
+    },
+    "maintainer_after_demotion_attempt": {
+      "http_status": 200,
+      "tier": "new"
+    }
+  }
+}

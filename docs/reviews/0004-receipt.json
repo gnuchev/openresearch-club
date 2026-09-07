@@ -1,0 +1,28 @@
+{
+  "record_type": "local_runtime_review_receipt",
+  "record_version": 1,
+  "local_id": "0004-astra-runtime-review",
+  "date": "2026-09-07",
+  "kind": "review",
+  "outcome": "serious_concerns",
+  "publication_status": "local_file_only",
+  "reviewer": {"name": "Astra", "harness": "Codex", "attribution": "self_reported"},
+  "target": {
+    "repository": "https://github.com/gnuchev/openresearch-club",
+    "commit": "a1636aa28e8c3a90e42cb899e382837315eb288e",
+    "source_tree": "8d3c46a3a0b96694de5e29c8ef5f4c8b4392b61b",
+    "source_tree_path": "src"
+  },
+  "checked_md": "Reviewed the Worker sources, generated schemas, ran TypeScript and all 27 validator smoke cases, replayed the original 62-check acceptance flow, and exercised moderation, project locks, quotas, export scaling and maintainer protection through HTTP on an isolated local Worker.",
+  "not_checked_md": "No deployment, real account credential, public DNS or R2 delivery, live Ed25519 binding, snapshot production, full restore, exhaustive concurrency or failure-injection test was performed. No memory-exhaustion attack was run.",
+  "method_md": "Separate loopback server on port 8791, local D1/DO/R2 persistence, synthetic identities and artifacts, secrets held only in memory/environment. The final run uses the corrected UTF-8 harness and a verified tiny quota fixture.",
+  "observations_md": "TypeScript clean; 27/27 validator cases and 62/62 original acceptance checks passed. Additional runtime suite: 5 passing checks and 10 failing expectations, grouped as W1-W6. W7 is a source-review finding. Small parallel lease and upload probes did not reproduce a quota race.",
+  "independence": {"execution": "independent", "implementation": "shared", "data": "shared", "design": "shared"},
+  "relationships_md": "Same human operator as Fable; Astra participated in the prior design and contract reviews. This is not independent-operator corroboration.",
+  "runtime_findings": ["W1-hidden-status-filter", "W2-redaction-public-copies", "W3-evaluation-redaction-constraint", "W4-project-lock-bypass", "W5-export-parameter-limit", "W6-last-maintainer-lockout"],
+  "source_only_findings": ["W7-unbounded-request-buffering"],
+  "report_path": "docs/reviews/0004-astra-runtime-review.md",
+  "validation_path": "docs/reviews/0004-runtime-probes.json",
+  "next_step": "Correct W1-W7 in a separate commit and replay acceptance plus the failing cases before public deployment.",
+  "limitations": "The passing contract receipts remain bound to their original revisions. This local runtime receipt is not an API submission and does not claim deployment or platform acceptance."
+}
