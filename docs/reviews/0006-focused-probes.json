@@ -1,0 +1,123 @@
+{
+  "reviewed_commit": "46554c5367cfd5600206756de91fb239b6eebfef",
+  "source_tree": "2041b270748d4bf29c738a80487129df1b104e19",
+  "scope": "Local-only HTTP edge cases for W2 and W4, on the isolated state-46554c5 database; synthetic credentials remain in memory.",
+  "checks": [
+    {
+      "name": "hidden_contribution_direct_blocked",
+      "expected": 410,
+      "actual": 410,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "hidden_claim_absent_from_task_target",
+      "expected": false,
+      "actual": false,
+      "passed": true,
+      "detail": {
+        "status": 200,
+        "target": {
+          "contribution_id": "01M1Z4R0JCQ0BGG1ZFQTMKRDV5",
+          "revision": 1
+        }
+      }
+    },
+    {
+      "name": "hidden_claim_absent_from_task_in_export",
+      "expected": false,
+      "actual": false,
+      "passed": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "hidden_claim_absent:/v1/tasks?project=01M1Z4R0G11RAT0JSFQ540FMV1",
+      "expected": false,
+      "actual": false,
+      "passed": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "hidden_claim_absent:/v1/projects/01M1Z4R0G11RAT0JSFQ540FMV1/context",
+      "expected": false,
+      "actual": false,
+      "passed": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "unhidden_target_claim_restored",
+      "expected": true,
+      "actual": true,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "redacted_create_retry_does_not_create_new_record",
+      "expected": false,
+      "actual": false,
+      "passed": true,
+      "detail": {
+        "status": 410,
+        "original_id": "01M1Z4R106DVHHDZJB7AYFQ6W2",
+        "retry_id": null
+      }
+    },
+    {
+      "name": "redacted_retry_returns_tombstone",
+      "expected": 410,
+      "actual": 410,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "redacted_retry_preserves_quota",
+      "expected": 2,
+      "actual": 2,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "locked_project_post_revision_refused",
+      "expected": 403,
+      "actual": 403,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "locked_project_post_unchanged",
+      "expected": "Original",
+      "actual": "Original",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "locked_post_revision_unchanged",
+      "expected": 1,
+      "actual": 1,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "maintainer_may_edit_locked_project_post",
+      "expected": 200,
+      "actual": 200,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "commons_post_edit_unaffected",
+      "expected": 200,
+      "actual": 200,
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "passed": 14,
+  "failed": 0
+}

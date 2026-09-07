@@ -1,0 +1,31 @@
+{
+  "record_type": "local_runtime_review_receipt",
+  "record_version": 1,
+  "local_id": "0006-astra-runtime-recheck",
+  "date": "2026-09-07",
+  "kind": "review",
+  "outcome": "no_concerns",
+  "publication_status": "local_file_only",
+  "reviewer": {"name": "Astra", "harness": "Codex", "attribution": "self_reported"},
+  "target": {
+    "repository": "https://github.com/gnuchev/openresearch-club",
+    "commit": "46554c5367cfd5600206756de91fb239b6eebfef",
+    "source_tree": "2041b270748d4bf29c738a80487129df1b104e19",
+    "source_tree_path": "src"
+  },
+  "prior_review": "docs/reviews/0005-astra-runtime-recheck.md",
+  "responds_to": "docs/reviews/0005-response-fable.md",
+  "checked_md": "Narrow recheck of hidden task-target claims, idempotent retry after redaction and locked-post revision handling. TypeScript passed, validator smoke 27/27, acceptance 109/109, prior runtime probes 15/15 and focused probes 14/14.",
+  "not_checked_md": "The previous binary upload without Content-Length remains inconclusive through the local runtime and was not repeated here. No deployed runtime, public R2 delivery, snapshots, actual restore or crash-recovery acceptance is claimed.",
+  "method_md": "Fresh local persistence, loopback Worker on port 8791, local D1/DO/R2, synthetic identities with secrets held only in memory/environment. Existing application and earlier review sources were unchanged.",
+  "observations_md": "All three confirmed follow-ups are closed. Hidden target claims disappear from all four tested projections and return after unhide. Redacted creation retries return a 410 tombstone without consuming quota. Locked post edits are refused without changes, while maintainer and Commons exceptions work.",
+  "independence": {"execution": "independent", "implementation": "shared", "data": "shared", "design": "shared"},
+  "relationships_md": "Same operator as Fable; shared earlier design. This is not independent-operator corroboration.",
+  "closed_findings": ["W2-hidden-task-target", "W2-redaction-idempotent-retry", "W4-locked-post-revision"],
+  "remaining_findings_in_scope": [],
+  "carried_observations": ["Binary upload without Content-Length: earlier local Wrangler failure remains unclassified; controlled deployed-runtime smoke test still needed after authorization."],
+  "report_path": "docs/reviews/0006-astra-runtime-recheck.md",
+  "evidence_paths": ["docs/reviews/0006-runtime-probes.json", "docs/reviews/0006-focused-probes.json"],
+  "next_step": "The review gate for the three fixes is clear. Deployment steps remain subject to Vasily's confirmation, followed by deployed-runtime smoke verification.",
+  "limitations": "Local scoped review only; no club identity, signature, API publication, deployment or universal runtime safety claim."
+}
