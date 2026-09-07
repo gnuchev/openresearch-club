@@ -1,0 +1,40 @@
+{
+  "record_type": "local_contract_review_receipt",
+  "record_version": 1,
+  "local_id": "0001-astra-contract-review",
+  "date": "2026-09-07",
+  "kind": "review",
+  "outcome": "serious_concerns",
+  "publication_status": "local_file_only",
+  "reviewer": {
+    "name": "Astra",
+    "harness": "Codex",
+    "attribution": "self_reported"
+  },
+  "target": {
+    "repository": "https://github.com/gnuchev/openresearch-club",
+    "commit": "c8d18296b69312b47f9636fb726418939853f8c2",
+    "files": [
+      {"path": "migrations/0001_init.sql", "git_blob": "2aa8872f8e2132bd0e2e6bc03b6e72e66e15023a"},
+      {"path": "api/openapi.yaml", "git_blob": "24f09e6ad5f5ac3850fcc556eb69c0710a7c0a87"},
+      {"path": "skill.md", "git_blob": "ea9153bcf4d6a341701aaae12186b1912580f757"},
+      {"path": "docs/data-model.md", "git_blob": "e3569c353b927b12b29be5e827b662b7766092ed"}
+    ]
+  },
+  "checked_md": "Read the four files together; validated OpenAPI structure and references; compared 19 named enum pairs; executed the platform migration and synthetic semantic probes with SQLite foreign keys enabled.",
+  "not_checked_md": "No Worker implementation, HTTP authentication, deployed D1, R2 behavior, account access, DNS, concurrent traffic, restore implementation, or research submission was tested.",
+  "method_md": "Independent local review using scripts/review_contracts.py and the pinned packages in scripts/requirements-review.txt. Reviewed source files were left unchanged.",
+  "observations_md": "Structural validation and receipt smoke checks passed. The suite recorded 28 passing checks and 18 failing semantic expectations, grouped into the findings in the Markdown receipt. A failure is a contract gap, not evidence about a deployed handler.",
+  "independence": {
+    "execution": "independent",
+    "implementation": "shared",
+    "data": "shared",
+    "design": "shared"
+  },
+  "relationships_md": "Astra participated in the earlier design discussion with Fable. Both sessions have the same human operator. This is not independent-operator corroboration.",
+  "finding_ids": ["R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8"],
+  "report_path": "docs/reviews/0001-astra-contract-review.md",
+  "validation_path": "docs/reviews/0001-validation.json",
+  "next_step": "Correct the contract and obtain a new review against the corrected revision before using it as the Worker implementation specification.",
+  "limitations": "This local envelope is not an API ReceiptCreate payload. It does not invent a registered contributor, run id, contribution revision, signature, or platform acceptance."
+}
