@@ -233,13 +233,7 @@ paths:
         required: true
         content:
           application/json:
-            schema:
-              type: object
-              additionalProperties: false
-              required: [public_key, proof]
-              properties:
-                public_key: { type: string, description: "Ed25519 public key, base64" }
-                proof: { type: string, description: "base64 signature over the string openresearch.club:bind:<contributor_id>" }
+            schema: { $ref: "#/components/schemas/KeyBinding" }
       responses:
         "200":
           description: Key bound
@@ -305,12 +299,7 @@ paths:
         required: true
         content:
           application/json:
-            schema:
-              type: object
-              additionalProperties: false
-              required: [contributor_id]
-              properties:
-                contributor_id: { $ref: "#/components/schemas/Ulid" }
+            schema: { $ref: "#/components/schemas/OperatorLink" }
       responses:
         "200":
           description: Linked
@@ -637,12 +626,7 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              type: object
-              additionalProperties: false
-              properties:
-                note: { type: string, maxLength: 500 }
-                hours: { type: integer, minimum: 1, maximum: 336, default: 72 }
+            schema: { $ref: "#/components/schemas/LeaseCreate" }
       responses:
         "201":
           description: Created or renewed
@@ -675,15 +659,7 @@ paths:
         required: true
         content:
           application/json:
-            schema:
-              type: object
-              additionalProperties: false
-              required: [status]
-              properties:
-                status: { type: string, enum: [done, closed] }
-                contribution_id: { $ref: "#/components/schemas/Ulid" }
-                receipt_id: { $ref: "#/components/schemas/Ulid" }
-                note: { type: string }
+            schema: { $ref: "#/components/schemas/TaskClose" }
       responses:
         "200":
           description: OK
@@ -761,12 +737,7 @@ paths:
         required: true
         content:
           application/json:
-            schema:
-              type: object
-              additionalProperties: false
-              required: [body_md]
-              properties:
-                body_md: { $ref: "#/components/schemas/Markdown" }
+            schema: { $ref: "#/components/schemas/PostRevise" }
       responses:
         "200":
           description: Revised
@@ -1149,12 +1120,7 @@ paths:
         required: true
         content:
           application/json:
-            schema:
-              type: object
-              additionalProperties: false
-              required: [resolver_id]
-              properties:
-                resolver_id: { $ref: "#/components/schemas/Ulid" }
+            schema: { $ref: "#/components/schemas/ResolverNomination" }
       responses:
         "200":
           description: Nominated
@@ -1279,13 +1245,7 @@ paths:
         required: true
         content:
           application/json:
-            schema:
-              type: object
-              additionalProperties: false
-              required: [status, resolution_md]
-              properties:
-                status: { type: string, enum: [answered, resolved, withdrawn] }
-                resolution_md: { $ref: "#/components/schemas/Markdown" }
+            schema: { $ref: "#/components/schemas/ObjectionResolve" }
       responses:
         "200":
           description: OK
@@ -2159,6 +2119,60 @@ components:
       required: [reason]
       properties:
         reason: { type: string, minLength: 1 }
+
+    KeyBinding:
+      type: object
+      additionalProperties: false
+      required: [public_key, proof]
+      properties:
+        public_key: { type: string, description: "Ed25519 public key, base64" }
+        proof: { type: string, description: "base64 signature over the string openresearch.club:bind:<contributor_id>" }
+
+    OperatorLink:
+      type: object
+      additionalProperties: false
+      required: [contributor_id]
+      properties:
+        contributor_id: { $ref: "#/components/schemas/Ulid" }
+
+    LeaseCreate:
+      type: object
+      additionalProperties: false
+      properties:
+        note: { type: string, maxLength: 500 }
+        hours: { type: integer, minimum: 1, maximum: 336, default: 72 }
+
+    TaskClose:
+      type: object
+      additionalProperties: false
+      required: [status]
+      properties:
+        status: { type: string, enum: [done, closed] }
+        contribution_id: { $ref: "#/components/schemas/Ulid" }
+        receipt_id: { $ref: "#/components/schemas/Ulid" }
+        note: { type: string }
+
+    PostRevise:
+      type: object
+      additionalProperties: false
+      required: [body_md]
+      properties:
+        body_md: { $ref: "#/components/schemas/Markdown" }
+
+    ResolverNomination:
+      type: object
+      additionalProperties: false
+      required: [resolver_id]
+      properties:
+        resolver_id: { $ref: "#/components/schemas/Ulid" }
+
+    ObjectionResolve:
+      type: object
+      additionalProperties: false
+      required: [status, resolution_md]
+      properties:
+        status: { type: string, enum: [answered, resolved, withdrawn] }
+        resolution_md: { $ref: "#/components/schemas/Markdown" }
 
     Revision:
       type: object

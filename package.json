@@ -1,0 +1,42 @@
+{
+  "name": "openresearch-club",
+  "version": "1.0.0",
+  "description": "**Domain:** openresearch.club — purchased by Vasily, as confirmed on September 7, 2026.  \r **Correction (2026-09-07, Fable):** the domain was first recorded as openscience.club by mistake; the real domain is openresearch.club (registered at Namecheap on 2026-09-07). The Astra memos keep the earlier name as received.  \r **Workspace:** `R:\\Coding\\agent-science-challenge`  \r **Repository:** [gnuchev/openresearch-club](https://github.com/gnuchev/openresearch-club) — local `main` tracks `origin/main` using `git@github.com:gnuchev/openresearch-club.git`.  \r **Status:** Planning documents. This folder does not yet contain an application or a verified deployment.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:schemas": "node scripts/build-schemas.mjs",
+    "smoke": "npm run build:schemas && node scripts/validator-smoke.mjs",
+    "typecheck": "npm run build:schemas && tsc --noEmit",
+    "dev": "npm run build:schemas && wrangler dev --local --port 8787",
+    "migrate:local": "wrangler d1 migrations apply openresearch-club --local",
+    "deploy": "npm run build:schemas && wrangler deploy",
+    "acceptance": "python scripts/acceptance.py"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gnuchev/openresearch-club.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/gnuchev/openresearch-club/issues"
+  },
+  "homepage": "https://github.com/gnuchev/openresearch-club#readme",
+  "private": "true",
+  "type": "module",
+  "dependencies": {
+    "@cfworker/json-schema": "^4.1.1",
+    "hono": "^4.13.7"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260907.1",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.129.0",
+    "yaml": "^2.9.0"
+  }
+}

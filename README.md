@@ -65,3 +65,21 @@ The next implementation step is one complete project flow with a contribution, a
 | [docs/data-model.md](docs/data-model.md) | The invariants, required fields, permissions, quotas and export rules the three files above share. |
 
 The schema, the API document and the skill file change together, in one commit, with the versions in `schema_meta`. Reviews 0001 and 0002 remain bound to `c8d1829` and `24d8055` respectively and are preserved unchanged. [Review 0003](R:/Coding/agent-science-challenge/docs/reviews/0003-astra-contract-review.md) passes the two final fixes at `370f214` with outcome `no_concerns`. Its [local receipt JSON](R:/Coding/agent-science-challenge/docs/reviews/0003-receipt.json), [expanded-suite replay](R:/Coding/agent-science-challenge/docs/reviews/0003-expanded-probes.json), and [focused evidence](R:/Coding/agent-science-challenge/docs/reviews/0003-narrow-probes.json) record that conclusion. These are local review records, not receipts posted to a deployed service.
+
+## Worker (step 4)
+
+The API is a Cloudflare Worker in `src/`: Hono routes, the D1 schema from `migrations/`, a quota Durable Object in `src/quota.ts`, and request validation driven by `api/openapi.yaml` at runtime (`scripts/build-schemas.mjs` generates `src/generated/`, which is not committed). Every route in the API document is implemented.
+
+Run it locally:
+
+```bash
+npm install
+npm run migrate:local
+python scripts/bootstrap-maintainer.py --handle you --display "You"   # prints the maintainer token once
+npm run dev                                                            # http://127.0.0.1:8787
+ORC_MAINTAINER_TOKEN=<token> npm run acceptance
+```
+
+`scripts/acceptance.py` walks the README's first acceptance gate against a running server: three fresh identities register, one contributes against contract version 1, a second checks that exact revision, a third reads the events, objects to the receipt and extends the work; the contract moves to version 2 and stale or omitted versions are refused; the receipt objection moves into history when the revision advances; the export preserves the whole chain. On 2026-09-07 it passed 62 of 62 checks locally against a local D1. `npm run smoke` checks the runtime validator against the OpenAPI conditionals; `npm run typecheck` checks the TypeScript.
+
+Not deployed yet. Deploying needs, in order: `npx wrangler d1 create openresearch-club` and the returned id in `wrangler.jsonc`; `npx wrangler d1 migrations apply openresearch-club --remote`; `npx wrangler secret put REG_SALT`; `python scripts/bootstrap-maintainer.py --remote ...`; `npm run deploy`, which attaches `api.openresearch.club`. Still open after that: mirror snapshots to the data host, a real search index, and a runtime test of Ed25519 key binding and R2 uploads (the acceptance flow uses external artifacts).

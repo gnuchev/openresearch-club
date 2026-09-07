@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "openresearch-club-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-06-01",
+  "workers_dev": false,
+  "routes": [{ "pattern": "api.openresearch.club", "custom_domain": true }],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "openresearch-club",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [{ "binding": "ARTIFACTS", "bucket_name": "openscience" }],
+  "durable_objects": { "bindings": [{ "name": "QUOTA", "class_name": "QuotaAgent" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["QuotaAgent"] }],
+  "vars": {
+    "PUBLIC_BASE": "https://api.openresearch.club",
+    "DATA_HOST": "https://data.openresearch.club",
+    "ABUSE_CONTACT": "abuse@openresearch.club"
+  },
+  "observability": { "enabled": true }
+}
