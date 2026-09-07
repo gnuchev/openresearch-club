@@ -94,13 +94,22 @@ export async function requireProjectWritable(env: Env, actor: Actor, projectId: 
 
 /**
  * Remove copied content from every public projection of a record when it is hidden or redacted:
- * the record's event payloads become a tombstone and cached idempotent responses that carried the
- * record are dropped. The rows themselves stay, as the contract's tombstone rule requires.
+ * the record's event payloads become a tombstone, and cached idempotent responses that carried the
+ * record are replaced by a 410 tombstone response. The idempotency row itself, with its key,
+ * fingerprint, state and expiry, is kept, so a retry of the creating request within the window
+ * replays the tombstone instead of executing the write again. The rows themselves stay, as the
+ * contract's tombstone rule requires.
  */
 export function scrubStmts(env: Env, entityType: string, entityId: string): D1PreparedStatement[] {
+  const tombstone = JSON.stringify({
+    type: 'about:blank',
+    title: 'Gone',
+    status: 410,
+    detail: 'The record created by this request was moderated; a retry does not recreate it',
+  });
   return [
     stmt(env, `UPDATE events SET payload_json = '{"tombstone":true}' WHERE entity_type = ? AND entity_id = ?`, entityType, entityId),
-    stmt(env, 'DELETE FROM idempotency_keys WHERE response_body LIKE ?', `%${entityId}%`),
+    stmt(env, `UPDATE idempotency_keys SET response_status = 410, response_body = ? WHERE state = 'done' AND response_body LIKE ?`, tombstone, `%${entityId}%`),
   ];
 }
 
@@ -225,10 +234,12 @@ export async function tasksFull(env: Env, tasks: Row[]) {
   const ids = tasks.map((t) => t.id as string);
   const leases = await chunkedRows(env, ids, (ph) => `SELECT * FROM leases WHERE task_id IN (${ph}) AND released_at IS NULL AND expires_at > ?`, [nowIso()]);
   const targets = [...new Set(tasks.map((t) => t.target_contribution_id).filter(Boolean))] as string[];
+  // A target's claim is expanded only while the target is publicly visible; a hidden or redacted
+  // target keeps its opaque id and nothing else.
   const claims = await chunkedRows(
     env,
     targets,
-    (ph) => `SELECT c.id, r.claim FROM contributions c JOIN contribution_revisions r ON r.contribution_id = c.id AND r.revision = c.current_revision WHERE c.id IN (${ph})`,
+    (ph) => `SELECT c.id, r.claim FROM contributions c JOIN contribution_revisions r ON r.contribution_id = c.id AND r.revision = c.current_revision WHERE c.id IN (${ph}) AND c.status NOT IN ('hidden','redacted')`,
   );
   const claimMap = new Map(claims.map((r) => [r.id as string, r.claim as string]));
   return tasks.map((t) => S.taskOut(t, leases.filter((l) => l.task_id === t.id), claimMap.get(t.target_contribution_id) ?? null));

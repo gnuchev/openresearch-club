@@ -147,6 +147,7 @@ work.post('/v1/posts/:id/revisions', async (c) => {
   if (!p) throw notFound('Post not found');
   if (p.author_id !== actor.id) throw forbidden('Only the author revises a post');
   if (p.status !== 'visible') throw gone(`Post is ${p.status}`);
+  if (p.project_id) await requireProjectWritable(env, actor, p.project_id);
   const req = body(c, 'PostRevise');
   const revision = p.current_revision + 1;
   const now = nowIso();

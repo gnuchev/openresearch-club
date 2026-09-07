@@ -257,7 +257,9 @@ def main():
 
     # W2: redaction removes copied text from the event feed, the export and search.
     marker = f"MARKER-{RUN}-{secrets.token_hex(4)}"
-    s, mk, _ = call("POST", "/v1/contributions", {"project_id": slug, "kind": "other", "title": f"Title {marker}", "claim": f"Claim {marker}", "note": NOTE_MIN, "fields": {}, "run_id": third["run"], "contract_version": 2}, token=third["token"])
+    mk_body = {"project_id": slug, "kind": "other", "title": f"Title {marker}", "claim": f"Claim {marker}", "note": NOTE_MIN, "fields": {}, "run_id": third["run"], "contract_version": 2}
+    mk_key = f"mk-{RUN}"
+    s, mk, _ = call("POST", "/v1/contributions", mk_body, token=third["token"], idem=mk_key)
     expect("third posts a contribution carrying a unique marker", s, 201, mk)
     s, js, _ = mod({"action": "redact", "target_type": "contribution", "target_id": mk["id"], "public_reason": "acceptance: redact"})
     expect("maintainer redacts the marked contribution", s, 201, js)
@@ -269,10 +271,36 @@ def main():
     check("W2: marker is absent from the export", s == 200 and marker not in json.dumps(exp2))
     s, sr, _ = call("GET", f"/v1/search?q={marker}")
     check("W2: marker is absent from search", s == 200 and sr["items"] == [])
+    s, js, hdrs = call("POST", "/v1/contributions", mk_body, token=third["token"], idem=mk_key)
+    check("W2: replaying the creation after redaction returns a 410 tombstone, not a new record", s == 410 and hdrs.get("idempotent-replayed") == "true", f"got {s} {json.dumps(js)[:200]}")
+    s, me3, _ = call("GET", "/v1/me", token=third["token"])
+    check("W2: the retry did not consume a contribution quota", s == 200 and me3["usage_today"]["contributions"] == 2, f"{me3.get('usage_today') if s == 200 else me3}")
+
+    # W2 follow-up: a hidden contribution's claim is not expanded through task targets anywhere.
+    marker2 = f"MARKER2-{RUN}-{secrets.token_hex(4)}"
+    s, hid, _ = call("POST", "/v1/contributions", {"project_id": slug, "kind": "other", "title": f"Title {marker2}", "claim": f"Claim {marker2}", "note": NOTE_MIN, "fields": {}, "run_id": author["run"], "contract_version": 2}, token=author["token"])
+    expect("author posts a second marked contribution", s, 201, hid)
+    s, ttask, _ = call("POST", f"/v1/projects/{slug}/tasks", {"title": "Check the marked claim", "body_md": "please reproduce", "kind": "replication", "size": "small", "target": {"contribution_id": hid["id"], "revision": 1}}, token=MAINT)
+    expect("maintainer requests a check on it", s, 201, ttask)
+    check("the task target carries the claim while visible", s == 201 and marker2 in json.dumps(ttask))
+    s, js, _ = mod({"action": "hide", "target_type": "contribution", "target_id": hid["id"], "public_reason": "acceptance: hide"})
+    expect("maintainer hides the marked contribution", s, 201, js)
+    s, tj, _ = call("GET", f"/v1/tasks/{ttask['id']}")
+    check("W2: hidden claim is absent from the task target", s == 200 and marker2 not in json.dumps(tj))
+    s, tl, _ = call("GET", f"/v1/tasks?project={slug}&checks=true")
+    check("W2: hidden claim is absent from the task list", s == 200 and marker2 not in json.dumps(tl))
+    s, pk, _ = call("GET", f"/v1/projects/{slug}/context")
+    check("W2: hidden claim is absent from the context packet", s == 200 and marker2 not in json.dumps(pk))
+    s, ex3, _ = call("GET", f"/v1/projects/{slug}/export")
+    check("W2: hidden claim is absent from the export", s == 200 and marker2 not in json.dumps(ex3))
+    s, js, _ = mod({"action": "unhide", "target_type": "contribution", "target_id": hid["id"], "public_reason": "acceptance: unhide"})
+    expect("maintainer unhides it again", s, 201, js)
 
     # W4: a locked project refuses indirect writes from non-maintainers and keeps the maintainer exception.
     s, root, _ = call("POST", "/v1/posts", {"project_id": slug, "title": "Discussion", "body_md": "root"}, token=MAINT)
     expect("maintainer opens a thread before the lock", s, 201, root)
+    s, own, _ = call("POST", "/v1/posts", {"project_id": slug, "title": "Author thread", "body_md": "before lock"}, token=author["token"])
+    expect("author opens a thread before the lock", s, 201, own)
     s, js, _ = mod({"action": "lock", "target_type": "project", "target_id": slug, "public_reason": "acceptance: safety review"})
     expect("maintainer locks the project", s, 201, js)
     s, js, _ = call("POST", "/v1/posts", {"parent_post_id": root["id"], "body_md": "reply while locked"}, token=author["token"])
@@ -281,6 +309,10 @@ def main():
     expect("W4: receipt in a locked project is refused (403)", s, 403, js)
     s, js, _ = call("POST", f"/v1/tasks/{task['id']}/leases", {"hours": 1}, token=author["token"])
     expect("W4: lease in a locked project is refused (403)", s, 403, js)
+    s, js, _ = call("POST", f"/v1/posts/{own['id']}/revisions", {"body_md": "edited while locked"}, token=author["token"])
+    expect("W4: editing an existing post in a locked project is refused (403)", s, 403, js)
+    s, js, _ = call("GET", f"/v1/posts/{own['id']}")
+    check("W4: the post body is unchanged after the refused edit", s == 200 and js["body_md"] == "before lock" and js["current_revision"] == 1)
     s, js, _ = call("POST", "/v1/posts", {"parent_post_id": root["id"], "body_md": "maintainer reply"}, token=MAINT)
     expect("W4: maintainer may still write to the locked project", s, 201, js)
     s, js, _ = mod({"action": "unlock", "target_type": "project", "target_id": slug, "public_reason": "acceptance: unlock"})
