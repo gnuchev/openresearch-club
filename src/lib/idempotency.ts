@@ -3,7 +3,7 @@ import type { AppEnv } from '../env';
 import { LIMITS } from '../env';
 import { sha256hex } from './crypto';
 import { one, stmt } from './db';
-import { badRequest, conflict, unauthorized, unprocessable } from './errors';
+import { badRequest, conflict, HttpError, tooLarge, unauthorized, unprocessable } from './errors';
 import { isoAfterHours, nowIso } from './ids';
 
 interface KeyRow {
@@ -21,8 +21,40 @@ interface KeyRow {
 const WRITE_METHODS = new Set(['POST', 'PUT', 'PATCH']);
 
 /**
+ * Read a request body without ever holding more than `limit` bytes. The declared Content-Length is
+ * checked first, then the actual bytes as they stream; the read is cancelled the moment the limit
+ * is passed. Workers have a fixed memory budget, so nothing may buffer a body before this check.
+ */
+export async function readBounded(req: Request, limit: number): Promise<ArrayBuffer> {
+  const declared = req.headers.get('content-length');
+  if (declared !== null && Number(declared) > limit) throw tooLarge(`Body exceeds the ${limit}-byte limit`);
+  const reader = req.body?.getReader();
+  if (!reader) return new ArrayBuffer(0);
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.byteLength;
+    if (total > limit) {
+      await reader.cancel().catch(() => undefined);
+      throw tooLarge(`Body exceeds the ${limit}-byte limit`);
+    }
+    chunks.push(value);
+  }
+  const out = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    out.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return out.buffer;
+}
+
+/**
  * Every write carries an Idempotency-Key scoped to the caller (or to the handle for registration)
- * and bound to a fingerprint of method, canonical path and body hash. The in-flight row is written
+ * and bound to a fingerprint of method, canonical path and body hash. The caller is identified
+ * before any body is read, bodies are read through readBounded, and the in-flight row is written
  * before the handler runs, so two concurrent identical requests cannot both execute.
  */
 export const idempotency = (): MiddlewareHandler<AppEnv> => async (c, next) => {
@@ -33,30 +65,35 @@ export const idempotency = (): MiddlewareHandler<AppEnv> => async (c, next) => {
   if (!key || key.length > 128) throw badRequest('Idempotency-Key header is required on every write (up to 128 characters)');
 
   const path = c.req.path;
+  const actor = c.get('actor');
+  const isRegistration = path === '/v1/contributors';
+  if (!actor && !isRegistration) throw unauthorized();
+
   const binary = (c.req.header('content-type') ?? '').startsWith('application/octet-stream');
   let bodyHash: string;
   if (binary) {
-    const bytes = await c.req.arrayBuffer();
+    if (isRegistration) throw badRequest('Registration takes a JSON body');
+    if (c.req.header('content-length') === undefined) throw new HttpError(411, 'Length Required', 'Uploads must declare Content-Length');
+    const bytes = await readBounded(c.req.raw, LIMITS.artifact_max_bytes);
     c.set('rawBytes', bytes);
     bodyHash = await sha256hex(bytes);
   } else {
-    const raw = await c.req.text();
+    const raw = new TextDecoder().decode(await readBounded(c.req.raw, LIMITS.json_body_max_bytes));
     c.set('rawBody', raw);
     bodyHash = await sha256hex(raw);
   }
 
-  const actor = c.get('actor');
   let scope: string;
   if (actor) scope = actor.id;
-  else if (path === '/v1/contributors') {
+  else {
     let handle = '';
     try {
       handle = String(JSON.parse(c.get('rawBody') ?? '{}')?.handle ?? '').toLowerCase();
     } catch {
-      /* validated later */
+      /* validated by the handler */
     }
     scope = `registration:${handle}`;
-  } else throw unauthorized();
+  }
 
   const env = c.env;
   const now = nowIso();

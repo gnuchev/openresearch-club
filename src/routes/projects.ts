@@ -5,6 +5,7 @@ import { hasProjectRole, isGlobalMaintainer, projectRoles, requireActor, tierAtL
 import {
   body,
   briefsFor,
+  chunkedRows,
   currentContract,
   loadProject,
   OBJECTION_PROJECT_SQL,
@@ -14,7 +15,10 @@ import {
   postFull,
   projectFull,
   projectRoleRows,
+  facetsFor,
   receiptFull,
+  RECEIPT_OBJECTIONS_SQL,
+  requireProjectWritable,
   requireWritable,
   revisionFull,
   tasksFull,
@@ -262,60 +266,101 @@ projects.delete('/v1/projects/:project/roles/:contributor_id/:role', async (c) =
 
 // Export ----------------------------------------------------------------------------------------
 
+/**
+ * Complete public export of one project. Every query is scoped by the project id, never by an
+ * expanding list of ids, so a populated project cannot approach D1's 100-parameter limit (W5).
+ * One query per record type; the export is assembled in memory from those results.
+ */
 export async function exportProject(env: Env, project: Row) {
   const id = project.id;
-  const contributions = await many(env, `SELECT * FROM contributions WHERE project_id = ? AND status NOT IN ('hidden','redacted') ORDER BY id`, id);
-  const cids = contributions.map((r) => r.id as string);
-  const inC = cids.length ? `IN (${placeholders(cids.length)})` : 'IN (NULL)';
-  const revisionRows = cids.length ? await many(env, `SELECT * FROM contribution_revisions WHERE contribution_id ${inC} ORDER BY contribution_id, revision`, ...cids) : [];
-  const receiptRows = cids.length ? await many(env, `SELECT * FROM receipts WHERE contribution_id ${inC} AND status NOT IN ('hidden','redacted') ORDER BY id`, ...cids) : [];
-  const rids = receiptRows.map((r) => r.id as string);
-  const inR = rids.length ? `IN (${placeholders(rids.length)})` : 'IN (NULL)';
-  const [contracts, summaries, tasks, posts, relations, predictions, objections, moderation, events, artifacts] = await Promise.all([
-    many(env, 'SELECT * FROM project_contracts WHERE project_id = ? ORDER BY version', id),
-    many(env, 'SELECT * FROM project_summaries WHERE project_id = ? ORDER BY version', id),
-    many(env, 'SELECT * FROM tasks WHERE project_id = ? ORDER BY id', id),
-    many(env, `SELECT * FROM posts WHERE project_id = ? AND status = 'visible' ORDER BY id`, id),
-    cids.length ? many(env, `SELECT * FROM relations WHERE from_id ${inC} ORDER BY id`, ...cids) : Promise.resolve([] as Row[]),
-    cids.length ? many(env, `SELECT * FROM predictions WHERE contribution_id ${inC}`, ...cids) : Promise.resolve([] as Row[]),
-    many(env, `SELECT o.*, ${OBJECTION_PROJECT_SQL} AS project_id FROM objections o WHERE o.status <> 'hidden' AND (${OBJECTION_PROJECT_SQL}) = ? ORDER BY o.id`, id),
-    many(env, `SELECT * FROM moderation_actions WHERE target_id = ? OR target_id ${inC} OR target_id ${inR} ORDER BY id`, id, ...cids, ...rids),
-    many(env, 'SELECT * FROM events WHERE project_id = ? ORDER BY cursor', id),
-    cids.length
-      ? many(
-          env,
-          `SELECT DISTINCT a.* FROM artifacts a WHERE a.status = 'published' AND (a.id IN (SELECT artifact_id FROM contribution_artifacts WHERE contribution_id ${inC})
-             OR a.id IN (SELECT ra.artifact_id FROM receipt_artifacts ra JOIN receipts r ON r.id = ra.receipt_id WHERE r.contribution_id ${inC})) ORDER BY a.id`,
-          ...cids, ...cids,
-        )
-      : Promise.resolve([] as Row[]),
-  ]);
-  const taskIds = tasks.map((t) => t.id as string);
-  const leases = taskIds.length ? await many(env, `SELECT * FROM leases WHERE task_id IN (${placeholders(taskIds.length)}) ORDER BY id`, ...taskIds) : [];
+  const PUB = `NOT IN ('hidden','redacted')`;
 
-  const revisions = await Promise.all(revisionRows.map((r) => revisionFull(env, r.contribution_id, r.revision)));
-  const receipts = await Promise.all(receiptRows.map((r) => receiptFull(env, r)));
-  const fullContributions = await Promise.all(contributions.map(async (cRow) => {
-    const [brief] = await briefsFor(env, [cRow]);
-    const current = revisions.find((r) => r.contribution_id === cRow.id && r.revision === cRow.current_revision);
-    const prediction = predictions.find((p) => p.contribution_id === cRow.id);
-    return { ...brief, task_id: cRow.task_id ?? null, license: cRow.license, revision: current, prediction: prediction ? S.predictionOut(prediction) : null, withdrawn_at: cRow.withdrawn_at ?? null, withdrawn_reason: cRow.withdrawn_reason ?? null };
-  }));
+  const [contributions, revisionRows, receiptRows, receiptLinks, revisionArtifacts, artifacts, relations, predictions, contracts, summaries, tasks, leases, posts, postRevisions, objections, moderation, events, roleRows] =
+    await Promise.all([
+      many(env, `SELECT * FROM contributions WHERE project_id = ? AND status ${PUB} ORDER BY id`, id),
+      many(env, `SELECT r.* FROM contribution_revisions r JOIN contributions c ON c.id = r.contribution_id WHERE c.project_id = ? AND c.status ${PUB} ORDER BY r.contribution_id, r.revision`, id),
+      many(env, `SELECT r.*, ${RECEIPT_OBJECTIONS_SQL}, (SELECT x.id FROM receipts x WHERE x.corrects_receipt_id = r.id) AS corrected_by_receipt_id FROM receipts r JOIN contributions c ON c.id = r.contribution_id WHERE c.project_id = ? AND c.status ${PUB} AND r.status ${PUB} ORDER BY r.id`, id),
+      many(env, `SELECT ra.receipt_id, ra.artifact_id, ra.role FROM receipt_artifacts ra JOIN receipts r ON r.id = ra.receipt_id JOIN contributions c ON c.id = r.contribution_id WHERE c.project_id = ? ORDER BY ra.receipt_id, ra.artifact_id`, id),
+      many(env, `SELECT ca.contribution_id, ca.revision, ca.role, a.* FROM contribution_artifacts ca JOIN artifacts a ON a.id = ca.artifact_id JOIN contributions c ON c.id = ca.contribution_id WHERE c.project_id = ? AND a.status = 'published' ORDER BY ca.contribution_id, ca.revision, ca.role`, id),
+      many(env, `SELECT DISTINCT a.* FROM artifacts a WHERE a.status = 'published' AND (a.id IN (SELECT ca.artifact_id FROM contribution_artifacts ca JOIN contributions c ON c.id = ca.contribution_id WHERE c.project_id = ?) OR a.id IN (SELECT ra.artifact_id FROM receipt_artifacts ra JOIN receipts r ON r.id = ra.receipt_id JOIN contributions c ON c.id = r.contribution_id WHERE c.project_id = ?)) ORDER BY a.id`, id, id),
+      many(env, `SELECT rel.* FROM relations rel JOIN contributions c ON c.id = rel.from_id WHERE c.project_id = ? ORDER BY rel.id`, id),
+      many(env, `SELECT p.* FROM predictions p JOIN contributions c ON c.id = p.contribution_id WHERE c.project_id = ? AND c.status ${PUB}`, id),
+      many(env, 'SELECT * FROM project_contracts WHERE project_id = ? ORDER BY version', id),
+      many(env, 'SELECT * FROM project_summaries WHERE project_id = ? ORDER BY version', id),
+      many(env, 'SELECT * FROM tasks WHERE project_id = ? ORDER BY id', id),
+      many(env, 'SELECT l.* FROM leases l JOIN tasks t ON t.id = l.task_id WHERE t.project_id = ? ORDER BY l.id', id),
+      many(env, `SELECT * FROM posts WHERE project_id = ? AND status = 'visible' ORDER BY id`, id),
+      many(env, `SELECT pr.* FROM post_revisions pr JOIN posts p ON p.id = pr.post_id WHERE p.project_id = ? AND p.status = 'visible' ORDER BY pr.post_id, pr.revision`, id),
+      many(env, `SELECT o.*, ${OBJECTION_PROJECT_SQL} AS project_id FROM objections o WHERE o.status <> 'hidden' AND (${OBJECTION_PROJECT_SQL}) = ? ORDER BY o.id`, id),
+      many(env, `SELECT m.* FROM moderation_actions m WHERE m.target_id = ? OR m.target_id IN (SELECT id FROM contributions WHERE project_id = ?) OR m.target_id IN (SELECT r.id FROM receipts r JOIN contributions c ON c.id = r.contribution_id WHERE c.project_id = ?) OR m.target_id IN (SELECT id FROM posts WHERE project_id = ?) OR m.target_id IN (SELECT o.id FROM objections o WHERE (${OBJECTION_PROJECT_SQL}) = ?) ORDER BY m.id`, id, id, id, id, id),
+      many(env, 'SELECT * FROM events WHERE project_id = ? ORDER BY cursor', id),
+      projectRoleRows(env, id),
+    ]);
 
-  const contributorIds = new Set<string>([project.created_by]);
-  const runIds = new Set<string>();
-  for (const r of [...contributions, ...receiptRows, ...objections, ...posts, ...tasks, ...leases, ...contracts, ...summaries, ...moderation, ...relations]) {
-    for (const k of ['author_id', 'created_by', 'contributor_id', 'actor_id', 'resolved_by', 'closed_by']) if (r[k]) contributorIds.add(r[k]);
+  const group = (rows: Row[], key: string) => {
+    const m = new Map<string, Row[]>();
+    for (const r of rows) {
+      const k = String(r[key]);
+      if (!m.has(k)) m.set(k, []);
+      m.get(k)!.push(r);
+    }
+    return m;
+  };
+  // Referenced people and runs are collected from the rows already in hand and loaded in chunks:
+  // no compound SELECT (D1 caps its terms) and never more than 80 bound ids per statement.
+  const contributorIds = new Set<string>();
+  const add = (v: unknown) => {
+    if (typeof v === 'string' && v) contributorIds.add(v);
+  };
+  add(project.created_by);
+  for (const r of roleRows) add(r.contributor_id);
+  for (const r of [...contracts, ...summaries, ...contributions, ...receiptRows, ...posts]) add(r.author_id);
+  for (const r of relations) add(r.created_by);
+  for (const r of predictions) add(r.resolver_id);
+  for (const r of tasks) {
+    add(r.created_by);
+    add(r.closed_by);
   }
-  for (const r of [...revisionRows, ...receiptRows, ...posts]) if (r.run_id) runIds.add(r.run_id);
-  for (const p of predictions) contributorIds.add(p.resolver_id);
-  const roleRows = await projectRoleRows(env, id);
-  for (const r of roleRows) contributorIds.add(r.contributor_id);
-  const cidList = [...contributorIds];
-  const contributorRows = await many(env, `SELECT * FROM contributors WHERE id IN (${placeholders(cidList.length)}) ORDER BY id`, ...cidList);
-  const runList = [...runIds];
-  const runRows = runList.length ? await many(env, `SELECT * FROM runs WHERE id IN (${placeholders(runList.length)}) ORDER BY id`, ...runList) : [];
-  for (const r of runRows) contributorIds.add(r.contributor_id);
+  for (const r of leases) add(r.contributor_id);
+  for (const r of objections) {
+    add(r.author_id);
+    add(r.resolved_by);
+  }
+  for (const r of moderation) add(r.actor_id);
+  for (const r of events) add(r.actor_id);
+  const runIds = new Set<string>();
+  for (const r of [...revisionRows, ...receiptRows, ...posts, ...objections]) if (typeof r.run_id === 'string' && r.run_id) runIds.add(r.run_id);
+  const [contributorRows, runRows] = await Promise.all([
+    chunkedRows(env, [...contributorIds], (ph) => `SELECT * FROM contributors WHERE id IN (${ph})`),
+    chunkedRows(env, [...runIds], (ph) => `SELECT * FROM runs WHERE id IN (${ph})`),
+  ]);
+  contributorRows.sort((a, b) => (a.id < b.id ? -1 : 1));
+  runRows.sort((a, b) => (a.id < b.id ? -1 : 1));
+
+  const runsById = new Map(runRows.map((r) => [r.id as string, r]));
+  const linksByReceipt = group(receiptLinks, 'receipt_id');
+  const artifactsByRevision = group(revisionArtifacts.map((a) => ({ ...a, _key: `${a.contribution_id}:${a.revision}` })), '_key');
+  const receiptsByRevision = group(receiptRows.map((r) => ({ ...r, _key: `${r.contribution_id}:${r.revision}` })), '_key');
+  const receiptsByContribution = group(receiptRows, 'contribution_id');
+  const relationsByFrom = group(relations, 'from_id');
+  const postRevisionsByPost = group(postRevisions, 'post_id');
+  const responsesByObjection = group(posts.filter((p) => p.objection_id), 'objection_id');
+  const predictionsById = new Map(predictions.map((p) => [p.contribution_id as string, p]));
+  const facets = await facetsFor(env, contributions.map((c) => c.id as string));
+
+  const receiptOut = (r: Row) => S.receiptOut(r, runsById.get(r.run_id) ?? null, linksByReceipt.get(r.id) ?? []);
+  const revisions = revisionRows.map((rev) => {
+    const k = `${rev.contribution_id}:${rev.revision}`;
+    return S.revisionOut(env, rev, runsById.get(rev.run_id) ?? null, artifactsByRevision.get(k) ?? [], (receiptsByRevision.get(k) ?? []).map(receiptOut));
+  });
+  const revisionByKey = new Map(revisions.map((r) => [`${r.contribution_id}:${r.revision}`, r]));
+  const fullContributions = contributions.map((cRow) => {
+    const current = revisionByKey.get(`${cRow.id}:${cRow.current_revision}`);
+    const brief = S.contributionBriefOut(cRow, current ?? {}, facets.get(cRow.id) ?? {}, receiptsByContribution.get(cRow.id) ?? [], relationsByFrom.get(cRow.id) ?? []);
+    const prediction = predictionsById.get(cRow.id);
+    return { ...brief, task_id: cRow.task_id ?? null, license: cRow.license, revision: current, prediction: prediction ? S.predictionOut(prediction) : null, withdrawn_at: cRow.withdrawn_at ?? null, withdrawn_reason: cRow.withdrawn_reason ?? null };
+  });
+  const postOut = (p: Row) => S.postOut(p, postRevisionsByPost.get(p.id) ?? []);
 
   return {
     exported_at: nowIso(),
@@ -327,13 +372,13 @@ export async function exportProject(env: Env, project: Row) {
     summaries: summaries.map(S.summaryOut),
     tasks: await tasksFull(env, tasks),
     leases: leases.map(S.leaseOut),
-    posts: await Promise.all(posts.map((p) => postFull(env, p))),
+    posts: posts.map(postOut),
     contributions: fullContributions,
     revisions,
     relations: relations.map(S.relationOut),
-    receipts,
+    receipts: receiptRows.map(receiptOut),
     predictions: predictions.map(S.predictionOut),
-    objections: await objectionsFull(env, objections),
+    objections: objections.map((o) => S.objectionOut(o, (responsesByObjection.get(o.id) ?? []).map(postOut))),
     artifacts: artifacts.map((a) => S.artifactOut(env, a)),
     moderation: moderation.map(S.moderationOut),
     events: events.map(S.eventOut),
@@ -429,6 +474,7 @@ projects.post('/v1/tasks/:id/leases', async (c) => {
   const task = await one(env, 'SELECT * FROM tasks WHERE id = ?', c.req.param('id'));
   if (!task) throw notFound('Task not found');
   if (task.status !== 'open') throw conflict('Task is not open');
+  await requireProjectWritable(env, actor, task.project_id);
   const req = body(c, 'LeaseCreate');
   const hours = Math.min(LIMITS.lease_max_hours, Math.max(1, Number(req.hours ?? LIMITS.lease_default_hours)));
   const now = nowIso();

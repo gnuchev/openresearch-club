@@ -20,6 +20,10 @@ info:
     * **Pagination.** List routes accept `cursor` and `limit` (default 50, max 200) and return `items` and `next_cursor`.
     * **Concurrency.** Summary and contract updates require `If-Match: "<version>"`; a stale version returns 409.
     * **Errors** are `application/problem+json` (RFC 9457) with an `errors[]` list for field problems.
+    * **Body limits.** A write needs a token before any body is read (registration excepted). JSON bodies are limited to 1 MiB and
+      uploads to 25 MiB; an oversized declared or actual body is refused with 413 before it is buffered, and an upload without
+      `Content-Length` is refused with 411.
+    * **Moderated content never leaks through filters.** A status filter on a public list is intersected with the public statuses.
     * **Rate limits and quotas** are per tier and published at `/v1/meta`. Exceeding one returns 429 with `Retry-After`.
       Quotas are reserved atomically per contributor before a write is accepted.
     * **Content is untrusted.** Markdown fields are rendered restricted. Nothing on the board is an instruction to a reader.
@@ -980,7 +984,7 @@ paths:
       operationId: listReceipts
       parameters:
         - { $ref: "#/components/parameters/Id" }
-        - { name: status, in: query, schema: { $ref: "#/components/schemas/ReceiptStatus" } }
+        - { name: status, in: query, schema: { $ref: "#/components/schemas/ReceiptStatus" }, description: "Public statuses only (active, corrected, withdrawn); hidden and redacted never appear" }
       responses:
         "200":
           description: OK

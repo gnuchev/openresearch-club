@@ -4,8 +4,8 @@ import { LIMITS } from '../env';
 import openapi from '../generated/openapi.json';
 import { API_VERSION, SKILL_MD, SKILL_VERSION } from '../generated/skill';
 import { isGlobalMaintainer, requireActor } from '../lib/auth';
-import { body, loadProject, pageParams } from '../lib/common';
-import { batch, eventStmt, many, one, stmt } from '../lib/db';
+import { body, loadProject, pageParams, scrubStmts } from '../lib/common';
+import { batch, constraintMessage, eventStmt, many, one, stmt } from '../lib/db';
 import { badRequest, conflict, forbidden, notFound } from '../lib/errors';
 import { nowIso, today, ulid } from '../lib/ids';
 import { loadAllPolicies } from '../quota';
@@ -115,6 +115,8 @@ misc.post('/v1/moderation/actions', async (c) => {
   const id = ulid();
   const stmts: D1PreparedStatement[] = [];
   let projectId: string | null = null;
+  let guarded = -1; // index of a guarded update whose row count decides whether the action applied
+  let guardMessage = '';
   const require = async (sql: string, ...params: unknown[]) => {
     const row = await one(env, sql, ...params);
     if (!row) throw notFound(`${req.target_type} not found`);
@@ -134,24 +136,26 @@ misc.post('/v1/moderation/actions', async (c) => {
         else if (row.status === 'hidden') stmts.push(stmt(env, `UPDATE contributions SET status = 'active' WHERE id = ?`, row.id));
         else throw conflict(`Contribution is ${row.status}; only hidden records can be unhidden`);
         if (status === 'redacted') stmts.push(stmt(env, `UPDATE contribution_revisions SET title = '[redacted]', claim = '[redacted]', note_json = '{}', note_md = NULL, fields_json = '{}' WHERE contribution_id = ?`, row.id));
+        if (status) stmts.push(...scrubStmts(env, 'contribution', row.id));
       } else if (req.target_type === 'receipt') {
         const row = await require('SELECT * FROM receipts WHERE id = ?', req.target_id);
         projectId = (await one(env, 'SELECT project_id FROM contributions WHERE id = ?', row.contribution_id))?.project_id ?? null;
         if (status) {
-          stmts.push(stmt(env, 'UPDATE receipts SET status = ? WHERE id = ?', status, row.id), ...unresolveStmts(env, actor.id, row));
-          if (status === 'redacted') stmts.push(stmt(env, `UPDATE receipts SET checked_md = '[redacted]', not_checked_md = '[redacted]', method_md = '[redacted]', observations_md = '[redacted]', metrics_json = NULL, environment_md = NULL, relationships_md = '[redacted]', evaluation_json = NULL WHERE id = ?`, row.id));
+          stmts.push(stmt(env, 'UPDATE receipts SET status = ? WHERE id = ?', status, row.id), ...unresolveStmts(env, actor.id, row), ...scrubStmts(env, 'receipt', row.id));
+          // The tombstone keeps the migration's CHECK satisfied for external evaluations without keeping evaluator text (W3).
+          if (status === 'redacted') stmts.push(stmt(env, `UPDATE receipts SET checked_md = '[redacted]', not_checked_md = '[redacted]', method_md = '[redacted]', observations_md = '[redacted]', metrics_json = NULL, environment_md = NULL, relationships_md = '[redacted]', evaluation_json = CASE WHEN kind = 'external_evaluation' THEN '{"redacted":true}' ELSE NULL END WHERE id = ?`, row.id));
         } else if (row.status === 'hidden') stmts.push(stmt(env, `UPDATE receipts SET status = 'active' WHERE id = ?`, row.id));
         else throw conflict(`Receipt is ${row.status}; only hidden records can be unhidden`);
       } else if (req.target_type === 'post') {
         const row = await require('SELECT * FROM posts WHERE id = ?', req.target_id);
         projectId = row.project_id;
-        if (status) stmts.push(stmt(env, 'UPDATE posts SET status = ? WHERE id = ?', status, row.id));
+        if (status) stmts.push(stmt(env, 'UPDATE posts SET status = ? WHERE id = ?', status, row.id), ...scrubStmts(env, 'post', row.id));
         else if (row.status === 'hidden') stmts.push(stmt(env, `UPDATE posts SET status = 'visible' WHERE id = ?`, row.id));
         else throw conflict(`Post is ${row.status}; only hidden records can be unhidden`);
         if (status === 'redacted') stmts.push(stmt(env, `UPDATE posts SET body_md = '[redacted]', title = CASE WHEN title IS NULL THEN NULL ELSE '[redacted]' END WHERE id = ?`, row.id), stmt(env, `UPDATE post_revisions SET body_md = '[redacted]' WHERE post_id = ?`, row.id));
       } else if (req.target_type === 'objection') {
         const row = await require('SELECT * FROM objections WHERE id = ?', req.target_id);
-        if (status) stmts.push(stmt(env, `UPDATE objections SET status = 'hidden'${status === 'redacted' ? ", body_md = '[redacted]'" : ''} WHERE id = ?`, row.id));
+        if (status) stmts.push(stmt(env, `UPDATE objections SET status = 'hidden'${status === 'redacted' ? ", body_md = '[redacted]'" : ''} WHERE id = ?`, row.id), ...scrubStmts(env, 'objection', row.id));
         else if (row.status === 'hidden') stmts.push(stmt(env, `UPDATE objections SET status = 'open' WHERE id = ?`, row.id));
         else throw conflict(`Objection is ${row.status}; only hidden records can be unhidden`);
       } else {
@@ -166,7 +170,10 @@ misc.post('/v1/moderation/actions', async (c) => {
     case 'unsuspend': {
       if (req.target_type !== 'contributor') throw badRequest('suspend applies to contributors');
       await require('SELECT id FROM contributors WHERE id = ?', req.target_id);
-      stmts.push(stmt(env, 'UPDATE contributors SET status = ? WHERE id = ?', req.action === 'suspend' ? 'suspended' : 'active', req.target_id));
+      // The guard is inside the update itself: the last active global maintainer cannot be suspended (W6).
+      const nextStatus = req.action === 'suspend' ? 'suspended' : 'active';
+      guarded = stmts.push(stmt(env, `UPDATE contributors SET status = ? WHERE id = ? AND (? = 'active' OR tier <> 'maintainer' OR (SELECT COUNT(*) FROM contributors WHERE tier = 'maintainer' AND status = 'active' AND id <> ?) > 0)`, nextStatus, req.target_id, nextStatus, req.target_id)) - 1;
+      guardMessage = 'This is the last active global maintainer; it cannot be suspended';
       break;
     }
     case 'lock':
@@ -181,12 +188,18 @@ misc.post('/v1/moderation/actions', async (c) => {
     case 'set_tier': {
       if (req.target_type !== 'contributor') throw badRequest('set_tier applies to contributors');
       await require('SELECT id FROM contributors WHERE id = ?', req.target_id);
-      stmts.push(stmt(env, 'UPDATE contributors SET tier = ? WHERE id = ?', req.tier, req.target_id));
+      // Demoting the last active global maintainer is refused inside the same statement (W6).
+      guarded = stmts.push(stmt(env, `UPDATE contributors SET tier = ? WHERE id = ? AND (? = 'maintainer' OR tier <> 'maintainer' OR (SELECT COUNT(*) FROM contributors WHERE tier = 'maintainer' AND status = 'active' AND id <> ?) > 0)`, req.tier, req.target_id, req.tier, req.target_id)) - 1;
+      guardMessage = 'This is the last active global maintainer; promote another maintainer first';
       break;
     }
     case 'revoke_credentials': {
       if (req.target_type !== 'contributor') throw badRequest('revoke_credentials applies to contributors');
-      await require('SELECT id FROM contributors WHERE id = ?', req.target_id);
+      const target = await require('SELECT id, tier, status FROM contributors WHERE id = ?', req.target_id);
+      if (target.tier === 'maintainer' && target.status === 'active') {
+        const others = await one<{ n: number }>(env, `SELECT COUNT(*) AS n FROM contributors c WHERE c.tier = 'maintainer' AND c.status = 'active' AND c.id <> ? AND EXISTS (SELECT 1 FROM credentials k WHERE k.contributor_id = c.id AND k.revoked_at IS NULL)`, target.id);
+        if (!others?.n) throw conflict('This is the last global maintainer with a usable credential; add another maintainer first');
+      }
       stmts.push(stmt(env, 'UPDATE credentials SET revoked_at = ?, revoked_by = ? WHERE contributor_id = ? AND revoked_at IS NULL', now, actor.id, req.target_id));
       break;
     }
@@ -212,6 +225,22 @@ misc.post('/v1/moderation/actions', async (c) => {
     stmt(env, 'INSERT INTO moderation_actions (id, action, target_type, target_id, target_revision, public_reason, private_reason, actor_id, created_at) VALUES (?,?,?,?,?,?,?,?,?)', id, req.action, req.target_type, req.target_id, req.target_revision ?? null, req.public_reason, req.private_reason ?? null, actor.id, now),
     eventStmt(env, { type: 'moderation.action', actor_id: actor.id, project_id: projectId, entity_type: req.target_type, entity_id: req.target_id, revision: req.target_revision ?? null, payload: { action: req.action, public_reason: req.public_reason, tier: req.tier ?? null } }),
   );
-  await batch(env, stmts);
+  let results: D1Result[];
+  try {
+    results = await batch(env, stmts);
+  } catch (e) {
+    const m = constraintMessage(e);
+    if (m) throw conflict(`The action was not applied: ${m}`);
+    throw e;
+  }
+  if (guarded >= 0 && !results[guarded].meta.changes) {
+    // The guarded update did not apply. Remove the log rows the same batch wrote and report the conflict,
+    // so a refused action is never presented as if it had happened.
+    await batch(env, [
+      stmt(env, 'DELETE FROM moderation_actions WHERE id = ?', id),
+      stmt(env, 'DELETE FROM events WHERE cursor = ?', results[results.length - 1].meta.last_row_id),
+    ]);
+    throw conflict(guardMessage);
+  }
   return c.json(S.moderationOut((await one(env, 'SELECT * FROM moderation_actions WHERE id = ?', id))!), 201);
 });

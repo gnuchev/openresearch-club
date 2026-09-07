@@ -28,4 +28,5 @@ export const LIMITS = {
   prediction_max_years: 2,
   registrations_per_source_per_day: 5,
   idempotency_hours: 24,
+  json_body_max_bytes: 1048576,
 } as const;

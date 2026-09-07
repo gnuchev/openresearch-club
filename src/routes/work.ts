@@ -13,7 +13,9 @@ import {
   objectionsFull,
   pageParams,
   postFull,
+  PUBLIC_RECEIPT_STATUSES,
   receiptFull,
+  requireProjectWritable,
   requireWritable,
   revisionFull,
   RECEIPT_OBJECTIONS_SQL,
@@ -97,20 +99,22 @@ work.post('/v1/posts', async (c) => {
   const env = c.env;
   const actor = requireActor(c);
   const req = body(c, 'PostCreate');
+  // Resolve the effective project from the target first, then apply the one writability rule (W4).
   let projectId: string | null = null;
-  if (req.project_id) {
-    const project = await loadProject(env, req.project_id);
-    requireWritable(project, actor, await projectRoles(env, project.id, actor.id));
-    projectId = project.id;
-  }
   if (req.parent_post_id) {
     const parent = await one(env, `SELECT * FROM posts WHERE id = ? AND status = 'visible'`, req.parent_post_id);
     if (!parent) throw notFound('Parent post not found');
-    projectId = parent.project_id ?? projectId;
+    projectId = parent.project_id;
   } else if (req.objection_id) {
     const objection = await loadObjection(env, req.objection_id);
-    projectId = objection.project_id ?? projectId;
+    projectId = objection.project_id;
   } else if (!req.title) throw badRequest('A thread root needs a title');
+  if (req.project_id) {
+    const project = await loadProject(env, req.project_id);
+    if (projectId && projectId !== project.id) throw badRequest('project_id does not match the project of the parent');
+    projectId = project.id;
+  }
+  if (projectId) await requireProjectWritable(env, actor, projectId);
   if (req.run_id) await requireOwnRun(env, actor, req.run_id);
   const release = await reserveQuota(env, actor, 'posts');
   const id = ulid();
@@ -406,6 +410,7 @@ work.post('/v1/contributions/:id/withdraw', async (c) => {
   const contribution = await loadContribution(env, c.req.param('id'));
   if (contribution.author_id !== actor.id) throw forbidden('Only the author withdraws a contribution');
   if (contribution.status !== 'active') throw conflict(`Contribution is ${contribution.status}`);
+  await requireProjectWritable(env, actor, contribution.project_id);
   const req = body(c, 'WithdrawRequest');
   const now = nowIso();
   const stmts = [
@@ -427,6 +432,7 @@ work.post('/v1/contributions/:id/relations', async (c) => {
   const actor = requireActor(c);
   const contribution = await loadContribution(env, c.req.param('id'));
   if (contribution.author_id !== actor.id) throw forbidden('Only the author adds relations');
+  await requireProjectWritable(env, actor, contribution.project_id);
   const req = body(c, 'RelationCreate');
   if (!(await one(env, 'SELECT id FROM contributions WHERE id = ?', req.to_id))) throw notFound('Related contribution not found');
   const id = ulid();
@@ -444,10 +450,12 @@ work.post('/v1/contributions/:id/relations', async (c) => {
 work.get('/v1/contributions/:id/receipts', async (c) => {
   const env = c.env;
   const contribution = await loadContribution(env, c.req.param('id'));
+  // A caller-supplied status filter is intersected with the public statuses; it never reveals moderated receipts (W1).
   const status = c.req.query('status');
+  if (status && !PUBLIC_RECEIPT_STATUSES.has(status)) return c.json({ items: [] });
   const rows = status
     ? await many(env, `SELECT r.*, ${RECEIPT_OBJECTIONS_SQL} FROM receipts r WHERE r.contribution_id = ? AND r.status = ? ORDER BY r.revision, r.created_at`, contribution.id, status)
-    : await many(env, `SELECT r.*, ${RECEIPT_OBJECTIONS_SQL} FROM receipts r WHERE r.contribution_id = ? AND r.status NOT IN ('hidden','redacted') ORDER BY r.revision, r.created_at`, contribution.id);
+    : await many(env, `SELECT r.*, ${RECEIPT_OBJECTIONS_SQL} FROM receipts r WHERE r.contribution_id = ? AND r.status IN ('active','corrected','withdrawn') ORDER BY r.revision, r.created_at`, contribution.id);
   return c.json({ items: await Promise.all(rows.map((r) => receiptFull(env, r))) });
 });
 
@@ -488,6 +496,7 @@ work.post('/v1/contributions/:id/revisions/:revision/receipts', async (c) => {
   const revision = Number(c.req.param('revision'));
   if (!(await one(env, 'SELECT 1 FROM contribution_revisions WHERE contribution_id = ? AND revision = ?', contribution.id, revision))) throw notFound('Revision not found');
   if (contribution.author_id === actor.id) throw forbidden('You cannot write a receipt on your own contribution');
+  await requireProjectWritable(env, actor, contribution.project_id);
   const req = body(c, 'ReceiptCreate');
   if (req.kind === 'prediction_resolution') throw badRequest('Prediction resolutions are created through the resolution route by the agreed resolver');
   await requireOwnRun(env, actor, req.run_id);
@@ -523,6 +532,7 @@ work.post('/v1/receipts/:id/corrections', async (c) => {
   await requireOwnRun(env, actor, req.run_id);
   await checkArtifactLinks(env, actor, req.artifacts ?? []);
   const contribution = (await one(env, 'SELECT * FROM contributions WHERE id = ?', old.contribution_id))!;
+  await requireProjectWritable(env, actor, contribution.project_id);
   const release = await reserveQuota(env, actor, 'receipts');
   let id: string;
   try {
@@ -551,6 +561,7 @@ work.post('/v1/receipts/:id/withdraw', async (c) => {
   if (r.status !== 'active') throw conflict(`Receipt is ${r.status}`);
   const req = body(c, 'WithdrawRequest');
   const contribution = (await one(env, 'SELECT project_id FROM contributions WHERE id = ?', r.contribution_id))!;
+  await requireProjectWritable(env, actor, contribution.project_id);
   await batch(env, [
     stmt(env, `UPDATE receipts SET status = 'withdrawn', withdrawn_reason = ? WHERE id = ?`, req.reason, r.id),
     ...unresolveStmts(env, actor.id, r),
@@ -601,6 +612,7 @@ work.post('/v1/predictions/:id/resolver', async (c) => {
   const { prediction, contribution } = await loadPrediction(env, c.req.param('id'));
   if (contribution.author_id !== actor.id) throw forbidden('Only the author nominates a resolver');
   if (prediction.status !== 'awaiting_resolver') throw conflict(`Prediction is ${prediction.status}`);
+  await requireProjectWritable(env, actor, contribution.project_id);
   const req = body(c, 'ResolverNomination');
   if (req.resolver_id === actor.id) throw badRequest('The resolver must not be the author');
   if (!(await one(env, `SELECT id FROM contributors WHERE id = ? AND status = 'active'`, req.resolver_id))) throw notFound('Resolver not found');
@@ -617,6 +629,7 @@ work.post('/v1/predictions/:id/resolver-agreement', async (c) => {
   const { prediction, contribution } = await loadPrediction(env, c.req.param('id'));
   if (prediction.resolver_id !== actor.id) throw forbidden('Only the nominated resolver accepts');
   if (prediction.status !== 'awaiting_resolver') throw conflict(`Prediction is ${prediction.status}`);
+  await requireProjectWritable(env, actor, contribution.project_id);
   const now = nowIso();
   await batch(env, [
     stmt(env, `UPDATE predictions SET status = 'registered', resolver_agreed_at = ? WHERE contribution_id = ?`, now, contribution.id),
@@ -631,6 +644,7 @@ work.post('/v1/predictions/:id/resolution', async (c) => {
   const { prediction, contribution } = await loadPrediction(env, c.req.param('id'));
   if (prediction.resolver_id !== actor.id || !prediction.resolver_agreed_at) throw forbidden('Only the agreed resolver resolves');
   if (prediction.status !== 'registered') throw conflict(`Prediction is ${prediction.status}`);
+  await requireProjectWritable(env, actor, contribution.project_id);
   const req = body(c, 'ResolutionCreate');
   await requireOwnRun(env, actor, req.run_id);
   await checkArtifactLinks(env, actor, req.artifacts ?? []);
@@ -682,6 +696,7 @@ work.get('/v1/objections', async (c) => {
     }
   }
   const status = c.req.query('status');
+  if (status === 'hidden') return c.json({ items: [], next_cursor: null });
   if (status) {
     where.push('o.status = ?');
     params.push(status);
@@ -724,6 +739,7 @@ work.post('/v1/objections', async (c) => {
       break;
     }
   }
+  if (projectId) await requireProjectWritable(env, actor, projectId);
   if (req.run_id) await requireOwnRun(env, actor, req.run_id);
   const release = await reserveQuota(env, actor, 'objections');
   const id = ulid();
@@ -747,6 +763,7 @@ work.post('/v1/objections/:id/resolve', async (c) => {
   const actor = requireActor(c);
   const o = await loadObjection(env, c.req.param('id'));
   if (o.status === 'resolved' || o.status === 'withdrawn') throw conflict(`Objection is already ${o.status}`);
+  if (o.project_id) await requireProjectWritable(env, actor, o.project_id);
   const req = body(c, 'ObjectionResolve');
   let allowed = false;
   if (req.status === 'withdrawn') allowed = o.author_id === actor.id;

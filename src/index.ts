@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import type { AppEnv } from './env';
 import { API_VERSION } from './generated/skill';
 import { authenticate, touchCredential } from './lib/auth';
+import { constraintMessage } from './lib/db';
 import { HttpError, problemResponse } from './lib/errors';
 import { idempotency } from './lib/idempotency';
 import { reserveRequest } from './quota';
@@ -16,6 +17,9 @@ const app = new Hono<AppEnv>();
 
 app.onError((err, c) => {
   if (err instanceof HttpError) return problemResponse(err, c.req.path);
+  // A database constraint is a refused write, not a server failure: report it as a conflict.
+  const constraint = constraintMessage(err);
+  if (constraint) return problemResponse(new HttpError(409, 'Conflict', `The write was refused by the database: ${constraint}`), c.req.path);
   console.error('unhandled error', err instanceof Error ? err.stack ?? err.message : err);
   return problemResponse(new HttpError(500, 'Internal Server Error', 'Unexpected error; the request was not recorded'), c.req.path);
 });

@@ -1,8 +1,8 @@
 import type { Context } from 'hono';
 import type { AppEnv, Env } from '../env';
 import * as S from '../serialize';
-import { isGlobalMaintainer, type Actor } from './auth';
-import { many, one, placeholders, type Row } from './db';
+import { isGlobalMaintainer, projectRoles, type Actor } from './auth';
+import { many, one, placeholders, stmt, type Row } from './db';
 import { badRequest, conflict, forbidden, gone, notFound } from './errors';
 import { nowIso, ULID_RE } from './ids';
 import { assertValid } from './validate';
@@ -29,6 +29,18 @@ export function pageParams(c: Context<AppEnv>): { limit: number; cursor: string 
 export function pageOut<T extends { id: string }>(rows: T[], limit: number, mapper: (r: T) => unknown = (r) => r) {
   const items = rows.slice(0, limit);
   return { items: items.map(mapper), next_cursor: rows.length > limit ? items[items.length - 1].id : null };
+}
+
+// D1 binds at most 100 parameters per statement, so every id-list query runs in chunks.
+const CHUNK = 80;
+
+export async function chunkedRows(env: Env, ids: string[], build: (ph: string) => string, extra: unknown[] = []): Promise<Row[]> {
+  const out: Row[] = [];
+  for (let i = 0; i < ids.length; i += CHUNK) {
+    const slice = ids.slice(i, i + CHUNK);
+    out.push(...(await many(env, build(placeholders(slice.length)), ...slice, ...extra)));
+  }
+  return out;
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -68,11 +80,36 @@ export function requireWritable(project: Row, actor: Actor, roles: Set<string>):
   if (project.status !== 'active') throw conflict(`Project is ${project.status}, not active`);
 }
 
+/**
+ * The one writability rule for every project-scoped write. Callers resolve the effective project
+ * first (a reply from its parent, a receipt from its contribution, a lease from its task) and then
+ * call this, so no indirect route bypasses a lock or a paused project.
+ */
+export async function requireProjectWritable(env: Env, actor: Actor, projectId: string): Promise<Row> {
+  const project = await one(env, 'SELECT * FROM projects WHERE id = ?', projectId);
+  if (!project) throw notFound('Project not found');
+  requireWritable(project, actor, await projectRoles(env, project.id, actor.id));
+  return project;
+}
+
+/**
+ * Remove copied content from every public projection of a record when it is hidden or redacted:
+ * the record's event payloads become a tombstone and cached idempotent responses that carried the
+ * record are dropped. The rows themselves stay, as the contract's tombstone rule requires.
+ */
+export function scrubStmts(env: Env, entityType: string, entityId: string): D1PreparedStatement[] {
+  return [
+    stmt(env, `UPDATE events SET payload_json = '{"tombstone":true}' WHERE entity_type = ? AND entity_id = ?`, entityType, entityId),
+    stmt(env, 'DELETE FROM idempotency_keys WHERE response_body LIKE ?', `%${entityId}%`),
+  ];
+}
+
 // ---------------------------------------------------------------------------------------------
 // Contributions, receipts, revisions
 // ---------------------------------------------------------------------------------------------
 
 export const RECEIPT_OBJECTIONS_SQL = `(SELECT COUNT(*) FROM objections o WHERE o.target_type = 'receipt' AND o.target_id = r.id AND o.status IN ('open','answered')) AS objections_unresolved`;
+export const PUBLIC_RECEIPT_STATUSES = new Set(['active', 'corrected', 'withdrawn']);
 
 export async function loadContribution(env: Env, id: string): Promise<Row> {
   const c = await one(env, 'SELECT * FROM contributions WHERE id = ?', id);
@@ -82,20 +119,19 @@ export async function loadContribution(env: Env, id: string): Promise<Row> {
 }
 
 export async function facetsFor(env: Env, ids: string[]): Promise<Map<string, Row>> {
-  if (!ids.length) return new Map();
-  const rows = await many(
+  const rows = await chunkedRows(
     env,
-    `SELECT f.*, (SELECT COUNT(*) FROM tasks t WHERE t.target_contribution_id = f.contribution_id AND t.status = 'open') AS open_check_requests
-       FROM contribution_facets f WHERE f.contribution_id IN (${placeholders(ids.length)})`,
-    ...ids,
+    ids,
+    (ph) =>
+      `SELECT f.*, (SELECT COUNT(*) FROM tasks t WHERE t.target_contribution_id = f.contribution_id AND t.status = 'open') AS open_check_requests
+         FROM contribution_facets f WHERE f.contribution_id IN (${ph})`,
   );
   return new Map(rows.map((r) => [r.contribution_id as string, r]));
 }
 
-async function groupBy(env: Env, sql: string, key: string, ids: string[]): Promise<Map<string, Row[]>> {
+async function groupBy(env: Env, ids: string[], build: (ph: string) => string, key: string, extra: unknown[] = []): Promise<Map<string, Row[]>> {
   const out = new Map<string, Row[]>();
-  if (!ids.length) return out;
-  for (const r of await many(env, sql, ...ids)) {
+  for (const r of await chunkedRows(env, ids, build, extra)) {
     const k = r[key] as string;
     if (!out.has(k)) out.set(k, []);
     out.get(k)!.push(r);
@@ -106,23 +142,21 @@ async function groupBy(env: Env, sql: string, key: string, ids: string[]): Promi
 export function receiptsFor(env: Env, ids: string[]): Promise<Map<string, Row[]>> {
   return groupBy(
     env,
-    `SELECT r.*, ${RECEIPT_OBJECTIONS_SQL} FROM receipts r WHERE r.contribution_id IN (${placeholders(ids.length)}) AND r.status NOT IN ('hidden','redacted') ORDER BY r.created_at`,
-    'contribution_id',
     ids,
+    (ph) => `SELECT r.*, ${RECEIPT_OBJECTIONS_SQL} FROM receipts r WHERE r.contribution_id IN (${ph}) AND r.status IN ('active','corrected','withdrawn') ORDER BY r.created_at`,
+    'contribution_id',
   );
 }
 
 export function relationsFor(env: Env, ids: string[]): Promise<Map<string, Row[]>> {
-  return groupBy(env, `SELECT * FROM relations WHERE from_id IN (${placeholders(ids.length)}) ORDER BY created_at`, 'from_id', ids);
+  return groupBy(env, ids, (ph) => `SELECT * FROM relations WHERE from_id IN (${ph}) ORDER BY created_at`, 'from_id');
 }
 
 export async function currentRevisionsFor(env: Env, ids: string[]): Promise<Map<string, Row>> {
-  if (!ids.length) return new Map();
-  const rows = await many(
+  const rows = await chunkedRows(
     env,
-    `SELECT r.* FROM contribution_revisions r JOIN contributions c ON c.id = r.contribution_id AND c.current_revision = r.revision
-      WHERE c.id IN (${placeholders(ids.length)})`,
-    ...ids,
+    ids,
+    (ph) => `SELECT r.* FROM contribution_revisions r JOIN contributions c ON c.id = r.contribution_id AND c.current_revision = r.revision WHERE c.id IN (${ph})`,
   );
   return new Map(rows.map((r) => [r.contribution_id as string, r]));
 }
@@ -158,8 +192,8 @@ export async function revisionFull(env: Env, contributionId: string, revision: n
   if (!rev) throw notFound('Revision not found');
   const [run, artifacts, receiptRows] = await Promise.all([
     one(env, 'SELECT * FROM runs WHERE id = ?', rev.run_id),
-    many(env, 'SELECT a.*, ca.role FROM contribution_artifacts ca JOIN artifacts a ON a.id = ca.artifact_id WHERE ca.contribution_id = ? AND ca.revision = ? ORDER BY ca.role', contributionId, revision),
-    many(env, `SELECT r.*, ${RECEIPT_OBJECTIONS_SQL} FROM receipts r WHERE r.contribution_id = ? AND r.revision = ? AND r.status NOT IN ('hidden','redacted') ORDER BY r.created_at`, contributionId, revision),
+    many(env, `SELECT a.*, ca.role FROM contribution_artifacts ca JOIN artifacts a ON a.id = ca.artifact_id WHERE ca.contribution_id = ? AND ca.revision = ? AND a.status = 'published' ORDER BY ca.role`, contributionId, revision),
+    many(env, `SELECT r.*, ${RECEIPT_OBJECTIONS_SQL} FROM receipts r WHERE r.contribution_id = ? AND r.revision = ? AND r.status IN ('active','corrected','withdrawn') ORDER BY r.created_at`, contributionId, revision),
   ]);
   const receipts = await Promise.all(receiptRows.map((r) => receiptFull(env, r)));
   return S.revisionOut(env, rev, run, artifacts, receipts);
@@ -189,11 +223,13 @@ export async function contributionFull(env: Env, c: Row) {
 export async function tasksFull(env: Env, tasks: Row[]) {
   if (!tasks.length) return [];
   const ids = tasks.map((t) => t.id as string);
-  const leases = await many(env, `SELECT * FROM leases WHERE task_id IN (${placeholders(ids.length)}) AND released_at IS NULL AND expires_at > ?`, ...ids, nowIso());
+  const leases = await chunkedRows(env, ids, (ph) => `SELECT * FROM leases WHERE task_id IN (${ph}) AND released_at IS NULL AND expires_at > ?`, [nowIso()]);
   const targets = [...new Set(tasks.map((t) => t.target_contribution_id).filter(Boolean))] as string[];
-  const claims = targets.length
-    ? await many(env, `SELECT c.id, r.claim FROM contributions c JOIN contribution_revisions r ON r.contribution_id = c.id AND r.revision = c.current_revision WHERE c.id IN (${placeholders(targets.length)})`, ...targets)
-    : [];
+  const claims = await chunkedRows(
+    env,
+    targets,
+    (ph) => `SELECT c.id, r.claim FROM contributions c JOIN contribution_revisions r ON r.contribution_id = c.id AND r.revision = c.current_revision WHERE c.id IN (${ph})`,
+  );
   const claimMap = new Map(claims.map((r) => [r.id as string, r.claim as string]));
   return tasks.map((t) => S.taskOut(t, leases.filter((l) => l.task_id === t.id), claimMap.get(t.target_contribution_id) ?? null));
 }

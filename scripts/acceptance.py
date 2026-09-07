@@ -222,6 +222,104 @@ def main():
     s, me2, _ = call("GET", "/v1/me", token=author["token"])
     check("author's usage today counts 1 contribution and 1 revision", s == 200 and me2["usage_today"]["contributions"] == 1 and me2["usage_today"]["revisions"] == 1, f"{me2.get('usage_today') if s == 200 else me2}")
 
+    # --- Regressions from runtime review receipt 0004 (W1 to W7) ------------------------------
+    NOTE_MIN = {"tried": "t", "happened": "h", "limitations": "l", "next_step": "n"}
+
+    def mod(action_body):
+        return call("POST", "/v1/moderation/actions", action_body, token=MAINT)
+
+    # W1: a caller-supplied status filter never reveals moderated records.
+    s, js, _ = mod({"action": "hide", "target_type": "receipt", "target_id": receipt["id"], "public_reason": "acceptance: hide"})
+    expect("maintainer hides the checker's receipt", s, 201, js)
+    s, js, _ = call("GET", f"/v1/receipts/{receipt['id']}")
+    expect("hidden receipt is gone (410)", s, 410, js)
+    s, js, _ = call("GET", f"/v1/contributions/{cid}/receipts?status=hidden")
+    check("W1: status filter does not expose the hidden receipt", s == 200 and js["items"] == [], f"got {s} {json.dumps(js)[:200]}")
+    s, js, _ = call("GET", "/v1/objections?status=hidden")
+    check("W1: objection status filter does not expose hidden objections", s == 200 and js["items"] == [])
+    s, js, _ = mod({"action": "unhide", "target_type": "receipt", "target_id": receipt["id"], "public_reason": "acceptance: unhide"})
+    expect("maintainer unhides the receipt", s, 201, js)
+    s, js, _ = call("GET", f"/v1/receipts/{receipt['id']}")
+    expect("unhidden receipt is readable again", s, 200, js)
+
+    # W3: every receipt kind can be redacted, including an external evaluation with a score.
+    s, ev, _ = call("POST", f"/v1/contributions/{nxt['id']}/revisions/1/receipts", {
+        "kind": "external_evaluation", "outcome": "scored", "run_id": checker["run"],
+        "checked_md": "Submitted the artifact hash to the evaluator.", "not_checked_md": "Did not run the code.", "method_md": "Evaluator v1.", "observations_md": "Scored.",
+        "independence": {"execution": "independent", "implementation": "unknown", "data": "unknown", "design": "unknown"}, "relationships_md": "None known.",
+        "evaluation": {"evaluator": "acceptance evaluator", "evaluator_version": "1", "submission_sha256": "b" * 64, "score": 536, "direction": "higher_is_better"},
+    }, token=checker["token"])
+    expect("checker records an external evaluation", s, 201, ev)
+    s, js, _ = mod({"action": "redact", "target_type": "receipt", "target_id": ev["id"], "public_reason": "acceptance: redact evaluation"})
+    expect("W3: external-evaluation receipt can be redacted", s, 201, js)
+    s, js, _ = call("GET", f"/v1/receipts/{ev['id']}")
+    expect("W3: redacted receipt is gone (410)", s, 410, js)
+
+    # W2: redaction removes copied text from the event feed, the export and search.
+    marker = f"MARKER-{RUN}-{secrets.token_hex(4)}"
+    s, mk, _ = call("POST", "/v1/contributions", {"project_id": slug, "kind": "other", "title": f"Title {marker}", "claim": f"Claim {marker}", "note": NOTE_MIN, "fields": {}, "run_id": third["run"], "contract_version": 2}, token=third["token"])
+    expect("third posts a contribution carrying a unique marker", s, 201, mk)
+    s, js, _ = mod({"action": "redact", "target_type": "contribution", "target_id": mk["id"], "public_reason": "acceptance: redact"})
+    expect("maintainer redacts the marked contribution", s, 201, js)
+    s, js, _ = call("GET", f"/v1/contributions/{mk['id']}")
+    expect("redacted contribution is gone (410)", s, 410, js)
+    s, evs, _ = call("GET", f"/v1/events?project={slug}&limit=200")
+    check("W2: marker is absent from the public event feed", s == 200 and marker not in json.dumps(evs))
+    s, exp2, _ = call("GET", f"/v1/projects/{slug}/export")
+    check("W2: marker is absent from the export", s == 200 and marker not in json.dumps(exp2))
+    s, sr, _ = call("GET", f"/v1/search?q={marker}")
+    check("W2: marker is absent from search", s == 200 and sr["items"] == [])
+
+    # W4: a locked project refuses indirect writes from non-maintainers and keeps the maintainer exception.
+    s, root, _ = call("POST", "/v1/posts", {"project_id": slug, "title": "Discussion", "body_md": "root"}, token=MAINT)
+    expect("maintainer opens a thread before the lock", s, 201, root)
+    s, js, _ = mod({"action": "lock", "target_type": "project", "target_id": slug, "public_reason": "acceptance: safety review"})
+    expect("maintainer locks the project", s, 201, js)
+    s, js, _ = call("POST", "/v1/posts", {"parent_post_id": root["id"], "body_md": "reply while locked"}, token=author["token"])
+    expect("W4: reply into a locked project is refused (403)", s, 403, js)
+    s, js, _ = call("POST", f"/v1/contributions/{nxt['id']}/revisions/1/receipts", receipt_body, token=checker["token"])
+    expect("W4: receipt in a locked project is refused (403)", s, 403, js)
+    s, js, _ = call("POST", f"/v1/tasks/{task['id']}/leases", {"hours": 1}, token=author["token"])
+    expect("W4: lease in a locked project is refused (403)", s, 403, js)
+    s, js, _ = call("POST", "/v1/posts", {"parent_post_id": root["id"], "body_md": "maintainer reply"}, token=MAINT)
+    expect("W4: maintainer may still write to the locked project", s, 201, js)
+    s, js, _ = mod({"action": "unlock", "target_type": "project", "target_id": slug, "public_reason": "acceptance: unlock"})
+    expect("maintainer unlocks the project", s, 201, js)
+
+    # W6: the last active global maintainer cannot demote or suspend itself.
+    mid = me["contributor"]["id"]
+    s, js, _ = mod({"action": "set_tier", "target_type": "contributor", "target_id": mid, "tier": "new", "public_reason": "acceptance: self-demotion"})
+    expect("W6: sole maintainer cannot demote itself (409)", s, 409, js)
+    s, js, _ = mod({"action": "suspend", "target_type": "contributor", "target_id": mid, "public_reason": "acceptance: self-suspension"})
+    expect("W6: sole maintainer cannot suspend itself (409)", s, 409, js)
+    s, js, _ = call("GET", "/v1/me", token=MAINT)
+    check("W6: maintainer still has tier maintainer and is active", s == 200 and js["contributor"]["tier"] == "maintainer" and js["contributor"]["status"] == "active")
+
+    # W7: writes need a token before any body is read; oversized bodies are refused before buffering.
+    s, js, _ = call("POST", "/v1/posts", {"title": "x", "body_md": "y"})
+    expect("W7: unauthenticated write is refused (401)", s, 401, js)
+    s, js, _ = call("POST", "/v1/posts", {"project_id": slug, "title": "big", "body_md": "x" * (2 * 1024 * 1024)}, token=author["token"])
+    expect("W7: 2 MiB JSON body is refused (413)", s, 413, js)
+
+    # W5: an export and a context packet with more than 50 contributions.
+    if os.environ.get("ORC_SCALE", "1") == "1":
+        for who in (author, checker):
+            s, js, _ = mod({"action": "set_tier", "target_type": "contributor", "target_id": who["id"], "tier": "verified", "public_reason": "acceptance: scale fixture"})
+            expect(f"maintainer raises {who['handle']} to verified", s, 201, js)
+        sslug = f"acc-scale-{RUN}"
+        s, sp, _ = call("POST", "/v1/projects", {"slug": sslug, "title": "Scale fixture", "kind": "project", "status": "active", "brief_md": "export scale"}, token=MAINT)
+        expect("maintainer creates the scale project", s, 201, sp)
+        made = 0
+        for who, count in ((author, 28), (checker, 30)):
+            for i in range(count):
+                s, js, _ = call("POST", "/v1/contributions", {"project_id": sslug, "kind": "other", "title": f"item {i}", "claim": f"claim {i}", "note": NOTE_MIN, "fields": {}, "run_id": who["run"]}, token=who["token"])
+                made += s == 201
+        check("58 contributions created for the scale fixture", made == 58, f"made {made}")
+        s, se, _ = call("GET", f"/v1/projects/{sslug}/export")
+        check("W5: export of 58 contributions succeeds", s == 200 and len(se["contributions"]) == 58 and len(se["contributors"]) >= 3, f"got {s} {json.dumps(se)[:200] if s != 200 else ''}")
+        s, sc, _ = call("GET", f"/v1/projects/{sslug}/context?max_items=200")
+        check("W5: context packet of 58 contributions succeeds", s == 200 and len(sc["recent_contributions"]) == 58, f"got {s}")
+
     failed = [n for n, ok in RESULTS if not ok]
     print(f"\n{len(RESULTS) - len(failed)}/{len(RESULTS)} checks passed" + (f"; failed: {failed}" if failed else ""))
     return 1 if failed else 0
