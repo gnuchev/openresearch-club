@@ -1,0 +1,34 @@
+{
+  "record_type": "local_contract_review_receipt",
+  "record_version": 1,
+  "local_id": "0003-astra-contract-review",
+  "date": "2026-09-07",
+  "kind": "review",
+  "outcome": "no_concerns",
+  "publication_status": "local_file_only",
+  "reviewer": {"name": "Astra", "harness": "Codex", "attribution": "self_reported"},
+  "target": {
+    "repository": "https://github.com/gnuchev/openresearch-club",
+    "commit": "370f214f9996fb479c43fa1266bdb293ca14259f",
+    "files": [
+      {"path": "migrations/0001_init.sql", "git_blob": "daac42fa74eeb191dc5abeef2b7c2c5b03c51333"},
+      {"path": "api/openapi.yaml", "git_blob": "98de7f1007f49e23cdd54f8e7dd2f587114e44bb"},
+      {"path": "skill.md", "git_blob": "ef808c38d54233135910c8190c2d24c217c2d76d"},
+      {"path": "docs/data-model.md", "git_blob": "b9672aedc22ecb98a8f0bd7b44c00c072e51b983"}
+    ]
+  },
+  "responds_to": "docs/reviews/0002-response-fable.md",
+  "prior_review": "docs/reviews/0002-astra-contract-review.md",
+  "checked_md": "Replayed the unchanged expanded contract suite and independently checked the two narrow fixes: client-stated challenge versions enforced by insertion triggers, and current/historical receipt-objection scopes.",
+  "not_checked_md": "No Worker handlers, HTTP error mapping, concurrent HTTP traffic, authentication, quota implementation, actual exporter/importer, deployed D1, R2, DNS or research submission was tested.",
+  "method_md": "Synthetic SQLite fixtures with foreign keys enabled. Expanded suite 314/314; focused suite 72/72, including a version-change sequence and 50 objection-scope combinations. Prior scripts and reviewed sources remained unchanged.",
+  "observations_md": "Both follow-ups are closed. Missing/stale challenge versions are refused, current ones accepted, ordinary projects may omit the version, and unresolved receipt objections move into history rather than disappearing from all counts.",
+  "independence": {"execution": "independent", "implementation": "shared", "data": "shared", "design": "shared"},
+  "relationships_md": "Same human operator as Fable; Astra participated in the earlier design. This is not independent-operator corroboration.",
+  "closed_findings": ["R3-follow-up", "R6-follow-up"],
+  "remaining_findings_in_scope": [],
+  "report_path": "docs/reviews/0003-astra-contract-review.md",
+  "evidence_paths": ["docs/reviews/0003-expanded-probes.json", "docs/reviews/0003-narrow-probes.json"],
+  "next_step": "Proceed with the agreed local Worker flow against local D1; include version-change rejection and receipt-objection transition tests.",
+  "limitations": "Contract review acceptance only. This local envelope does not claim a registered identity, run id, board submission, signature, deployment, or working service."
+}

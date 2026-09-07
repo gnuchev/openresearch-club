@@ -1,0 +1,978 @@
+{
+  "reviewed_commit": "370f214f9996fb479c43fa1266bdb293ca14259f",
+  "generated_at": "2026-09-07T13:22:28.505005+00:00",
+  "scope": "Two narrow fixes: SQLite insertion triggers and historical receipt-objection scopes; no HTTP or D1 deployment.",
+  "environment": {
+    "python": "3.12.14",
+    "sqlite": "3.53.1"
+  },
+  "sources": [
+    {
+      "path": "migrations/0001_init.sql",
+      "git_blob": "daac42fa74eeb191dc5abeef2b7c2c5b03c51333",
+      "sha256": "76bb0fb55df35c94b77c96af3088733ab55f2cde23bf5952fa658d975a271556"
+    },
+    {
+      "path": "api/openapi.yaml",
+      "git_blob": "98de7f1007f49e23cdd54f8e7dd2f587114e44bb",
+      "sha256": "8bdfa334ac16c13069074ca085a004d40e7db7eba7369094d7e0176797b592cf"
+    },
+    {
+      "path": "skill.md",
+      "git_blob": "ef808c38d54233135910c8190c2d24c217c2d76d",
+      "sha256": "825f48a53d2f866b7ef8a55aeaf312d894d5239fd1a1e9f52ee758b364bec8f2"
+    },
+    {
+      "path": "docs/data-model.md",
+      "git_blob": "b9672aedc22ecb98a8f0bd7b44c00c072e51b983",
+      "sha256": "a3c3c5a8f9654edff8230ae5d81d91e2c4f763884dadd963f02eecca9c5a118e"
+    }
+  ],
+  "checks": [
+    {
+      "name": "first_challenge_revision_missing",
+      "expected": false,
+      "actual": false,
+      "passed": true,
+      "detail": {
+        "supplied_version": null,
+        "sqlite_error": "contract_version is required for challenge submissions"
+      }
+    },
+    {
+      "name": "first_challenge_revision_missing:row_count",
+      "expected": 1,
+      "actual": 1,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "first_challenge_revision_stale",
+      "expected": false,
+      "actual": false,
+      "passed": true,
+      "detail": {
+        "supplied_version": 0,
+        "sqlite_error": "contract_version is not the current contract version"
+      }
+    },
+    {
+      "name": "first_challenge_revision_stale:row_count",
+      "expected": 1,
+      "actual": 1,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "first_challenge_revision_future",
+      "expected": false,
+      "actual": false,
+      "passed": true,
+      "detail": {
+        "supplied_version": 99,
+        "sqlite_error": "contract_version is not the current contract version"
+      }
+    },
+    {
+      "name": "first_challenge_revision_future:row_count",
+      "expected": 1,
+      "actual": 1,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "first_challenge_revision_current",
+      "expected": true,
+      "actual": true,
+      "passed": true,
+      "detail": {
+        "supplied_version": 1,
+        "sqlite_error": null
+      }
+    },
+    {
+      "name": "first_challenge_revision_current:row_count",
+      "expected": 2,
+      "actual": 2,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "later_challenge_revision_missing",
+      "expected": false,
+      "actual": false,
+      "passed": true,
+      "detail": {
+        "supplied_version": null,
+        "sqlite_error": "contract_version is required for challenge submissions"
+      }
+    },
+    {
+      "name": "later_challenge_revision_missing:row_count",
+      "expected": 1,
+      "actual": 1,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "ordinary_revision_missing",
+      "expected": true,
+      "actual": true,
+      "passed": true,
+      "detail": {
+        "supplied_version": null,
+        "sqlite_error": null
+      }
+    },
+    {
+      "name": "ordinary_revision_missing:row_count",
+      "expected": 2,
+      "actual": 2,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "first_submission_after_rules_changed",
+      "expected": false,
+      "actual": false,
+      "passed": true,
+      "detail": {
+        "supplied_version": 1,
+        "sqlite_error": "contract_version is not the current contract version"
+      }
+    },
+    {
+      "name": "first_submission_after_rules_changed:row_count",
+      "expected": 1,
+      "actual": 1,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "later_revision_after_rules_changed",
+      "expected": false,
+      "actual": false,
+      "passed": true,
+      "detail": {
+        "supplied_version": 1,
+        "sqlite_error": "contract_version is not the current contract version"
+      }
+    },
+    {
+      "name": "later_revision_after_rules_changed:row_count",
+      "expected": 1,
+      "actual": 1,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "later_revision_current_rules",
+      "expected": true,
+      "actual": true,
+      "passed": true,
+      "detail": {
+        "supplied_version": 2,
+        "sqlite_error": null
+      }
+    },
+    {
+      "name": "later_revision_current_rules:row_count",
+      "expected": 2,
+      "actual": 2,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "earlier_contract_binding_preserved",
+      "expected": 1,
+      "actual": 1,
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/active/open",
+      "expected": [
+        1,
+        0,
+        1
+      ],
+      "actual": [
+        1,
+        0,
+        1
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/active/answered",
+      "expected": [
+        1,
+        0,
+        1
+      ],
+      "actual": [
+        1,
+        0,
+        1
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/active/resolved",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/active/withdrawn",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/active/hidden",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/corrected/open",
+      "expected": [
+        1,
+        0,
+        1
+      ],
+      "actual": [
+        1,
+        0,
+        1
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/corrected/answered",
+      "expected": [
+        1,
+        0,
+        1
+      ],
+      "actual": [
+        1,
+        0,
+        1
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/corrected/resolved",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/corrected/withdrawn",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/corrected/hidden",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/withdrawn/open",
+      "expected": [
+        1,
+        0,
+        1
+      ],
+      "actual": [
+        1,
+        0,
+        1
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/withdrawn/answered",
+      "expected": [
+        1,
+        0,
+        1
+      ],
+      "actual": [
+        1,
+        0,
+        1
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/withdrawn/resolved",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/withdrawn/withdrawn",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/withdrawn/hidden",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/hidden/open",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/hidden/answered",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/hidden/resolved",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/hidden/withdrawn",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/hidden/hidden",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/redacted/open",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/redacted/answered",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/redacted/resolved",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/redacted/withdrawn",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r1/redacted/hidden",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/active/open",
+      "expected": [
+        0,
+        1,
+        0
+      ],
+      "actual": [
+        0,
+        1,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/active/answered",
+      "expected": [
+        0,
+        1,
+        0
+      ],
+      "actual": [
+        0,
+        1,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/active/resolved",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/active/withdrawn",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/active/hidden",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/corrected/open",
+      "expected": [
+        0,
+        1,
+        0
+      ],
+      "actual": [
+        0,
+        1,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/corrected/answered",
+      "expected": [
+        0,
+        1,
+        0
+      ],
+      "actual": [
+        0,
+        1,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/corrected/resolved",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/corrected/withdrawn",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/corrected/hidden",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/withdrawn/open",
+      "expected": [
+        0,
+        1,
+        0
+      ],
+      "actual": [
+        0,
+        1,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/withdrawn/answered",
+      "expected": [
+        0,
+        1,
+        0
+      ],
+      "actual": [
+        0,
+        1,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/withdrawn/resolved",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/withdrawn/withdrawn",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/withdrawn/hidden",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/hidden/open",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/hidden/answered",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/hidden/resolved",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/hidden/withdrawn",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/hidden/hidden",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/redacted/open",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/redacted/answered",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/redacted/resolved",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/redacted/withdrawn",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "receipt_objection_scope:r2/redacted/hidden",
+      "expected": [
+        0,
+        0,
+        0
+      ],
+      "actual": [
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "foreign_key_check",
+      "expected": [],
+      "actual": [],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "contract_versions_retained",
+      "expected": [
+        1,
+        2
+      ],
+      "actual": [
+        1,
+        2
+      ],
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "api_skill_versions",
+      "expected": {
+        "api_version": "1.1.1",
+        "skill_version": "1.1.1"
+      },
+      "actual": {
+        "api_version": "1.1.1",
+        "skill_version": "1.1.1"
+      },
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "passed": 72,
+  "failed": 0
+}
