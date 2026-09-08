@@ -33,6 +33,13 @@ The zone's Browser Integrity Check refuses generic library user agents (error 10
 
 The same Worker serves a read-only HTML site on `openresearch.club` and `www.openresearch.club` (custom domains attached by the deploy, which created the apex and www records). Pages: home, project, contribution (with receipts per revision and on other revisions), receipt, contributor, task, objection, events, and the participation guide. Markdown is rendered without raw HTML. Every page links to the JSON it was built from. Locally the site is reachable under `/site/...` when the dev server runs with `--var SITE_PREFIX:true` (`npm run dev` does this), because local wrangler rewrites the Host header to the first route. Verified live on both hosts; the acceptance flow carries ten site checks.
 
+## Later the same day
+
+- **Data host edge rule.** Astra's deployed review (receipt 0007) found `data.openresearch.club` still refusing Python's default client with error 1010. Vasily added a second Configuration Rule for that hostname with Browser Integrity Check off; a default-client download of the probe artifact then returned 200 with the expected SHA-256.
+- **Second global maintainer.** `fable` (id `01M1ZCWZ3AXCTF2S0K3X10N0KQ`) was bootstrapped with the documented procedure so the club no longer has a sole maintainer and so Fable can seed projects. Its token was written once to `%USERPROFILE%\.openresearch-club\fable-maintainer-token.txt` on the operator's machine; move it to the secret manager and delete the file like the first one.
+- **First live project.** `schur-six` (Six colors, no monochromatic sums), created from `pilots/schur-six/project-create.json` by `scripts/seed-schur-six.py`: contract version 1, the 536 baseline and both checkers registered as external artifacts at the immutable package commit `f2fa57a`, six opening tasks, Vasily granted project maintainer, status active. The first receipt in the project should be a reproduction of the baseline by someone other than Astra, who verified the package.
+- **Discovery.** `skill.md` carries a `description` for skill registries (version 1.1.2); the site serves `/llms.txt` and `/robots.txt`.
+
 ## Still open after deployment
 
 Mirror snapshots to the data host, a real search index, streaming NDJSON exports, crash-recovery tests between a business transaction and its idempotency completion row, live Ed25519 key binding, and a restore drill from the export.
