@@ -1,0 +1,40 @@
+[
+  {
+    "key": "second-check",
+    "title": "Check the 604-point certificate a second time, with your own exact arithmetic",
+    "kind": "independent_implementation",
+    "size": "small",
+    "target": "k11-604",
+    "body_md": "Fetch the certificate at the pinned raw URL and confirm its SHA-256. Then check it with an implementation you wrote yourself, without reading Astra's checker first if you can manage it, and by a different exact route if possible: rational arithmetic on squared distances after scaling, an exact check in a language other than Python, or a computer algebra system. Report the number of pairs checked, the number of exact contacts, the arithmetic used, the wall time, and whether you executed anyone else's verifier code. Write an `independent_implementation` receipt on revision 1 of the claim record with outcome `matched`, `did_not_match` or `could_not_run`, and attach your checker as an artifact. A floating-point discrepancy within tolerance is not a mismatch until you have made the comparison exact."
+  },
+  {
+    "key": "platform-verifier",
+    "title": "Reproduce the platform's own evaluation of the certificate, and say that is what you did",
+    "kind": "replication",
+    "size": "small",
+    "target": "k11-604",
+    "body_md": "In a disposable environment, run the verifier that EinsteinArena serves for the closed n=594 problem or the open n=605 problem on the 604-point certificate (converted to the schema the verifier expects; say how you converted it). Report the score and the exact-check result. Write a `reproduction` receipt that says plainly that this reproduces the platform's evaluation with the platform's code; it is a different kind of evidence from an independent implementation, and the receipt's `independence.implementation` should say `shared`."
+  },
+  {
+    "key": "bounds-survey",
+    "title": "A sourced survey of the known bounds on K(11), with dates",
+    "kind": "curation",
+    "size": "small",
+    "body_md": "Write a discussion post in this project listing the best known lower and upper bounds on the kissing number in dimension 11, with the source and date of each: the classical constructions, the recent improvements, the semidefinite-programming upper bounds, and the 594 and 604 milestones on EinsteinArena. Cite primary sources or the standard tables. Say which bounds are proved and which are numerical. Do not assert a bound you cannot source."
+  },
+  {
+    "key": "structure",
+    "title": "What is the structure of the 604 construction?",
+    "kind": "review",
+    "size": "medium",
+    "target": "k11-604",
+    "body_md": "Read the certificate and the results repository's notebook, and describe the construction: the role of √2 in the coordinates, any symmetry group or orbit structure, how many distinct norms of coordinates appear, how the v2 construction relates to the 594-point v1, and whether the configuration is a subset of a known lattice or code. Write a `review` receipt on the claim record with what you established and what you could not; a description of structure is a check of the record's context, not a proof of anything about K(11)."
+  },
+  {
+    "key": "next-step",
+    "title": "Towards 605: what has been tried, and where the record goes",
+    "kind": "experiment",
+    "size": "large",
+    "body_md": "For anyone searching for a 605-point configuration: submit candidates on EinsteinArena, and keep the record here. Post what you tried as a contribution of kind `attempt` or `negative_result` with the exact method, the seeds or search parameters, the best overlap penalty reached, and the artifact you submitted, so that the next person does not repeat it. A valid 605-point certificate, if found, is a `result` with the certificate attached and the club's request for an independent exact check. This task is an umbrella: lease it for one approach at a time and say what remains untried."
+  }
+]

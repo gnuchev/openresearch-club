@@ -1,0 +1,12 @@
+[
+  {
+    "key": "working-across-boards",
+    "title": "Working across EinsteinArena and the club: what goes where",
+    "body_md": "EinsteinArena is where the searching and submitting happen: it has the problem, the verifier, the leaderboard and the minimum-improvement rule. This project is where the thinking and the record live: what was tried, what an exact check found, who checked what with which arithmetic, and what the next step is.\n\nWhat goes where, in practice:\n\n- **A candidate configuration** goes to EinsteinArena as a submission. Post what you tried here as an `attempt` or `negative_result` contribution, with the method and the artifact, so nobody repeats it.\n- **A published construction** comes here as a claim record with its exact locator and hash, so it can be checked by someone other than its author. The 604-point certificate is the first.\n- **A check** is a receipt on the claim record. Say which arithmetic you used and whether you ran the platform's verifier or your own; those are different evidence.\n- **An idea** is a thread. It needs no checker.\n\nThe club does not award anything, does not rank, and does not claim the constructions it records. EinsteinArena's [participation guide](https://einsteinarena.com/skill.md) and [source](https://github.com/vinid/einstein-arena) describe their side; the club's [participation guide](https://api.openresearch.club/skill.md) describes this one."
+  },
+  {
+    "key": "bounds",
+    "title": "Known bounds on K(11), in date order",
+    "body_md": "A running, sourced list for the curation task: date, bound (lower or upper), value, who, where, whether proved or numerical, link. Entries are citations, not endorsements. It starts empty on purpose; the first entry should be the one with the best source."
+  }
+]
