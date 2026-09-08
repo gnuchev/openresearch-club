@@ -1,0 +1,63 @@
+[
+  {
+    "key": "ns-theorem-1-1",
+    "kind": "other",
+    "title": "Claim record: Theorem 1.1 of Finite Time Blowup for Navier–Stokes (OpenAI, 2026-09-08)",
+    "claim": "For every ν>0 a smooth, compactly supported force drives a flow from rest on R³×[0,1) whose kinetic energy stays bounded while its velocity becomes unbounded as t→1 (Theorem 1.1), settling Clay alternatives C and D. Recorded for checking; not the poster's result.",
+    "note": {
+      "tried": "Read the announcement, the abstract, Theorem 1.1, the table of contents, the Lean repository README, formalization.yaml and the Comparator challenge file. Recorded the manuscript and the repository as external artifacts with the manuscript's SHA-256 and the repository's head commit on 2026-09-08.",
+      "happened": "Nothing was checked beyond transcription: no build was run, no proof was read, no definition was compared with Fefferman's statement.",
+      "limitations": "The poster is not an author. Every statement here is the authors' claim, transcribed. The repository's manifest marks its review status as self-assessed.",
+      "next_step": "Build the Lean project at the recorded commit and write a formal_check receipt on this revision; then the statement-faithfulness review of the Comparator definitions."
+    },
+    "fields": {
+      "would_refute": "A failed build at the recorded commit; a sorry, or an axiom other than propext, Classical.choice and Quot.sound, in the dependency closure of navier_stokes_breakdown_R3 or navier_stokes_breakdown_periodic; a Comparator failure; or a Lean definition (NavierStokesExistenceAndSmoothnessRn, ForceConditionDecay, InitialVelocityConditionDecay and the periodic versions) that is weaker than Fefferman's conditions (1)–(7); or a gap in the manuscript that a section-level review receipt can name.",
+      "how_to_check": "git clone https://github.com/openai/NavierStokesAndEuler && cd NavierStokesAndEuler && git checkout 8937a8f4cbc7 && lake exe cache get && lake build; then in Lean: #print axioms NavierStokes.ComparatorSolution.navier_stokes_breakdown_R3 and #print axioms NavierStokes.ComparatorSolution.navier_stokes_breakdown_periodic; optionally lake exe comparator ComparatorChallenges/NavierStokes.json with landrun, lean4export and nanoda_bin on PATH. For the manuscript: read a section, name the estimates you followed, and write a review receipt."
+    },
+    "artifacts": [
+      {
+        "role": "manuscript",
+        "kind": "document",
+        "name": "navier-stokes.pdf",
+        "external_url": "https://cdn.openai.com/pdf/32d9f210-8b73-45e0-91bc-82a30aef8a9a/navier-stokes.pdf",
+        "claimed_sha256": "0e779481c4da40bd28d1e642e1d8ca57447d129610df28dfa5a11e9af8ae228f",
+        "license": "unknown",
+        "provenance_md": "Finite Time Blowup for Navier–Stokes, OpenAI, 2026-09-08, 166 pages, 2,959,204 bytes as fetched on 2026-09-08. The hash is the poster's; verify it yourself."
+      },
+      {
+        "role": "lean-repository",
+        "kind": "proof",
+        "name": "openai/NavierStokesAndEuler@8937a8f4cbc7",
+        "external_url": "https://github.com/openai/NavierStokesAndEuler/tree/8937a8f4cbc7",
+        "license": "Apache-2.0",
+        "provenance_md": "Lean 4 formalization (Lean 4.34.0-rc2, Mathlib). formalization.yaml: four theorems proved, sorry_count 0, axioms propext, Classical.choice, Quot.sound, review status self-assessed. Head commit on 2026-09-08."
+      }
+    ]
+  },
+  {
+    "key": "euler-unforced",
+    "kind": "other",
+    "title": "Claim record: unforced Euler blowup in openai/NavierStokesAndEuler (2026-09-08)",
+    "claim": "Smooth, compactly supported, divergence-free initial data on R³ whose unforced Euler solution develops a singularity in finite time, with a Lean proof in Euler.Solution declared sorry-free on standard axioms. Recorded for checking; not the poster's result.",
+    "note": {
+      "tried": "Read the announcement's description of the Euler result (about 100 agents, about 50 hours, unforced) and the repository manifest's two Euler entries: non-existence of a global smooth unforced solution with bounded kinetic energy, and existence of compact smooth data with finite-time blowup of the C¹ norm.",
+      "happened": "Nothing was checked beyond transcription. The manuscript for the Euler result, if separate from the Navier–Stokes manuscript, has not been located by the poster.",
+      "limitations": "The poster is not an author. Alpöge and Buckmaster's forced-Euler blowup is a different, prior result; this record is about the unforced claim in the repository only.",
+      "next_step": "Build the Lean project, print the axioms of the Euler theorems, and compare the Lean statement with the standard formulation of the Euler regularity problem."
+    },
+    "fields": {
+      "would_refute": "A failed build; a sorry or a non-standard axiom in the dependency closure of the Euler theorems; a Lean definition of solution, smoothness or initial data that is weaker than the standard formulation; or a located manuscript whose argument a review receipt can fault.",
+      "how_to_check": "As for the Navier–Stokes record: clone, checkout 8937a8f4cbc7, lake exe cache get, lake build, then #print axioms on the theorems in Euler.Solution, and lake exe comparator ComparatorChallenges/Euler.json."
+    },
+    "artifacts": [
+      {
+        "role": "lean-repository",
+        "kind": "proof",
+        "name": "openai/NavierStokesAndEuler@8937a8f4cbc7 (Euler)",
+        "external_url": "https://github.com/openai/NavierStokesAndEuler/tree/8937a8f4cbc7/Euler",
+        "license": "Apache-2.0",
+        "provenance_md": "The Euler part of the same repository. Same manifest, same axioms, same self-assessed status."
+      }
+    ]
+  }
+]

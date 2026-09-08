@@ -1,0 +1,84 @@
+[
+  {
+    "title": "Build the Lean project at commit 8937a8f4cbc7 and report exactly what it accepts",
+    "kind": "formal_check",
+    "size": "small",
+    "target": "ns-theorem-1-1",
+    "body_md": "Clone `openai/NavierStokesAndEuler`, check out `8937a8f4cbc7`, run `lake exe cache get` and `lake build`. Then, in a scratch file importing `NavierStokes.ComparatorSolution`, run `#print axioms NavierStokes.ComparatorSolution.navier_stokes_breakdown_R3` and the same for `navier_stokes_breakdown_periodic`.\n\nWrite a `formal_check` receipt on revision 1 of the claim record that states: the Lean toolchain version, the Mathlib revision from the lake manifest, the commit you built, the machine and wall time, the exact axiom list printed for each theorem, and whether any `sorry` warning appeared in the build log. Say what you did not check: a passing build says nothing about whether the definitions mean what the paper says (that is the next task)."
+  },
+  {
+    "title": "Run the Comparator challenges and report the result",
+    "kind": "formal_check",
+    "size": "medium",
+    "target": "ns-theorem-1-1",
+    "body_md": "With `landrun`, `lean4export` and `nanoda_bin` on PATH, run `lake exe comparator ComparatorChallenges/NavierStokes.json` and `lake exe comparator ComparatorChallenges/Euler.json` at commit `8937a8f4cbc7`. Record the tool versions, the exact output, and what Comparator is actually checking in this configuration (which theorem names, which permitted axioms, whether it re-exports and re-checks the proof with an independent kernel). If a tool is missing or fails, a `could_not_run` receipt with the error is still useful."
+  },
+  {
+    "title": "Do the Lean definitions say what Fefferman's statement says?",
+    "kind": "review",
+    "size": "medium",
+    "target": "ns-theorem-1-1",
+    "body_md": "Read the definitions behind the reference theorems: `NavierStokesExistenceAndSmoothnessRn`, `NavierStokesExistenceAndSmoothnessPeriodic`, `InitialVelocityConditionDecay`, `ForceConditionDecay` and the periodic conditions, as adapted from the Formal Conjectures formalization. Compare each with conditions (1)–(7) and alternatives (C) and (D) in [Fefferman's official statement](https://www.claymath.org/wp-content/uploads/2022/06/navierstokes.pdf). Also compare with the Formal Conjectures original, and say whether the adaptation changed anything.\n\nThe question is whether the negated existence statement in Lean is at least as strong as the informal one: could a Lean-true theorem coexist with a smooth finite-energy solution in Fefferman's sense? Write a `review` receipt naming every definition you read and every gap or restatement you found, with outcome `no_concerns`, `concerns` or `serious_concerns`."
+  },
+  {
+    "title": "Read Section 3, the proof outline (pages 6–24), and say what you followed",
+    "kind": "review",
+    "size": "medium",
+    "target": "ns-theorem-1-1",
+    "body_md": "Section 3 is the argument in miniature. Read it with Section 2 and write a `review` receipt that states, in your own words: the ansatz, the scales, where the energy stays bounded while the velocity blows up, which cancellations the argument depends on, and which later sections carry the estimates you could not verify from the outline. Name the estimates you followed to the end and the ones you did not. Do not summarize the paper; report your check."
+  },
+  {
+    "title": "Read Sections 4–5: the leading-order flow and its corrections to every order",
+    "kind": "review",
+    "size": "large",
+    "target": "ns-theorem-1-1",
+    "body_md": "Pages 24–62. Follow the construction of the leading-order flow and the correction scheme. Write a `review` receipt that names each lemma or proposition you checked line by line, each you checked only for plausibility, and each you skipped, with the reason. If you used a computer algebra system or a model to check an identity, say which and attach the script as an artifact."
+  },
+  {
+    "title": "Read Sections 6–7: the auxiliary torus and the oscillatory realization of the residual stress",
+    "kind": "review",
+    "size": "large",
+    "target": "ns-theorem-1-1",
+    "body_md": "Pages 62–88. These sections realize a prescribed stress through oscillations, the step closest to the convex-integration literature the introduction cites (Daneri and Székelyhidi). Write a `review` receipt as in the previous tasks, and say explicitly whether the oscillatory supports are separated as claimed and whether the residual estimates close at the stated orders."
+  },
+  {
+    "title": "Read Sections 8–10: mean corrections, residual improvement, compact forcing and whole-space breakdown",
+    "kind": "review",
+    "size": "large",
+    "target": "ns-theorem-1-1",
+    "body_md": "Pages 88–126, including Corollary 10.6 (the periodic case). Write a `review` receipt as above. Pay particular attention to how the force is made compactly supported in space and time, how the whole-space statement is obtained, and how the transfer to the torus preserves the hypotheses of alternative (D)."
+  },
+  {
+    "title": "Read Appendices A–C",
+    "kind": "review",
+    "size": "large",
+    "target": "ns-theorem-1-1",
+    "body_md": "Pages 126–165: radial moments and the heat exterior, analytic profiles near the axis and their continuation, and the admissible stress cone. Write a `review` receipt that says which statements you verified and which you took on trust, and whether anything in the appendices is used in the main text in a stronger form than proved."
+  },
+  {
+    "title": "Reconcile the claim with known partial regularity and non-uniqueness results",
+    "kind": "review",
+    "size": "medium",
+    "target": "ns-theorem-1-1",
+    "body_md": "Is there any established theorem that a forced, finite-energy, smooth-until-blowup solution would contradict? Consider at least Caffarelli–Kohn–Nirenberg, Escauriaza–Seregin–Šverák (unforced), Tao's averaged-equation blowup, Albritton–Brué–Colombo's non-uniqueness with a singular force, and Córdoba–Martínez-Zoroa (forced Euler and hypodissipative cases). Write a `review` receipt that either explains why none applies to a smooth compactly supported force, or names the theorem that appears to conflict and the hypothesis at issue."
+  },
+  {
+    "title": "Explain the blowup mechanism of Section 2 for non-specialists",
+    "kind": "curation",
+    "size": "newcomer",
+    "body_md": "Section 2 gives the physical description: an inward-spiralling, elongating vortex whose core shrinks and speeds up while the energy stays finite, with the force staying smooth because the large terms cancel. Write a discussion post in this project, under 800 words, that explains the mechanism to a reader who knows calculus but not fluid mechanics, and states plainly which parts are the authors' claims and which are established background. Link the pages you used. Do not use the phrase \"solved\" without saying what alternative is meant."
+  },
+  {
+    "title": "Build and read the Euler formalization",
+    "kind": "formal_check",
+    "size": "small",
+    "target": "euler-unforced",
+    "body_md": "At commit `8937a8f4cbc7`, print the axioms of the theorems in `Euler.Solution`, run `lake exe comparator ComparatorChallenges/Euler.json` if you have the tools, and compare the Lean statement of the Euler result with the standard formulation of the Euler regularity problem (smooth, compactly supported, divergence-free data; what counts as a singularity; which norm blows up). Write a `formal_check` receipt with the axiom list and a paragraph on the statement, and say whether you located a written proof for the Euler result separate from the Navier–Stokes manuscript."
+  },
+  {
+    "title": "Keep the public record of responses, with dates and sources",
+    "kind": "curation",
+    "size": "newcomer",
+    "body_md": "Maintain one discussion thread in this project that lists, in date order, public statements by mathematicians and the parties about the mathematics of the claim: what was said, by whom, where, and whether it concerns the proof, the formalization, the statement, or something else. Link every entry. Keep provenance and conduct matters in the separate thread opened for them. This is curation, not judgment; an entry is a citation, not an endorsement."
+  }
+]

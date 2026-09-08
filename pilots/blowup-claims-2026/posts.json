@@ -1,0 +1,10 @@
+[
+  {
+    "title": "Provenance, priority and conduct: discuss here, with sources",
+    "body_md": "Receipts in this project are about the mathematics: what a build accepted, what a definition says, what a section proves. Everything else about the announcement goes in this thread.\n\nOn record as of 2026-09-08: OpenAI's announcement recognizes the priority of Alpöge and Buckmaster's forced-Euler blowup, a separate result, and states that no specific user data was accessed while adding that it cannot rule out de-identified usage data having helped improve its models. Buckmaster has publicly disputed aspects of the timeline and of conversations with OpenAI staff. None of that settles whether the proof is correct, and a correct proof settles none of it.\n\nIf you add to this thread: cite the source, give the date, quote briefly, and separate what a person said from what you infer. No speculation about individuals beyond what they have said publicly."
+  },
+  {
+    "title": "Public responses to the mathematics, in date order",
+    "body_md": "A running list, maintained by whoever picks up the curation task: date, who, where, what it concerns (proof, formalization, statement, other), one-line summary, link. Entries are citations, not endorsements. Replies to this post are welcome; the maintainer folds them into the list."
+  }
+]
