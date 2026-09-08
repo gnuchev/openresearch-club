@@ -140,6 +140,19 @@ def contribution_projection_from_server(rec, revision):
     }
 
 
+def fetch_contribution_at_revision(base, record_id, revision=1):
+    """Keep parent identity/visibility checks while reading the immutable seed revision."""
+    status, parent = call(base, None, "GET", f"/v1/contributions/{record_id}")
+    if status != 200 or not isinstance(parent, dict):
+        return status, parent
+    status, exact = call(base, None, "GET", f"/v1/contributions/{record_id}/revisions/{revision}")
+    if status != 200 or not isinstance(exact, dict):
+        return status, exact
+    if exact.get("contribution_id") != record_id or exact.get("revision") != revision:
+        return 0, {"error": "The exact revision response does not match the requested contribution and revision"}
+    return 200, {**parent, "revision": exact}
+
+
 def task_projection_from_package(t, target_id):
     return {"title": t["title"], "body_md": t["body_md"], "kind": t["kind"], "size": t.get("size", "small"), "target": ({"contribution_id": target_id, "revision": 1} if t.get("target") else None)}
 
@@ -187,7 +200,8 @@ class Seeder:
         entry = self.state["records"].get(f"{kind}:{key}")
         if not entry:
             return "none", None, None
-        s, rec = fetch(entry["id"])
+        revision = entry.get("revision")
+        s, rec = fetch(entry["id"], revision)
         if s != 200 or not isinstance(rec, dict):
             self.fail(f"{describe} is recorded in the state as {entry['id']} but cannot be read ({s}); resolve the state file before re-running")
             return "missing", None, None
@@ -197,7 +211,6 @@ class Seeder:
         if owner_of(rec) != self.state["actor_id"]:
             self.fail(f"{describe} ({entry['id']}) is owned by {owner_of(rec)}, not by this actor; refusing to reuse it")
             return "missing", None, None
-        revision = entry.get("revision")
         shown = server_projection(rec, revision)
         if shown is None:
             self.fail(f"{describe} ({entry['id']}) no longer shows revision {revision}, the one the package's tasks target; resolve by hand")
@@ -228,7 +241,7 @@ class Seeder:
         if len(mine) > 1:
             self.fail(f"{describe}: several records with this title by this actor ({', '.join(r['id'] for r in mine)}); record the intended id in the state file")
             return "conflict", None
-        s, rec = fetch(mine[0]["id"])
+        s, rec = fetch(mine[0]["id"], 1)
         if s != 200 or not isinstance(rec, dict):
             self.fail(f"{describe}: candidate {mine[0]['id']} cannot be read ({s})")
             return "conflict", None
@@ -353,14 +366,26 @@ def main():
         run_id = sd.state["run_id"] = run["id"]
         sd.save()
 
-    fetch_contribution = lambda i: call(base, None, "GET", f"/v1/contributions/{i}")
-    fetch_task = lambda i: call(base, None, "GET", f"/v1/tasks/{i}")
-    fetch_post = lambda i: call(base, None, "GET", f"/v1/posts/{i}")
+    fetch_contribution = lambda i, revision=1: fetch_contribution_at_revision(base, i, revision)
+    fetch_task = lambda i, _revision=None: call(base, None, "GET", f"/v1/tasks/{i}")
+    fetch_post = lambda i, _revision=None: call(base, None, "GET", f"/v1/posts/{i}")
     project_of = lambda r: r.get("project_id")
 
     # --- Contributions. ---
     ids = {}
     ok, existing = list_all(base, f"/v1/contributions?project={slug}", args.page_size)
+    # Listings show current titles. Recover original titles before matching seed records,
+    # otherwise a legitimate rename at revision 2 can cause duplicate creation without state.
+    if ok:
+        for index, candidate in enumerate(existing):
+            if candidate.get("current_revision") == 1:
+                continue
+            status, full = fetch_contribution(candidate["id"], 1)
+            if status != 200 or contribution_projection_from_server(full, 1) is None:
+                sd.fail(f"could not read original revision of listed contribution {candidate['id']} ({status}); not creating contributions")
+                ok = False
+                break
+            existing[index] = {**candidate, "title": full["revision"]["title"]}
     if not ok:
         sd.fail("could not list the project's contributions; not creating any (a failed list is not proof of absence)")
     for c in contributions:

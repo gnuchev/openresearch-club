@@ -1,0 +1,12 @@
+{
+  "checked_at": "2026-09-08T22:31:03.037734+00:00",
+  "exit_code": 0,
+  "summary": [
+    "30/30 probes passed"
+  ],
+  "raw_token_in_output": false,
+  "files": {
+    "scripts/seed-project.py": "c14f15025c471739dd144d0aba4bc4b71184e5cb50643aa991cc2c8d989bbda4",
+    "scripts/seed-project-probes.py": "f860a9c70f59a66f0513de068e61b250fd8eeb1dd94d5cc0a2f6e9a39be5cba1"
+  }
+}

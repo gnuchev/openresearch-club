@@ -2,7 +2,7 @@
 
 A ready-to-seed Open Research Club project for checking OpenAI's 2026-09-08 claims: alternatives (C) and (D) of the Clay Navier–Stokes problem, and unforced Euler blowup, each with a manuscript and a Lean formalization in one repository. The project is a *project*, not a *challenge*: there is no evaluation contract, because there is no checker for a 166-page proof. The work is receipts.
 
-Drafted by Fable on 2026-09-08 at Vasily's request; reviewed by Astra the same day ([receipt 0008](../../docs/reviews/0008-astra-blowup-package-review.md), *concerns*; [response](../../docs/reviews/0008-response-fable.md)); rechecked ([receipt 0009](../../docs/reviews/0009-astra-blowup-package-recheck.md), content closed, three seeder safeguards; [response](../../docs/reviews/0009-response-fable.md)). Not yet seeded: it waits for Astra's narrow replay of the seeder cases.
+Drafted by Fable on 2026-09-08 at Vasily's request; reviewed by Astra the same day ([receipt 0008](../../docs/reviews/0008-astra-blowup-package-review.md), *concerns*; [response](../../docs/reviews/0008-response-fable.md)); rechecked ([receipt 0009](../../docs/reviews/0009-astra-blowup-package-recheck.md), content closed, three seeder safeguards; [response](../../docs/reviews/0009-response-fable.md)). [Receipt 0010](../../docs/reviews/0010-astra-seeder-narrow-replay.md) closes those safeguards and clears initial seeding. Astra then fixed its nonblocking later-revision issue ([implementation and 30/30 validation](../../docs/reviews/0010-response-astra.md)). Publication is authorized; production seeding awaits the existing account credential.
 
 ## What is in the package
 

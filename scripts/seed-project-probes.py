@@ -224,6 +224,43 @@ s, pj = call("GET", "/v1/projects/blowup-claims-2026")
 held = any(r.get("contributor_id") == FOREIGN and r.get("role") == "maintainer" for r in pj.get("roles", []))
 check("C3: after the row is gone the grant is made, verified by reading the project, and recorded", rc == 0 and held and f"role:{FOREIGN}" in st["records"], out[-400:])
 
+# D1 (receipt 0010): replay and adoption bind revision 1 even after a later title/evidence edit.
+st = json.loads(state1.read_text(encoding="utf-8"))
+first = package[0]
+contribution_id = st["records"]["contribution:" + first["key"]]["id"]
+s, original_revision = call("GET", f"/v1/contributions/{contribution_id}/revisions/1")
+assert s == 200
+s, revision2 = call("POST", f"/v1/contributions/{contribution_id}/revisions", {
+    "title": "A later title, intentionally different from the seeded title",
+    "claim": "A later claim, intentionally different from the seed",
+    "note": NOTE, "fields": {}, "run_id": st["run_id"], "change_summary": "Later-revision replay probe",
+}, token=TOKEN)
+s1, original_after = call("GET", f"/v1/contributions/{contribution_id}/revisions/1")
+check("D1: legitimate revision 2 changes the current title and evidence while revision 1 stays unchanged",
+      s == 201 and revision2["current_revision"] == 2 and s1 == 200 and original_after == original_revision)
+rc, out = seed(PKG, state1, ["--model", "probe-model"])
+st_after = json.loads(state1.read_text(encoding="utf-8"))
+check("D1: stateful replay uses the unchanged bound revision and creates nothing",
+      rc == 0 and created(out) == 0 and st_after["records"] == st["records"], out[-600:])
+state_after_revision = SCRATCH / "state-after-revision.json"
+rc, out = seed(PKG, state_after_revision, ["--model", "probe-model"])
+adopted_after = json.loads(state_after_revision.read_text(encoding="utf-8"))
+check("D1: stateless replay finds the original title, adopts the exact original revision and creates nothing",
+      rc == 0 and created(out) == 0 and out.count("adopted") == len(package) + len(pkg_tasks) + len(pkg_posts)
+      and adopted_after["records"]["contribution:" + first["key"]]["id"] == contribution_id
+      and adopted_after["records"]["contribution:" + first["key"]]["revision"] == 1, out[-600:])
+
+# Simulate corruption of the immutable bound revision through LOCAL D1, then restore it.
+# This must still fail even though reading historical revisions now succeeds.
+ok, msg = d1(f"UPDATE contribution_revisions SET claim='Deliberately corrupted original-revision fixture' WHERE contribution_id='{contribution_id}' AND revision=1")
+assert ok, msg[-300:]
+rc, out = seed(PKG, state1, ["--model", "probe-model"])
+check("D1: changed evidence at the bound revision is still refused",
+      rc == 1 and "differs on the server from what was verified" in out and created(out) == 0, out[-600:])
+original_claim_sql = original_revision["claim"].replace("'", "''")
+ok, msg = d1(f"UPDATE contribution_revisions SET claim='{original_claim_sql}' WHERE contribution_id='{contribution_id}' AND revision=1")
+assert ok, msg[-300:]
+
 failed = [n for n, ok in RESULTS if not ok]
 print(f"\n{len(RESULTS) - len(failed)}/{len(RESULTS)} probes passed" + (f"; failed: {failed}" if failed else ""))
 sys.exit(1 if failed else 0)
