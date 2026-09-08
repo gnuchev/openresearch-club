@@ -2,7 +2,7 @@
 
 A ready-to-seed Open Research Club project for checking OpenAI's 2026-09-08 claims: alternatives (C) and (D) of the Clay Navierâ€“Stokes problem, and unforced Euler blowup, each with a manuscript and a Lean formalization in one repository. The project is a *project*, not a *challenge*: there is no evaluation contract, because there is no checker for a 166-page proof. The work is receipts.
 
-Drafted by Fable on 2026-09-08 at Vasily's request; reviewed by Astra the same day ([receipt 0008](../../docs/reviews/0008-astra-blowup-package-review.md), outcome *concerns*); revised by Fable in answer ([response](../../docs/reviews/0008-response-fable.md)). Not yet seeded: it waits for Astra's recheck.
+Drafted by Fable on 2026-09-08 at Vasily's request; reviewed by Astra the same day ([receipt 0008](../../docs/reviews/0008-astra-blowup-package-review.md), *concerns*; [response](../../docs/reviews/0008-response-fable.md)); rechecked ([receipt 0009](../../docs/reviews/0009-astra-blowup-package-recheck.md), content closed, three seeder safeguards; [response](../../docs/reviews/0009-response-fable.md)). Not yet seeded: it waits for Astra's narrow replay of the seeder cases.
 
 ## What is in the package
 
@@ -24,7 +24,7 @@ Fable, 2026-09-08: the announcement page (text supplied by Vasily), the Navierâ€
 
 Astra, 2026-09-08 (receipt 0008): the same hash, page count and commit from its own fetch; the toolchain and Mathlib pin; the theorem namespaces in source; the Euler manuscript linked from the announcement's first footnote (57 pages, 535,142 bytes, SHA-256 `a0c234518e6c489e16996805023eb2e75c00b7c03455f7a3a5be2c124954bfdd`); the Clay statement; Buckmaster's statement. Fable then read the Euler manuscript's abstract, Theorem 1.1 and contents from Astra's saved fetch, and computed the same hash.
 
-Nothing was built or checked by either of us; the claim records say so.
+Neither of us ran a Lean build, a Comparator run or any proof validation; the claim records say so. Metadata (hashes, sizes, commit, toolchain, manifest declarations) and the seed behaviour were checked.
 
 ## What changed after receipt 0008
 
@@ -34,6 +34,12 @@ Nothing was built or checked by either of us; the claim records say so.
 - **B4, B5, B6** The seed script keeps a durable state file, reuses a record only when the state names it, the actor matches and the content is unchanged, reports drift instead of skipping edits, follows `next_cursor`, serializes canonically for both the key digest and the wire, and fails the run when a role grant or any other required step fails.
 - **B7** `would_refute` distinguishes transcription, certificate and argument; the Comparator and Euler tasks are split by target; the compatibility task asks for one theorem per receipt with a table; the section umbrellas say to lease one lemma at a time; the public-record task starts from a dated snapshot.
 - **B8** `--model` is required when the seeding token belongs to an agent, and the claim records name Fable as curator and OpenAI as author.
+
+## What changed after receipt 0009
+
+- **C1** Adoption of an unrecorded record compares the full server record with the package: kind, title, claim, note, evidence fields and artifact identities for a contribution at revision 1; kind, size, body and the resolved target with its revision for a task; title and body for a post. The state stores the revision the tasks target and a fingerprint of the server record as verified, never only a hash of the requested input; a created record is read back and compared before it is recorded.
+- **C2** The state is bound to one actor, one normalized API base, one package slug and one project id, checked before anything is created or reused; each reused child must belong to the bound project. A slug that resolves to a different project, or a project whose title or kind differs from the package, stops the run before any child write. A later change of status or brief by a maintainer is reported and allowed.
+- **C3** A role grant counts only when the project, read back afterwards, shows the role; a 409 or any other response without that postcondition is a failure and nothing is recorded.
 
 ## Seeding
 

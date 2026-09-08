@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Seed a project from a package directory, with a durable record of what it created.
+"""Seed a project from a package directory, with a durable, verified record of what it created.
 
 A package is a directory with `project-create.json` (the ProjectCreate body) and, optionally,
 `contributions.json`, `tasks.json` and `posts.json`:
@@ -9,18 +9,22 @@ A package is a directory with `project-create.json` (the ProjectCreate body) and
   tasks.json          [{key?, title, body_md, kind, size, target?: <contribution key>}]
   posts.json          [{key?, title, body_md}]
 
-Every record the script creates is written to a state file (default: `<package>/seed-state.<host>.json`)
-under its package key, with the actor, the record id and a hash of the content it was created from.
-A later run reuses a record only when the state names it, the record still exists, the actor who
-created it is the actor running now, and the package content is unchanged. Content that changed is
-reported as drift and the run fails unless `--allow-drift` is given; the old record is never edited
-silently. Without a state entry the script searches the project by title, but adopts a record only
-when the actor running now authored it and its content matches; a same-title record by anyone else
-is a conflict, reported and never adopted.
+The state file (default `<package>/seed-state.<host>.json`) is bound to one actor, one API base, one
+package slug and one project id, and records every record the script created or adopted, by package
+key, with the record id, the revision the package's tasks target, and a fingerprint of the *server*
+record as verified at that revision. A record is reused only when the state names it, it still
+exists, it belongs to the bound project, its author (or creator) is the actor running now, and the
+package still describes the same content. Without a state entry, a same-title record is adopted only
+when this actor authored it and the server record matches the package on every seeded field,
+artifacts included; anything else is a conflict, reported and never adopted.
 
-Every failure is reported and the run continues where it safely can, so the state file always
-reflects what exists; the exit code is non-zero if anything failed. Bodies are serialized
-canonically (sorted keys, no spaces) both for the idempotency-key digest and on the wire.
+Package content that changed is drift: reported, and the run fails unless `--allow-drift` keeps
+the existing record with a visible warning. The project definition is checked before any child
+write: a slug bound to a different project, or a project whose title or kind differs from the
+package, stops the run; a different status or brief is reported and allowed. Every failure is
+reported; the run continues where it safely can; the exit code is non-zero if anything failed.
+Bodies are serialized canonically (sorted keys, no spaces) for both the idempotency-key digest
+and the wire.
 
     ORC_MAINTAINER_TOKEN=... python scripts/seed-project.py pilots/blowup-claims-2026 \
         --model "claude-fable-5-1 via Claude Code" [--base https://api.openresearch.club] \
@@ -39,7 +43,7 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-UA = "openresearch-club-seed/2.0 (+https://openresearch.club)"
+UA = "openresearch-club-seed/3.0 (+https://openresearch.club)"
 
 
 def canonical(body) -> str:
@@ -100,9 +104,57 @@ def load(pkg, name, default):
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else default
 
 
+def normalize_base(base: str) -> str:
+    u = urllib.parse.urlparse(base.strip().rstrip("/"))
+    return f"{u.scheme.lower()}://{u.netloc.lower()}{u.path}"
+
+
 def host_tag(base):
     u = urllib.parse.urlparse(base)
     return re.sub(r"[^a-z0-9.-]+", "-", (u.netloc or base).lower())
+
+
+# ---------------------------------------------------------------------------------------------
+# Projections: what the package asks for, and what the server record shows, in one comparable shape.
+# ---------------------------------------------------------------------------------------------
+
+def artifact_identity(a):
+    return {"role": a.get("role"), "name": a.get("name"), "external_url": a.get("external_url"), "claimed_sha256": a.get("claimed_sha256")}
+
+
+def contribution_projection_from_package(c):
+    return {
+        "kind": c["kind"], "title": c["title"], "claim": c["claim"], "note": c["note"], "fields": c.get("fields", {}),
+        "artifacts": sorted((artifact_identity(a) for a in c.get("artifacts", [])), key=canonical),
+    }
+
+
+def contribution_projection_from_server(rec, revision):
+    """The record as the server shows it at one revision; None if that revision cannot be read."""
+    rev = rec.get("revision") if isinstance(rec.get("revision"), dict) else None
+    if not rev or rev.get("revision") != revision:
+        return None
+    return {
+        "kind": rec.get("kind"), "title": rev.get("title", rec.get("title")), "claim": rev.get("claim"), "note": rev.get("note"), "fields": rev.get("fields", {}),
+        "artifacts": sorted((artifact_identity(a) for a in rev.get("artifacts", [])), key=canonical),
+    }
+
+
+def task_projection_from_package(t, target_id):
+    return {"title": t["title"], "body_md": t["body_md"], "kind": t["kind"], "size": t.get("size", "small"), "target": ({"contribution_id": target_id, "revision": 1} if t.get("target") else None)}
+
+
+def task_projection_from_server(rec):
+    target = rec.get("target")
+    return {"title": rec.get("title"), "body_md": rec.get("body_md"), "kind": rec.get("kind"), "size": rec.get("size"), "target": ({"contribution_id": target.get("contribution_id"), "revision": target.get("revision")} if target else None)}
+
+
+def post_projection_from_package(p):
+    return {"title": p["title"], "body_md": p["body_md"]}
+
+
+def post_projection_from_server(rec):
+    return {"title": rec.get("title"), "body_md": rec.get("body_md")}
 
 
 class Seeder:
@@ -121,50 +173,73 @@ class Seeder:
         self.state_path.parent.mkdir(parents=True, exist_ok=True)
         self.state_path.write_text(json.dumps(self.state, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
-    def remember(self, kind, key, record_id, content):
-        self.state["records"][f"{kind}:{key}"] = {"id": record_id, "content_sha256": digest(content), "actor_id": self.state["actor_id"]}
+    def remember(self, kind, key, record_id, package_projection, server_projection, revision=None):
+        entry = {"id": record_id, "actor_id": self.state["actor_id"], "project_id": self.state["project_id"],
+                 "package_sha256": digest(package_projection), "verified_sha256": digest(server_projection)}
+        if revision is not None:
+            entry["revision"] = revision
+        self.state["records"][f"{kind}:{key}"] = entry
         self.save()
 
-    def reuse(self, kind, key, content, fetch, owner_of, describe):
-        """Reuse a record named in the state if it exists, is ours and is unchanged.
-        Returns (status, id): status in {'reused', 'drift', 'missing', 'none'}."""
+    def reuse(self, kind, key, package_projection, fetch, owner_of, project_of, server_projection, describe):
+        """Reuse a record named in the state if it exists, belongs to the bound project, is ours, and
+        both the package and the server record are unchanged. Returns (status, id, revision)."""
         entry = self.state["records"].get(f"{kind}:{key}")
         if not entry:
-            return "none", None
+            return "none", None, None
         s, rec = fetch(entry["id"])
-        if s != 200:
+        if s != 200 or not isinstance(rec, dict):
             self.fail(f"{describe} is recorded in the state as {entry['id']} but cannot be read ({s}); resolve the state file before re-running")
-            return "missing", None
+            return "missing", None, None
+        if project_of(rec) != self.state["project_id"]:
+            self.fail(f"{describe} ({entry['id']}) belongs to project {project_of(rec)}, not to the bound project; refusing to reuse it")
+            return "missing", None, None
         if owner_of(rec) != self.state["actor_id"]:
             self.fail(f"{describe} ({entry['id']}) is owned by {owner_of(rec)}, not by this actor; refusing to reuse it")
-            return "missing", None
-        if entry.get("content_sha256") != digest(content):
+            return "missing", None, None
+        revision = entry.get("revision")
+        shown = server_projection(rec, revision)
+        if shown is None:
+            self.fail(f"{describe} ({entry['id']}) no longer shows revision {revision}, the one the package's tasks target; resolve by hand")
+            return "missing", None, None
+        if digest(shown) != entry.get("verified_sha256"):
+            self.fail(f"{describe} ({entry['id']}) differs on the server from what was verified when it was seeded (revision {revision}); resolve by hand")
+            return "missing", None, None
+        if entry.get("package_sha256") != digest(package_projection):
             msg = f"{describe} ({entry['id']}) was created from different content; the package changed since. Post a revision deliberately, or pass --allow-drift to keep the existing record"
             if self.allow_drift:
                 print("DRIFT " + msg)
-                return "reused", entry["id"]
+                return "reused", entry["id"], revision
             self.fail(msg)
-            return "drift", entry["id"]
-        return "reused", entry["id"]
+            return "drift", entry["id"], revision
+        return "reused", entry["id"], revision
 
-    def adopt_by_title(self, items, title, owner_of, matches, describe):
-        """Adopt an unrecorded record by title only if this actor authored it and its content matches."""
+    def adopt_by_title(self, items, title, owner_of, fetch, project_of, server_projection, package_projection, describe):
+        """Adopt an unrecorded record by title only if this actor authored it in this project and the
+        full server record matches the package. Returns an id, 'conflict', or None."""
         same_title = [r for r in items if r.get("title") == title]
         if not same_title:
-            return None
+            return None, None
         mine = [r for r in same_title if owner_of(r) == self.state["actor_id"]]
         others = [r for r in same_title if owner_of(r) != self.state["actor_id"]]
         if others and not mine:
             self.fail(f"{describe}: a record with this title exists by another author ({others[0].get('id')}); not adopting it. Rename the package record or resolve the conflict by hand")
-            return "conflict"
+            return "conflict", None
         if len(mine) > 1:
             self.fail(f"{describe}: several records with this title by this actor ({', '.join(r['id'] for r in mine)}); record the intended id in the state file")
-            return "conflict"
-        rec = mine[0]
-        if not matches(rec):
-            self.fail(f"{describe}: an earlier record by this actor has this title but different content ({rec['id']}); post a revision deliberately or record the id in the state file with --allow-drift")
-            return "conflict"
-        return rec["id"]
+            return "conflict", None
+        s, rec = fetch(mine[0]["id"])
+        if s != 200 or not isinstance(rec, dict):
+            self.fail(f"{describe}: candidate {mine[0]['id']} cannot be read ({s})")
+            return "conflict", None
+        if project_of(rec) != self.state["project_id"]:
+            self.fail(f"{describe}: candidate {rec.get('id')} belongs to another project; not adopting it")
+            return "conflict", None
+        shown = server_projection(rec, 1)
+        if shown is None or digest(shown) != digest(package_projection):
+            self.fail(f"{describe}: an earlier record by this actor has this title but different content or evidence at revision 1 ({rec.get('id')}); post a revision deliberately or record the id in the state file")
+            return "conflict", None
+        return rec["id"], shown
 
 
 def main():
@@ -212,19 +287,20 @@ def main():
     if not token:
         print("ORC_MAINTAINER_TOKEN is required", file=sys.stderr)
         return 2
-    base = args.base.rstrip("/")
+    base = normalize_base(args.base)
     state_path = Path(args.state) if args.state else pkg / f"seed-state.{host_tag(base)}.json"
     sd = Seeder(base, token, state_path, args.page_size, args.allow_drift)
 
+    # --- Preflight: the state binds one actor, one base, one package slug and one project. ---
     s, me = call(base, token, "GET", "/v1/me")
     if s != 200:
         print(f"token refused: {s} {me}", file=sys.stderr)
         return 1
     actor = me["contributor"]
-    if sd.state.get("actor_id") and sd.state["actor_id"] != actor["id"]:
-        print(f"the state file was written by actor {sd.state['actor_id']}; this token belongs to {actor['id']}. Use a different --state or the original credential", file=sys.stderr)
-        return 3
-    sd.state["actor_id"], sd.state["base"] = actor["id"], base
+    for field, value, what in (("actor_id", actor["id"], "actor"), ("base", base, "API base"), ("slug", slug, "package slug")):
+        if sd.state.get(field) and sd.state[field] != value:
+            print(f"the state file is bound to {what} {sd.state[field]!r}; this run is {value!r}. Use a different --state file, or a new state for a new project", file=sys.stderr)
+            return 3
     model = args.model
     if not model:
         if actor.get("kind") == "agent":
@@ -233,29 +309,40 @@ def main():
         model = "human operator via scripts/seed-project.py"
     print(f"acting as {actor['handle']} ({actor['kind']}, {actor['tier']}); run model label: {model}")
 
-    # Project: reuse by slug only if this actor maintains it and the title matches.
     s, pj = call(base, None, "GET", f"/v1/projects/{slug}")
     if s == 200:
-        roles = pj.get("roles") or pj.get("project_roles") or []
+        if sd.state.get("project_id") and sd.state["project_id"] != pj["id"]:
+            print(f"the state file is bound to project {sd.state['project_id']}, but slug {slug!r} now resolves to {pj['id']}; refusing", file=sys.stderr)
+            return 3
+        roles = pj.get("roles") or []
         maintains = any(r.get("contributor_id") == actor["id"] and r.get("role") == "maintainer" for r in roles) or actor.get("tier") == "maintainer"
         if not maintains:
             print(f"project {slug} exists and this actor does not maintain it; refusing", file=sys.stderr)
             return 3
-        if pj.get("title") != project["title"]:
-            sd.fail(f"project {slug} exists with a different title ({pj.get('title')!r}); not editing it")
+        if pj.get("title") != project["title"] or pj.get("kind") != project["kind"]:
+            print(f"project {slug} exists with a different identity (title {pj.get('title')!r}, kind {pj.get('kind')!r}) than the package (title {project['title']!r}, kind {project['kind']!r}); nothing written. Use a new slug or a new state", file=sys.stderr)
+            return 3
+        if pj.get("status") != project.get("status", "active") or pj.get("brief_md") != project.get("brief_md"):
+            print(f"NOTE  project {slug} exists; its status or brief differs from the package (allowed: maintainers edit those later). The package copy is not applied.")
         else:
             print(f"project {slug} exists; continuing")
-        sd.state["project_id"] = pj["id"]
-    else:
+    elif s == 404:
+        if sd.state.get("project_id"):
+            print(f"the state file is bound to project {sd.state['project_id']}, but slug {slug!r} does not exist on this base; refusing to create a new project under an old state", file=sys.stderr)
+            return 3
         s, pj = call(base, token, "POST", "/v1/projects", project, idem=idem_key(slug, "project", slug, project))
         if s != 201:
             print(f"project creation failed: {s} {pj}", file=sys.stderr)
             return 1
-        sd.state["project_id"] = pj["id"]
         print(f"created project {slug}")
+    else:
+        print(f"project {slug} cannot be read ({s}); nothing written", file=sys.stderr)
+        return 1
+    sd.state.update({"actor_id": actor["id"], "base": base, "slug": slug, "project_id": pj["id"]})
     sd.save()
+    project_id = pj["id"]
 
-    # Run declaration, reused from the state when present.
+    # --- Run declaration, reused from the state when present. ---
     run_id = sd.state.get("run_id")
     if contributions and not run_id:
         body = {"model": model, "harness": "scripts/seed-project.py", "effort": "low"}
@@ -266,27 +353,32 @@ def main():
         run_id = sd.state["run_id"] = run["id"]
         sd.save()
 
-    # Contributions.
+    fetch_contribution = lambda i: call(base, None, "GET", f"/v1/contributions/{i}")
+    fetch_task = lambda i: call(base, None, "GET", f"/v1/tasks/{i}")
+    fetch_post = lambda i: call(base, None, "GET", f"/v1/posts/{i}")
+    project_of = lambda r: r.get("project_id")
+
+    # --- Contributions. ---
     ids = {}
     ok, existing = list_all(base, f"/v1/contributions?project={slug}", args.page_size)
     if not ok:
         sd.fail("could not list the project's contributions; not creating any (a failed list is not proof of absence)")
     for c in contributions:
-        content = {k: c[k] for k in ("kind", "title", "claim", "note", "fields", "artifacts") if k in c}
-        status, cid = sd.reuse("contribution", c["key"], content, lambda i: call(base, None, "GET", f"/v1/contributions/{i}"), lambda r: r.get("author_id"), f"contribution {c['key']}")
+        wanted = contribution_projection_from_package(c)
+        status, cid, _ = sd.reuse("contribution", c["key"], wanted, fetch_contribution, lambda r: r.get("author_id"), project_of, contribution_projection_from_server, f"contribution {c['key']}")
         if status == "reused":
             ids[c["key"]] = cid
             print(f"contribution {c['key']} exists: {cid}")
             continue
         if status in ("drift", "missing") or not ok:
             continue
-        adopted = sd.adopt_by_title(existing, c["title"], lambda r: r.get("author_id"), lambda r: r.get("claim") == c["claim"], f"contribution {c['key']}")
+        adopted, shown = sd.adopt_by_title(existing, c["title"], lambda r: r.get("author_id"), fetch_contribution, project_of, contribution_projection_from_server, wanted, f"contribution {c['key']}")
         if adopted == "conflict":
             continue
         if adopted:
             ids[c["key"]] = adopted
-            sd.remember("contribution", c["key"], adopted, content)
-            print(f"contribution {c['key']} adopted from an earlier run: {adopted}")
+            sd.remember("contribution", c["key"], adopted, wanted, shown, revision=1)
+            print(f"contribution {c['key']} adopted from an earlier run after full comparison: {adopted}")
             continue
         links, broken = [], False
         for i, a in enumerate(c.get("artifacts", [])):
@@ -297,7 +389,7 @@ def main():
                 body["provenance_md"] = a["provenance_md"]
             akey = f"{c['key']}-{i}"
             entry = sd.state["records"].get(f"artifact:{akey}")
-            if entry and entry.get("content_sha256") == digest(body):
+            if entry and entry.get("package_sha256") == digest(body):
                 links.append({"artifact_id": entry["id"], "role": a["role"]})
                 continue
             s, art = call(base, token, "POST", "/v1/artifacts", body, idem=idem_key(slug, "artifact", akey, body))
@@ -306,7 +398,7 @@ def main():
                 broken = True
                 break
             aid = (art.get("artifact") or art)["id"]
-            sd.remember("artifact", akey, aid, body)
+            sd.remember("artifact", akey, aid, body, body)
             links.append({"artifact_id": aid, "role": a["role"]})
         if broken:
             continue
@@ -317,31 +409,37 @@ def main():
         if s != 201:
             sd.fail(f"contribution {c['key']} failed: {s} {js}")
             continue
+        # Verify the server shows what was asked for, then bind the state to that.
+        s2, full = fetch_contribution(js["id"])
+        shown = contribution_projection_from_server(full, 1) if s2 == 200 and isinstance(full, dict) else None
+        if shown is None or digest(shown) != digest(wanted):
+            sd.fail(f"contribution {c['key']} was created as {js['id']} but the server record does not match the package at revision 1; not recording it as seeded. Inspect it by hand")
+            continue
         ids[c["key"]] = js["id"]
-        sd.remember("contribution", c["key"], js["id"], content)
+        sd.remember("contribution", c["key"], js["id"], wanted, shown, revision=1)
         print(f"created contribution {c['key']}: {js['id']}")
 
-    # Tasks.
+    # --- Tasks. ---
     ok, existing = list_all(base, f"/v1/tasks?project={slug}", args.page_size)
     if not ok:
         sd.fail("could not list the project's tasks; not creating any")
     for t in tasks:
-        content = {k: t[k] for k in ("title", "body_md", "kind", "size", "target") if k in t}
         if t.get("target") and t["target"] not in ids:
             sd.fail(f"task {t['key']} targets contribution {t['target']}, which was not created or reused; skipping")
             continue
-        status, tid = sd.reuse("task", t["key"], content, lambda i: call(base, None, "GET", f"/v1/tasks/{i}"), lambda r: r.get("created_by"), f"task {t['key']}")
+        wanted = task_projection_from_package(t, ids.get(t.get("target")))
+        status, tid, _ = sd.reuse("task", t["key"], wanted, fetch_task, lambda r: r.get("created_by"), project_of, lambda r, _rev: task_projection_from_server(r), f"task {t['key']}")
         if status == "reused":
             print(f"task exists: {t['title']}")
             continue
         if status in ("drift", "missing") or not ok:
             continue
-        adopted = sd.adopt_by_title(existing, t["title"], lambda r: r.get("created_by"), lambda r: r.get("body_md") == t["body_md"], f"task {t['key']}")
+        adopted, shown = sd.adopt_by_title(existing, t["title"], lambda r: r.get("created_by"), fetch_task, project_of, lambda r, _rev: task_projection_from_server(r), wanted, f"task {t['key']}")
         if adopted == "conflict":
             continue
         if adopted:
-            sd.remember("task", t["key"], adopted, content)
-            print(f"task adopted from an earlier run: {t['title']}")
+            sd.remember("task", t["key"], adopted, wanted, shown)
+            print(f"task adopted from an earlier run after full comparison: {t['title']}")
             continue
         body = {"title": t["title"], "body_md": t["body_md"], "kind": t["kind"], "size": t.get("size", "small")}
         if t.get("target"):
@@ -350,45 +448,57 @@ def main():
         if s != 201:
             sd.fail(f"task {t['key']} failed: {s} {js}")
             continue
-        sd.remember("task", t["key"], js["id"], content)
+        shown = task_projection_from_server(js)
+        if digest(shown) != digest(wanted):
+            sd.fail(f"task {t['key']} was created as {js['id']} but the server record does not match the package; not recording it as seeded")
+            continue
+        sd.remember("task", t["key"], js["id"], wanted, shown)
         print(f"created task: {t['title']}")
 
-    # Posts: root threads in the project.
+    # --- Posts: root threads in the project. ---
     ok, existing = list_all(base, f"/v1/posts?project={slug}", args.page_size)
     if not ok:
         sd.fail("could not list the project's posts; not creating any")
     for p in posts:
-        content = {"title": p["title"], "body_md": p["body_md"]}
-        status, pid = sd.reuse("post", p["key"], content, lambda i: call(base, None, "GET", f"/v1/posts/{i}"), lambda r: r.get("author_id"), f"post {p['key']}")
+        wanted = post_projection_from_package(p)
+        status, pid, _ = sd.reuse("post", p["key"], wanted, fetch_post, lambda r: r.get("author_id"), project_of, lambda r, _rev: post_projection_from_server(r), f"post {p['key']}")
         if status == "reused":
             print(f"post exists: {p['title']}")
             continue
         if status in ("drift", "missing") or not ok:
             continue
-        adopted = sd.adopt_by_title(existing, p["title"], lambda r: r.get("author_id"), lambda r: r.get("body_md") == p["body_md"], f"post {p['key']}")
+        adopted, shown = sd.adopt_by_title(existing, p["title"], lambda r: r.get("author_id"), fetch_post, project_of, lambda r, _rev: post_projection_from_server(r), wanted, f"post {p['key']}")
         if adopted == "conflict":
             continue
         if adopted:
-            sd.remember("post", p["key"], adopted, content)
-            print(f"post adopted from an earlier run: {p['title']}")
+            sd.remember("post", p["key"], adopted, wanted, shown)
+            print(f"post adopted from an earlier run after full comparison: {p['title']}")
             continue
         body = {"project_id": slug, "title": p["title"], "body_md": p["body_md"]}
         s, js = call(base, token, "POST", "/v1/posts", body, idem=idem_key(slug, "post", p["key"], body))
         if s != 201:
             sd.fail(f"post {p['key']} failed: {s} {js}")
             continue
-        sd.remember("post", p["key"], js["id"], content)
+        shown = post_projection_from_server(js)
+        if digest(shown) != digest(wanted):
+            sd.fail(f"post {p['key']} was created as {js['id']} but the server record does not match the package; not recording it as seeded")
+            continue
+        sd.remember("post", p["key"], js["id"], wanted, shown)
         print(f"created post: {p['title']}")
 
-    # Roles: every grant must succeed (201) or already hold (200/409).
+    # --- Roles: a grant counts only when the project afterwards shows the role. ---
     for cid in args.co_maintainer:
         s, js = call(base, token, "POST", f"/v1/projects/{slug}/roles", {"contributor_id": cid, "role": "maintainer"}, idem=idem_key(slug, "role", cid, {"cid": cid}))
-        if s in (200, 201, 409):
-            sd.state["records"][f"role:{cid}"] = {"id": cid, "role": "maintainer"}
+        s2, pj2 = call(base, None, "GET", f"/v1/projects/{slug}")
+        holds = s2 == 200 and any(r.get("contributor_id") == cid and r.get("role") == "maintainer" for r in (pj2.get("roles") or []))
+        if holds:
+            sd.state["records"][f"role:{cid}"] = {"id": cid, "role": "maintainer", "project_id": project_id}
             sd.save()
-            print(f"maintainer role for {cid}: {s}")
+            print(f"maintainer role for {cid}: held (grant returned {s})")
         else:
-            sd.fail(f"maintainer role for {cid} failed: {s} {js}")
+            sd.state["records"].pop(f"role:{cid}", None)
+            sd.save()
+            sd.fail(f"maintainer role for {cid} is not held after the grant (grant returned {s}: {js}); retry later or grant by hand")
 
     s, packet = call(base, None, "GET", f"/v1/projects/{slug}/context")
     if s == 200:
