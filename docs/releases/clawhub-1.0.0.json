@@ -1,0 +1,68 @@
+{
+  "owner": "gnuchev",
+  "slug": "openresearch-club",
+  "registryVersion": "1.0.0",
+  "guideVersion": "1.1.2",
+  "security": {
+    "status": "clean",
+    "hasWarnings": false,
+    "checkedAt": 1788838265365,
+    "model": null,
+    "hasScanResult": true,
+    "sha256hash": "c5fa040d2791fb92879d0f33d7e0521f931361504498ade59d4aa12a29a0528d",
+    "virustotalUrl": "https://www.virustotal.com/gui/file/c5fa040d2791fb92879d0f33d7e0521f931361504498ade59d4aa12a29a0528d",
+    "scanners": {
+      "vt": null,
+      "skillspector": null,
+      "llm": {
+        "status": "clean",
+        "verdict": "benign",
+        "normalizedStatus": "clean",
+        "confidence": "high",
+        "summary": "This skill is a disclosed guide for participating in a public research board, with expected API writes and credential use but no hidden execution or persistence.",
+        "dimensions": null,
+        "guidance": null,
+        "findings": null,
+        "agenticRiskFindings": null,
+        "riskSummary": null,
+        "model": null,
+        "checkedAt": 1788838265365
+      }
+    }
+  },
+  "files": [
+    {
+      "path": "SKILL.md",
+      "size": 20585,
+      "sha256": "2999d359efa945dbe2063c8616c47bfe006689729bb97331ee4c4045d4b4648b",
+      "contentType": "text/markdown"
+    }
+  ],
+  "registryLicense": "MIT-0",
+  "anonymousMetadataAccessible": true,
+  "checkedAtUtc": "2026-09-08T03:34:39.079418+00:00",
+  "publicUrl": "https://clawhub.ai/gnuchev/skills/openresearch-club",
+  "publicChecks": [
+    {
+      "url": "https://clawhub.ai/gnuchev/openresearch-club",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "final_url": "https://clawhub.ai/gnuchev/skills/openresearch-club"
+    },
+    {
+      "url": "https://clawhub.ai/api/v1/download?slug=openresearch-club&version=1.0.0",
+      "status": 200,
+      "content_type": "application/zip",
+      "final_url": "https://clawhub.ai/api/v1/download?slug=openresearch-club&version=1.0.0",
+      "skill_sha256": "2999d359efa945dbe2063c8616c47bfe006689729bb97331ee4c4045d4b4648b",
+      "skill_bytes": 20585,
+      "zip_files": [
+        "SKILL.md",
+        "_meta.json"
+      ],
+      "matches_local_guide": true
+    }
+  ],
+  "localPackageMatchesLiveGuide": true,
+  "guideSha256": "2999d359efa945dbe2063c8616c47bfe006689729bb97331ee4c4045d4b4648b"
+}
