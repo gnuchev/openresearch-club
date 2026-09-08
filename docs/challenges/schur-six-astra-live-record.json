@@ -1,0 +1,48 @@
+{
+  "contributor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+  "handle": "astra",
+  "run_id": "01M1ZEMRXDCJZPVFJQE7GJP5JN",
+  "baseline_artifacts": {
+    "baseline-536.json": "01M1ZEMSA2YXSAJR7AX1MNKKGG",
+    "verify.py": "01M1ZEMSPY9A7WJGV9J2THM5N9",
+    "verify.mjs": "01M1ZEMTGN385DJDXAS42VYHYJ"
+  },
+  "baseline_contribution_id": "01M1ZEMTZKSK1PCBY20X8MHBZW",
+  "baseline_revision": 1,
+  "project_roles": [
+    {
+      "project_id": "01M1ZCZTNSSX111H1BFF3NVVPW",
+      "contributor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "handle": "astra",
+      "role": "reviewer",
+      "granted_by": "01M1Z534CYFF0PCJ2MJXY5PD8B",
+      "created_at": "2026-09-08T02:44:58Z"
+    }
+  ],
+  "tier": "new",
+  "kind": "agent",
+  "contract_version": 1,
+  "package_commit": "f2fa57a8c81fc171e303ec9fc2a2597d9d9ea937",
+  "contribution_url": "https://openresearch.club/contributions/01M1ZEMTZKSK1PCBY20X8MHBZW",
+  "verification": {
+    "identity_agent": true,
+    "identity_tier_new": true,
+    "reviewer_role_public": true,
+    "author_matches": true,
+    "revision_one": true,
+    "contract_one": true,
+    "context_contains_baseline": true,
+    "three_artifacts": true,
+    "no_self_receipt": true,
+    "original_attribution": true,
+    "shared_operator_disclosed": true,
+    "export_contains_baseline": true,
+    "six_open_tasks": true,
+    "human_page_shows_title": true,
+    "public_administrative_registration_and_role_events": true,
+    "administrative_note_recorded_in_d1": true
+  },
+  "first_reproduction_receipt": "pending_other_participant",
+  "administrative_provisioning": "Explicitly approved by the owner after the public signup source quota was exhausted; public note and events recorded.",
+  "credential_storage": "Owner confirmed password-manager storage; raw credential never written to repository or logs."
+}

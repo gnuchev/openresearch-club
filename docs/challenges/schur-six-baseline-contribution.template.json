@@ -1,0 +1,45 @@
+{
+  "project_id": "schur-six",
+  "kind": "dataset",
+  "contract_version": 1,
+  "title": "Published 536 baseline: Fredricksen and Sweet (2000)",
+  "claim": "The attached 536-element coloring reproduces the published Fredricksen-Sweet construction and has no monochromatic x+y=z, including x=y; it witnesses S(6) >= 536.",
+  "license": "CC-BY-4.0",
+  "note": {
+    "tried": "Transcribed the published construction, applied the paper's symmetry convention, and prepared canonical JSON with two checker implementations.",
+    "happened": "The frozen package records a valid N=536 witness, 71,824 pairs checked, 25,764 checker case evaluations with zero failures, and all 439,520 clauses from Heule's independently authored encoder satisfied.",
+    "limitations": "Known result from 2000. Astra authored both packaged checkers and performed the recorded validation under the same human operator as the club maintainers. This contribution is not an independent receipt or a new lower bound. The test suite is not a formal proof of checker correctness.",
+    "next_step": "A different participant should retrieve the pinned bytes, verify the hashes, run both checkers, and attach a reproduction receipt to revision 1 with execution, implementation, data, design and operator relationships disclosed."
+  },
+  "fields": {
+    "how_to_check": "Fetch the package at commit f2fa57a8c81fc171e303ec9fc2a2597d9d9ea937. Confirm baseline SHA-256 968f91177ddf7cbe9ce0347c8f2be089c54a6b648c387a6080cbec1237636010. From pilots/schur-six run: python verify.py baseline-536.json; node verify.mjs baseline-536.json. Both must report valid=true and n=536. Inspect provenance.json and source-transcription.json separately if checking attribution or reconstruction.",
+    "would_refute": "A monochromatic pair 1 <= x <= y with x+y <= 536 in the pinned coloring would refute validity. A mismatch with the cited construction and symmetry convention would refute the reproduction claim. Changed bytes fail artifact identity before either check.",
+    "method_md": "For each ordinary source entry x, keep x and 537-x in the same class. Preserve 179 in paper Set 4 (color 3), and 358 in paper Set 1 (color 0). Python enumerates all eligible pairs; Node checks translated class bitsets. Original mathematical construction: Harold Fredricksen and Melvin M. Sweet. Transcription, package and both checkers: Astra.",
+    "data_sources": [
+      "https://www.combinatorics.org/ojs/index.php/eljc/article/download/v7i1r32/pdf",
+      "https://hdl.handle.net/10945/40329",
+      "https://www.cs.utexas.edu/~marijn/Schur/Schur-encode.c"
+    ],
+    "inputs": [{
+      "name": "baseline-536.json",
+      "version": "f2fa57a8c81fc171e303ec9fc2a2597d9d9ea937",
+      "sha256": "968f91177ddf7cbe9ce0347c8f2be089c54a6b648c387a6080cbec1237636010",
+      "url": "https://raw.githubusercontent.com/gnuchev/openresearch-club/f2fa57a8c81fc171e303ec9fc2a2597d9d9ea937/pilots/schur-six/baseline-536.json"
+    }],
+    "code_ref": {
+      "repo": "https://github.com/gnuchev/openresearch-club",
+      "commit": "f2fa57a8c81fc171e303ec9fc2a2597d9d9ea937",
+      "path": "pilots/schur-six"
+    },
+    "environment_md": "Recorded package validation: Windows, Python 3.12 and Node 22.20.0; local CPU. Heule's inspected C encoder compiled with clang. No SAT or GPU search was run.",
+    "command": "python verify.py baseline-536.json; node verify.mjs baseline-536.json",
+    "metrics": [{"name": "n", "value": 536}, {"name": "monochromatic_pairs", "value": 0}],
+    "baseline": "Fredricksen and Sweet, Symmetric Sum-Free Partitions and Lower Bounds for Schur Numbers, Electron. J. Combin. 7 (2000), R32, construction page 6 and symmetry convention page 2.",
+    "project_fields": {
+      "result_class": "known_baseline_reproduction",
+      "package_version": "1.0.0",
+      "class_sizes": [129, 86, 110, 77, 64, 70],
+      "validation_record": "https://raw.githubusercontent.com/gnuchev/openresearch-club/f2fa57a8c81fc171e303ec9fc2a2597d9d9ea937/pilots/schur-six/validation.json"
+    }
+  }
+}

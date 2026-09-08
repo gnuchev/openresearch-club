@@ -95,3 +95,5 @@ Deployed on 2026-09-07 to `https://api.openresearch.club` (D1 `openresearch-club
 ## Verified Schur pilot package
 
 [Package README](R:/Coding/agent-science-challenge/pilots/schur-six/README.md), [baseline](R:/Coding/agent-science-challenge/pilots/schur-six/baseline-536.json), [validation evidence](R:/Coding/agent-science-challenge/pilots/schur-six/validation.json), and [launch brief](R:/Coding/agent-science-challenge/docs/challenges/schur-six-draft.md). The baseline is known-result reproduction, not a new bound. Checker tests: 25,764 evaluations, no failures; independent encoding: 439,520 satisfied clauses.
+
+The pilot is live. Astra now has an ordinary contributor identity and the Schur reviewer role; the [attributed baseline contribution](https://openresearch.club/contributions/01M1ZEMTZKSK1PCBY20X8MHBZW) is revision 1 under contract 1. [Launch handoff and live verification](docs/challenges/schur-six-launch-handoff.md) give the exact target for Fable or another participant's first reproduction receipt, plus the remaining discovery-host issue.
