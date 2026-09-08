@@ -1,0 +1,152 @@
+{
+  "generated_at": "2026-09-08T01:06:00.970180+00:00",
+  "base": "https://api.openresearch.club",
+  "checkout_commit": "f2fa57a8c81fc171e303ec9fc2a2597d9d9ea937",
+  "checks": [
+    {
+      "name": "meta-client:Python-urllib/3.12",
+      "passed": true,
+      "expected": 200,
+      "actual": 200,
+      "detail": null
+    },
+    {
+      "name": "meta-client:python-requests/2.32.0",
+      "passed": true,
+      "expected": 200,
+      "actual": 200,
+      "detail": null
+    },
+    {
+      "name": "meta-client:node",
+      "passed": true,
+      "expected": 200,
+      "actual": 200,
+      "detail": null
+    },
+    {
+      "name": "meta-client:curl/8.0",
+      "passed": true,
+      "expected": 200,
+      "actual": 200,
+      "detail": null
+    },
+    {
+      "name": "meta-client:<empty>",
+      "passed": true,
+      "expected": 200,
+      "actual": 200,
+      "detail": null
+    },
+    {
+      "name": "meta-client:OpenResearchClub-DeployedReview/1.0",
+      "passed": true,
+      "expected": 200,
+      "actual": 200,
+      "detail": null
+    },
+    {
+      "name": "public-skill",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "public-openapi",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "openapi-matches-checkout-except-server-url",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "anonymous-me-refused",
+      "passed": true,
+      "expected": 401,
+      "actual": 401,
+      "detail": null
+    },
+    {
+      "name": "public-project-list",
+      "passed": true,
+      "expected": 200,
+      "actual": 200,
+      "detail": null
+    },
+    {
+      "name": "context:acc-88825734",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "export:acc-88825734",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "context:acc-scale-88825734",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "export:acc-scale-88825734",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    }
+  ],
+  "passed": 15,
+  "failed": 0,
+  "observations": {
+    "versions": {
+      "api_version": "1.1.1",
+      "schema_version": "1",
+      "skill_version": "1.1.1"
+    },
+    "openapi_canonical_sha256": "e052dc3e181a50572722fce1572667b020c2165a722e2ddd7f3a24f4444cbcc5",
+    "projects": [
+      {
+        "id": "01M1Z55AKM4GC9QJ6J3EM4289F",
+        "slug": "acc-88825734",
+        "status": "archived",
+        "kind": "challenge"
+      },
+      {
+        "id": "01M1Z55Y6K95F3V08K73FCW7AE",
+        "slug": "acc-scale-88825734",
+        "status": "archived",
+        "kind": "project"
+      }
+    ],
+    "export_counts": {
+      "acc-88825734": {
+        "contributions": 3,
+        "revisions": 4,
+        "receipts": 1,
+        "events": 30
+      },
+      "acc-scale-88825734": {
+        "contributions": 58,
+        "revisions": 58,
+        "receipts": 0,
+        "events": 60
+      }
+    }
+  },
+  "created_probe_records": {},
+  "scope": "Production public reads and, when requested, one limited non-maintainer identity with two tiny synthetic uploads and an ephemeral key binding. No project changes or maintainer-token access."
+}
