@@ -1,0 +1,72 @@
+{
+  "checked_at": "2026-09-08T22:10:26.744302+00:00",
+  "platform_repository": "https://github.com/vinid/einstein-arena",
+  "inspected_platform_commit": "0e23f3739290281341b70e8996a8d38a176d1fc6",
+  "paper_version": "arXiv:2606.10402v2",
+  "problem_catalog_count": 21,
+  "guide_version": "1.0.4",
+  "guide_sha256": "9d9579b11c63578e475b4f129f462ef7919b57fa626620fe96d7a785fa1fe113",
+  "inspected_verifiers": [
+    {
+      "problem": "circle-packing",
+      "url": "https://einsteinarena.com/api/problems/circle-packing",
+      "verifier_sha256": "0fc4d3aa9b1018d69aad40fd8f50e4201b8e7ad2ca52e9a68fb739626391fa0e",
+      "executed": false,
+      "hash_basis": "UTF-8 verifier string returned by API"
+    },
+    {
+      "problem": "kissing-number-d11",
+      "url": "https://einsteinarena.com/api/problems/kissing-number-d11",
+      "verifier_sha256": "3f62786f20e351f8cfef68538867f29a573d9fe20fc8a5e1428a55035a4bc5a3",
+      "executed": false,
+      "hash_basis": "UTF-8 verifier string returned by API"
+    },
+    {
+      "problem": "hadamard-det-51",
+      "url": "https://einsteinarena.com/api/problems/hadamard-det-51",
+      "verifier_sha256": "39ab063431d610ab8e3135061b7339f2d6500dfa4971a45b6515fc9a0eb17eb2",
+      "executed": false,
+      "hash_basis": "UTF-8 verifier string returned by API"
+    }
+  ],
+  "certificate_source": {
+    "commit": "c388c6f7408c886311940896713339a1a70c2394",
+    "url": "https://raw.githubusercontent.com/togethercomputer/EinsteinArena-new-SOTA/c388c6f7408c886311940896713339a1a70c2394/kissing-number/solutions/solution_n=604_d=11.json",
+    "bytes": 42551,
+    "sha256": "0bde9ca2c434d7beb5af63a64a291498e8c264d9a5718b738e92dd70b9ba7761",
+    "json_type": "dict",
+    "keys": [
+      "n",
+      "dim",
+      "description",
+      "vectors"
+    ]
+  },
+  "local_certificate_check": {
+    "valid": true,
+    "n": 604,
+    "dimension": 11,
+    "squared_norm": 36,
+    "pairs_checked": 182106,
+    "exact_contacts": 19704,
+    "claim": "K(11) >= 604",
+    "arithmetic": "Python arbitrary-precision integers; no floating point or tolerance",
+    "artifact_sha256": "0bde9ca2c434d7beb5af63a64a291498e8c264d9a5718b738e92dd70b9ba7761",
+    "elapsed_seconds": 0.34582660000160104,
+    "self_test": {
+      "comparison_cases_passed": 8,
+      "negative_controls_rejected": [
+        "wrong_norm",
+        "duplicate",
+        "non_integer",
+        "distinct_overlap"
+      ]
+    }
+  },
+  "checker_path": "scripts/verify_kissing_surd_certificate.py",
+  "checker_sha256": "3dd23f5e59fc9016a5be5fbebaacfd4711c94556f51d5e35daad60298ef1c266",
+  "checker_hash_basis": "UTF-8 LF",
+  "third_party_code_executed": false,
+  "external_posts_or_submissions": false,
+  "scope": "One published mathematical construction checked with a separately written integer-arithmetic implementation; not a platform audit, novelty claim or proof of optimality."
+}
