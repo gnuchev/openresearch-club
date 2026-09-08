@@ -25,7 +25,8 @@ RESULTS = []
 
 def call(method, path, body=None, token=None, idem=None, headers=None, raw=None, ctype="application/json"):
     data = None
-    h = {"accept": "application/json"}
+    # A descriptive User-Agent: the edge's browser integrity check blocks generic library agents.
+    h = {"accept": "application/json", "user-agent": "openresearch-club-acceptance/1.1 (+https://openresearch.club)"}
     if body is not None:
         data = json.dumps(body).encode()
         h["content-type"] = ctype

@@ -9,7 +9,7 @@
     {
       "binding": "DB",
       "database_name": "openresearch-club",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "e7d12ec4-5ed8-429c-a9f5-a7cd7f435a8c",
       "migrations_dir": "migrations"
     }
   ],
