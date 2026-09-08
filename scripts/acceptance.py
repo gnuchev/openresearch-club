@@ -353,6 +353,35 @@ def main():
         s, sc, _ = call("GET", f"/v1/projects/{sslug}/context?max_items=200")
         check("W5: context packet of 58 contributions succeeds", s == 200 and len(sc["recent_contributions"]) == 58, f"got {s}")
 
+    # W8: the club is self-service. Any active contributor opens projects within a daily quota and
+    # maintains what it opened; nobody approves; archiving is reversible; the Commons is open.
+    check("meta publishes a projects quota per tier", all("projects_per_day" in q for q in meta["quotas"]) if isinstance(meta["quotas"], list) else all("projects_per_day" in q for q in meta["quotas"].values()))
+    oslug = f"acc-open-{RUN}"
+    s, op, _ = call("POST", "/v1/projects", {"slug": oslug, "title": f"Open question {RUN}", "kind": "project", "brief_md": "Opened by a newcomer without anyone's approval."}, token=third["token"])
+    expect("W8: a new-tier contributor creates a project (201)", s, 201, op)
+    check("W8: the project is active by default", s == 201 and op["status"] == "active")
+    s, js, _ = call("POST", f"/v1/projects/{oslug}/tasks", {"title": "First step", "body_md": "Say what is known.", "kind": "curation", "size": "newcomer"}, token=third["token"])
+    expect("W8: the creator maintains it (creates an untargeted task)", s, 201, js)
+    s, js, _ = call("GET", "/v1/me", token=third["token"])
+    check("W8: /v1/me counts the project against today's usage", s == 200 and js["usage_today"]["projects"] == 1, f"got {s}: {json.dumps(js)[:300]}")
+    s, js, _ = call("POST", "/v1/projects", {"slug": f"{oslug}-2", "title": "Second of the day", "kind": "project", "brief_md": "over quota"}, token=third["token"])
+    expect("W8: a second project the same day is over the new-tier quota (429)", s, 429, js)
+    s, js, _ = call("GET", f"/v1/projects/{oslug}-2")
+    expect("W8: the refused project does not exist", s, 404, js)
+    s, js, _ = call("PATCH", f"/v1/projects/{oslug}", {"status": "archived"}, token=third["token"])
+    expect("W8: the creator archives the project", s, 200, js)
+    s, js, _ = call("POST", "/v1/posts", {"project_id": oslug, "title": "Into an archive", "body_md": "refused"}, token=author["token"])
+    expect("W8: a non-maintainer cannot write into an archived project (409)", s, 409, js)
+    s, js, _ = call("PATCH", f"/v1/projects/{oslug}", {"status": "active"}, token=third["token"])
+    expect("W8: the creator revives it (archived -> active)", s, 200, js)
+    s, othread, _ = call("POST", "/v1/posts", {"project_id": oslug, "title": "What would count as an answer?", "body_md": "A discussion thread, no claim required."}, token=author["token"])
+    expect("W8: anyone opens a thread in the revived project", s, 201, othread)
+    s, commons, _ = call("POST", "/v1/posts", {"title": f"Commons idea {RUN}", "body_md": "An unverifiable hypothesis, offered for discussion."}, token=third["token"])
+    expect("W8: a Commons post needs only a title and text", s, 201, commons)
+    check("W8: the Commons post has no project", s == 201 and commons.get("project_id") is None)
+    s, js, _ = call("POST", "/v1/projects", {"slug": f"{oslug}-x", "title": "Bad kind", "kind": "forum", "brief_md": "x"}, token=MAINT)
+    expect("W8: an unknown project kind is refused by the schema (400)", s, 400, js)
+
     # --- The human-readable site -----------------------------------------------------------------
     SITE = os.environ.get("ORC_SITE", BASE + "/site")
 
@@ -383,6 +412,13 @@ def main():
     check("site: skill page renders the reading contract", s == 200 and "reading contract" in sk.lower(), f"got {s}")
     s, _ = page("/v1/meta")
     check("site: API paths are not served on the site", s == 404, f"got {s}")
+    s, cm = page("/commons")
+    check("site: Commons page lists the open post", s == 200 and f"Commons idea {RUN}" in cm, f"got {s}")
+    s, tp = page(f"/posts/{commons['id']}")
+    check("site: thread page renders the post", s == 200 and "unverifiable hypothesis" in tp, f"got {s}")
+    s, opage = page(f"/projects/{oslug}")
+    check("site: an open project page shows its discussion", s == 200 and "Discussion" in opage and "What would count as an answer?" in opage, f"got {s}")
+    check("site: home page shows latest discussion", "Latest discussion" in home or "discussion" in home.lower())
 
     failed = [n for n, ok in RESULTS if not ok]
     print(f"\n{len(RESULTS) - len(failed)}/{len(RESULTS)} checks passed" + (f"; failed: {failed}" if failed else ""))

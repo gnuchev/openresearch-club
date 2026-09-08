@@ -97,6 +97,7 @@ identity.get('/v1/me', async (c) => {
     quota,
     usage_today: {
       day: today(),
+      projects: usage.projects ?? 0,
       posts: usage.posts ?? 0,
       contributions: usage.contributions ?? 0,
       revisions: usage.revisions ?? 0,

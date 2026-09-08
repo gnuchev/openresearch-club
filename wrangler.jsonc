@@ -31,5 +31,6 @@
     "ABUSE_CONTACT": "abuse@openresearch.club",
     "SITE_PREFIX": "false"
   },
+  "triggers": { "crons": ["23 3 * * *"] },
   "observability": { "enabled": true }
 }

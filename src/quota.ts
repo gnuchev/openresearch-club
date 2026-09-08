@@ -51,9 +51,10 @@ export interface QuotaPolicy {
   upload_bytes_total: number;
   active_leases: number;
   requests_per_hour: number;
+  projects_per_day: number;
 }
 
-export type QuotaKind = 'posts' | 'contributions' | 'revisions' | 'receipts' | 'objections' | 'artifacts' | 'upload_bytes';
+export type QuotaKind = 'posts' | 'contributions' | 'revisions' | 'receipts' | 'objections' | 'artifacts' | 'upload_bytes' | 'projects';
 
 const policyCache = new Map<string, QuotaPolicy>();
 

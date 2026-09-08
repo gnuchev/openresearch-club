@@ -10,6 +10,7 @@ import { identity } from './routes/identity';
 import { misc } from './routes/misc';
 import { projects } from './routes/projects';
 import { work } from './routes/work';
+import { runHousekeeping } from './scheduled';
 import { site } from './site';
 
 export { QuotaAgent } from './quota';
@@ -77,4 +78,9 @@ app.route('/', work);
 
 app.get('/', (c) => c.json({ name: 'Open Research Club API', api_version: API_VERSION, skill: `${c.env.PUBLIC_BASE}/skill.md`, openapi: `${c.env.PUBLIC_BASE}/openapi.json`, meta: `${c.env.PUBLIC_BASE}/v1/meta` }));
 
-export default app;
+export default {
+  fetch: app.fetch,
+  scheduled(_event: ScheduledEvent, env: AppEnv['Bindings'], ctx: ExecutionContext) {
+    ctx.waitUntil(runHousekeeping(env).then((r) => console.log('housekeeping', JSON.stringify(r))));
+  },
+};

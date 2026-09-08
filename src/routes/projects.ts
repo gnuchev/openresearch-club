@@ -26,7 +26,7 @@ import {
 import { batch, eventStmt, many, maxEventCursor, one, placeholders, stmt, type Row } from '../lib/db';
 import { badRequest, conflict, forbidden, notFound } from '../lib/errors';
 import { isoAfterHours, nowIso, ulid } from '../lib/ids';
-import { loadPolicy } from '../quota';
+import { loadPolicy, reserveQuota, usageStmt } from '../quota';
 import * as S from '../serialize';
 
 export const projects = new Hono<AppEnv>();
@@ -61,23 +61,27 @@ projects.get('/v1/projects', async (c) => {
   return c.json({ items, next_cursor: rows.length > limit ? rows[limit - 1].id : null });
 });
 
+// Any active registered contributor may open a project or a challenge, within a per-tier daily
+// quota. The creator becomes its maintainer. Nobody approves; maintainers moderate afterwards.
 projects.post('/v1/projects', async (c) => {
   const env = c.env;
   const actor = requireActor(c);
-  if (!isGlobalMaintainer(actor)) throw forbidden('Only global maintainers create projects');
   const req = body(c, 'ProjectCreate');
   if (await one(env, 'SELECT id FROM projects WHERE slug = ?', req.slug)) throw conflict('Slug is already taken');
+  const release = await reserveQuota(env, actor, 'projects');
   const id = ulid();
   const now = nowIso();
   const isChallenge = req.kind === 'challenge';
+  const status = req.status ?? 'active';
   const stmts = [
     stmt(
       env,
       `INSERT INTO projects (id, slug, title, kind, status, brief_md, contract_md, contract_version, created_by, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
-      id, req.slug, req.title, req.kind, req.status ?? 'draft', req.brief_md, isChallenge ? req.contract.body_md : null, isChallenge ? 1 : 0, actor.id, now, now,
+      id, req.slug, req.title, req.kind, status, req.brief_md, isChallenge ? req.contract.body_md : null, isChallenge ? 1 : 0, actor.id, now, now,
     ),
     stmt(env, 'INSERT INTO project_roles (project_id, contributor_id, role, granted_by, created_at) VALUES (?,?,?,?,?)', id, actor.id, 'maintainer', actor.id, now),
-    eventStmt(env, { type: 'project.created', actor_id: actor.id, project_id: id, entity_type: 'project', entity_id: id, payload: { slug: req.slug, kind: req.kind, status: req.status ?? 'draft' } }),
+    usageStmt(env, actor.id, 'projects'),
+    eventStmt(env, { type: 'project.created', actor_id: actor.id, project_id: id, entity_type: 'project', entity_id: id, payload: { slug: req.slug, kind: req.kind, status, title: req.title } }),
   ];
   if (isChallenge) {
     stmts.push(
@@ -85,13 +89,18 @@ projects.post('/v1/projects', async (c) => {
       eventStmt(env, { type: 'contract.published', actor_id: actor.id, project_id: id, entity_type: 'contract', entity_id: id, revision: 1, payload: { version: 1 } }),
     );
   }
-  await batch(env, stmts);
+  try {
+    await batch(env, stmts);
+  } catch (e) {
+    await release();
+    throw e;
+  }
   return c.json(await projectFull(env, (await one(env, 'SELECT * FROM projects WHERE id = ?', id))!), 201);
 });
 
 projects.get('/v1/projects/:project', async (c) => c.json(await projectFull(c.env, await loadProject(c.env, c.req.param('project')))));
 
-const TRANSITIONS: Record<string, string[]> = { draft: ['active'], active: ['paused', 'archived'], paused: ['active', 'archived'], archived: [] };
+const TRANSITIONS: Record<string, string[]> = { draft: ['active'], active: ['paused', 'archived'], paused: ['active', 'archived'], archived: ['active'] };
 
 projects.patch('/v1/projects/:project', async (c) => {
   const env = c.env;

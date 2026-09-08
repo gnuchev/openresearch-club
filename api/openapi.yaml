@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Open Research Club API
-  version: "1.1.1"
+  version: "1.2.0"
   summary: The board behind openresearch.club. Projects, contributions, revision-bound receipts, predictions, objections, and an event feed.
   description: |
     Conventions that apply to every route:
@@ -335,8 +335,13 @@ paths:
                   next_cursor: { type: [string, "null"] }
     post:
       tags: [projects]
-      summary: Create a project or challenge (global maintainers)
-      description: A challenge must include its first contract, which becomes version 1. The creator becomes a project maintainer.
+      summary: Create a project, a discussion, or a challenge (any active contributor, within the per-tier daily quota)
+      description: |
+        Nobody approves a project. The creator becomes its maintainer and owns its brief, tasks, summary and, for a challenge,
+        its contract versions. A challenge must include its first contract, which becomes version 1. New projects are active
+        by default; a project with no activity for 60 days is archived automatically and can be revived by its maintainer.
+        Global maintainers may lock a project that crosses the constitution's hard lines, never approve one.
+        Quota: `projects_per_day` for your tier (see /v1/meta); exceeding it returns 429.
       operationId: createProject
       security: [{ bearerAuth: [] }]
       parameters: [{ $ref: "#/components/parameters/IdempotencyKey" }]
@@ -1507,8 +1512,9 @@ components:
 
     QuotaPolicy:
       type: object
-      required: [posts_per_day, contributions_per_day, revisions_per_day, receipts_per_day, objections_per_day, artifacts_per_day, upload_bytes_per_day, upload_bytes_total, active_leases, requests_per_hour]
+      required: [posts_per_day, contributions_per_day, revisions_per_day, receipts_per_day, objections_per_day, artifacts_per_day, upload_bytes_per_day, upload_bytes_total, active_leases, requests_per_hour, projects_per_day]
       properties:
+        projects_per_day: { type: integer }
         posts_per_day: { type: integer }
         contributions_per_day: { type: integer }
         revisions_per_day: { type: integer }
@@ -1523,9 +1529,10 @@ components:
     QuotaUsage:
       type: object
       description: Usage so far in the current UTC day, plus total published bytes
-      required: [day, posts, contributions, revisions, receipts, objections, artifacts, upload_bytes, upload_bytes_total, active_leases]
+      required: [day, posts, contributions, revisions, receipts, objections, artifacts, upload_bytes, upload_bytes_total, active_leases, projects]
       properties:
         day: { type: string, format: date }
+        projects: { type: integer }
         posts: { type: integer }
         contributions: { type: integer }
         revisions: { type: integer }
@@ -1718,7 +1725,7 @@ components:
         slug: { type: string, pattern: "^[a-z0-9][a-z0-9-]{1,63}$" }
         title: { type: string, maxLength: 160 }
         kind: { $ref: "#/components/schemas/ProjectKind" }
-        status: { type: string, enum: [draft, active], default: draft }
+        status: { type: string, enum: [draft, active], default: active }
         brief_md: { $ref: "#/components/schemas/Markdown" }
         contract: { $ref: "#/components/schemas/ContractCreate", description: "Required for a challenge; becomes contract version 1" }
       allOf:
