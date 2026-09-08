@@ -188,5 +188,152 @@
     "console_errors": 0,
     "horizontal_overflow": false
   },
-  "deployment": "pending_owner_confirmation"
+  "deployment": {
+    "status": "live",
+    "worker_version": "41e7c67d-ace3-4df7-a1b0-7d85da793044",
+    "source_commit": "3fdbff2",
+    "previous_worker_version": "2fc696e8-ad10-4107-a922-aa72fca581dd"
+  },
+  "public_http_checks": [
+    {
+      "url": "https://openresearch.club/brand/open-research-club-v1/logo.png",
+      "status": 200,
+      "sha256": "c9d8c50a96a49f41bd8457795b24ea4c5c3b96946461b90dd5246778be0bf1b3",
+      "bytes": 821698,
+      "mime": "image/png",
+      "cache_control": "public, max-age=31536000, immutable"
+    },
+    {
+      "url": "https://openresearch.club/brand/open-research-club-v1/icon-16.png",
+      "status": 200,
+      "sha256": "845720db2c7dee528bd552d0b24cf55d88a5eb934bcade27484dd47d48b15e1a",
+      "bytes": 601,
+      "mime": "image/png",
+      "cache_control": "public, max-age=31536000, immutable"
+    },
+    {
+      "url": "https://openresearch.club/brand/open-research-club-v1/icon-32.png",
+      "status": 200,
+      "sha256": "4d7c7c611cd05a932494db4b888d916c7659dc0f406794a3e67884df8e2d08e9",
+      "bytes": 1424,
+      "mime": "image/png",
+      "cache_control": "public, max-age=31536000, immutable"
+    },
+    {
+      "url": "https://openresearch.club/brand/open-research-club-v1/icon-48.png",
+      "status": 200,
+      "sha256": "e0289a1480240a53676064d55fa0ca27422ca5697f19bddbbdc4259df7b1ef25",
+      "bytes": 2572,
+      "mime": "image/png",
+      "cache_control": "public, max-age=31536000, immutable"
+    },
+    {
+      "url": "https://openresearch.club/brand/open-research-club-v1/icon-180.png",
+      "status": 200,
+      "sha256": "55e8b98979055f5c186e91fec88592239f5c1625f441b9e970a29d3c49323b13",
+      "bytes": 26327,
+      "mime": "image/png",
+      "cache_control": "public, max-age=31536000, immutable"
+    },
+    {
+      "url": "https://openresearch.club/brand/open-research-club-v1/icon-512.png",
+      "status": 200,
+      "sha256": "f8e2875ae24edb8e3c5034890f7e43ea87029b17bd91c9b95f99cc08f5612984",
+      "bytes": 213326,
+      "mime": "image/png",
+      "cache_control": "public, max-age=31536000, immutable"
+    },
+    {
+      "url": "https://openresearch.club/favicon.ico",
+      "status": 200,
+      "sha256": "817457d603edbab0b57641783ffc421cc53c0228a1665c860f3a9377138c6eb8",
+      "bytes": 4651,
+      "mime": "image/vnd.microsoft.icon",
+      "cache_control": "public, max-age=3600"
+    },
+    {
+      "url": "https://www.openresearch.club/brand/open-research-club-v1/logo.png",
+      "status": 200,
+      "sha256": "c9d8c50a96a49f41bd8457795b24ea4c5c3b96946461b90dd5246778be0bf1b3",
+      "bytes": 821698,
+      "mime": "image/png",
+      "cache_control": "public, max-age=31536000, immutable"
+    },
+    {
+      "url": "https://www.openresearch.club/brand/open-research-club-v1/icon-16.png",
+      "status": 200,
+      "sha256": "845720db2c7dee528bd552d0b24cf55d88a5eb934bcade27484dd47d48b15e1a",
+      "bytes": 601,
+      "mime": "image/png",
+      "cache_control": "public, max-age=31536000, immutable"
+    },
+    {
+      "url": "https://www.openresearch.club/brand/open-research-club-v1/icon-32.png",
+      "status": 200,
+      "sha256": "4d7c7c611cd05a932494db4b888d916c7659dc0f406794a3e67884df8e2d08e9",
+      "bytes": 1424,
+      "mime": "image/png",
+      "cache_control": "public, max-age=31536000, immutable"
+    },
+    {
+      "url": "https://www.openresearch.club/brand/open-research-club-v1/icon-48.png",
+      "status": 200,
+      "sha256": "e0289a1480240a53676064d55fa0ca27422ca5697f19bddbbdc4259df7b1ef25",
+      "bytes": 2572,
+      "mime": "image/png",
+      "cache_control": "public, max-age=31536000, immutable"
+    },
+    {
+      "url": "https://www.openresearch.club/brand/open-research-club-v1/icon-180.png",
+      "status": 200,
+      "sha256": "55e8b98979055f5c186e91fec88592239f5c1625f441b9e970a29d3c49323b13",
+      "bytes": 26327,
+      "mime": "image/png",
+      "cache_control": "public, max-age=31536000, immutable"
+    },
+    {
+      "url": "https://www.openresearch.club/brand/open-research-club-v1/icon-512.png",
+      "status": 200,
+      "sha256": "f8e2875ae24edb8e3c5034890f7e43ea87029b17bd91c9b95f99cc08f5612984",
+      "bytes": 213326,
+      "mime": "image/png",
+      "cache_control": "public, max-age=31536000, immutable"
+    },
+    {
+      "url": "https://www.openresearch.club/favicon.ico",
+      "status": 200,
+      "sha256": "817457d603edbab0b57641783ffc421cc53c0228a1665c860f3a9377138c6eb8",
+      "bytes": 4651,
+      "mime": "image/vnd.microsoft.icon",
+      "cache_control": "public, max-age=3600"
+    },
+    {
+      "url": "https://openresearch.club/",
+      "status": 200,
+      "header_logo": true,
+      "favicon_links": true
+    },
+    {
+      "url": "https://www.openresearch.club/",
+      "status": 200,
+      "header_logo": true,
+      "favicon_links": true
+    },
+    {
+      "url": "https://api.openresearch.club/v1/meta",
+      "status": 200
+    },
+    {
+      "url": "https://api.openresearch.club/v1/projects/schur-six/context",
+      "status": 200
+    },
+    {
+      "url": "https://api.openresearch.club/v1/contributions/01M1ZEMTZKSK1PCBY20X8MHBZW",
+      "status": 200
+    },
+    {
+      "url": "https://api.openresearch.club/v1/me",
+      "status": 401
+    }
+  ]
 }

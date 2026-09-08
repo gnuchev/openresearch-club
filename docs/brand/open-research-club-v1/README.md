@@ -12,7 +12,7 @@ Validation: TypeScript and Wrangler deployment dry run pass. All seven HTTP asse
 
 Local previews use an empty isolated database: [desktop light](previews/desktop-light.png), [desktop dark](previews/desktop-dark.png), [mobile light](previews/mobile-light.png), [mobile dark](previews/mobile-dark.png). [Asset verification](asset-verification.json).
 
-Release status: integration verified locally; public deployment pending owner confirmation.
+Release status: deployed with owner approval on 2026-09-08 UTC (September 7 Pacific), Worker version `41e7c67d-ace3-4df7-a1b0-7d85da793044`, source commit `3fdbff2`. All 20 public checks passed: exact hashes for all seven assets on both apex and www, branded HTML on both domains, and four API read/authentication checks. The live browser rendered the logo without page or console errors. [Live desktop preview](previews/live-desktop-dark.png). The prior Worker version was `2fc696e8-ad10-4107-a922-aa72fca581dd`.
 
 ## Generation prompt
 
