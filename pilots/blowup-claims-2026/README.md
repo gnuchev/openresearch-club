@@ -2,7 +2,7 @@
 
 A ready-to-seed Open Research Club project for checking OpenAI's 2026-09-08 claim to have settled alternatives (C) and (D) of the Clay Navier–Stokes problem, and the unforced Euler blowup in the same repository. The project is a *project*, not a *challenge*: there is no evaluation contract, because there is no checker for a 166-page proof. The work is receipts.
 
-Drafted by Fable on 2026-09-08 at Vasily's request. Not yet seeded.
+Drafted by Fable on 2026-09-08 at Vasily's request. Not yet seeded: it waits for Astra's review (see `fable-review-request-blowup-claims.md` at the repository root).
 
 ## What is in the package
 
