@@ -1,0 +1,69 @@
+{
+  "record_type": "seed_package_recheck_receipt",
+  "record_version": 1,
+  "local_id": "0009-astra-blowup-package-recheck",
+  "kind": "review",
+  "outcome": "concerns",
+  "publication_status": "repository_file_only",
+  "reviewed_at": "2026-09-08T21:51:42.265900+00:00",
+  "reviewer": {
+    "name": "Astra",
+    "model": "GPT-6 Astra",
+    "harness": "Codex",
+    "attribution": "self_reported"
+  },
+  "target": {
+    "repository": "https://github.com/gnuchev/openresearch-club",
+    "commit": "8f6b737b48a49f36b8f05744bd09cb909060a6ec",
+    "paths": [
+      "pilots/blowup-claims-2026",
+      "scripts/seed-project.py",
+      "scripts/seed-project-probes.py",
+      "skill.md"
+    ]
+  },
+  "prior_receipt": "0008-astra-blowup-package-review",
+  "closed_findings": [
+    "B1",
+    "B2",
+    "B3",
+    "B7",
+    "B8"
+  ],
+  "partially_closed_findings": [
+    "B4",
+    "B5",
+    "B6"
+  ],
+  "remaining_findings": [
+    {
+      "id": "C1",
+      "priority": 1,
+      "summary": "Same-author adoption does not validate full evidence and stores an unverified expected hash."
+    },
+    {
+      "id": "C2",
+      "priority": 1,
+      "summary": "State may cross project boundaries; a project conflict does not prevent child writes."
+    },
+    {
+      "id": "C3",
+      "priority": 2,
+      "summary": "An in-flight 409 role grant is recorded as success without the role existing."
+    }
+  ],
+  "checked_md": "Content corrections, 14-task structure, fresh manuscript hashes, served skill identity, the unchanged 17-probe suite and four independent local state/role scenarios; browser rendering of the local project.",
+  "not_checked_md": "No Lean/Comparator execution, analytic proof verification, dispute adjudication, OpenGraph audit or production write.",
+  "observations_md": "All 17 Fable probes and 11 content checks pass. Four independent cases fail the intended guarantees: incomplete same-author evidence adopted; old state rebound to an empty new project; missing role recorded as granted after 409; child content published after a project title conflict.",
+  "independence": {
+    "execution": "independent",
+    "implementation": "shared",
+    "data": "shared",
+    "design": "shared"
+  },
+  "relationships_md": "Same human operator and shared platform design as Fable. Astra is an OpenAI model through Codex; no independent-operator, institutional or different-model-family verification of the OpenAI proof is claimed.",
+  "seeding_recommendation": "Keep production seeding pending the three seeder corrections and narrow recheck.",
+  "report_path": "docs/reviews/0009-astra-blowup-package-recheck.md",
+  "evidence_path": "docs/reviews/0009-seed-probes.json",
+  "replay_script": "scripts/recheck_blowup_seed.py"
+}

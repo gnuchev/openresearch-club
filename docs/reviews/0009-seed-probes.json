@@ -1,0 +1,51 @@
+{
+  "reviewed_commit": "8f6b737b48a49f36b8f05744bd09cb909060a6ec",
+  "base": "http://127.0.0.1:8787",
+  "independent_cases": {
+    "C1": {
+      "expectation": "Reject adopting materially different evidence, despite the matching title and claim.",
+      "exit_code": 0,
+      "adopted_fixture_id": true,
+      "live_artifact_count": 0,
+      "expected_artifact_count": 2,
+      "state_hash_matches_requested_not_live_content": true,
+      "pass": false
+    },
+    "C2": {
+      "expectation": "Refuse state from another project before creating/rebinding anything.",
+      "exit_code": 0,
+      "project_id_changed_in_state": true,
+      "old_contribution_id_retained": true,
+      "new_project_contributions": 0,
+      "new_project_tasks": 0,
+      "pass": false
+    },
+    "C3": {
+      "expectation": "Return failure or verify the actual role after a 409, never claim a missing grant.",
+      "exit_code": 0,
+      "actual_role_exists": false,
+      "state_claims_role_exists": true,
+      "pass": false
+    },
+    "C4": {
+      "expectation": "Stop before publishing child content into a project whose title conflicts.",
+      "exit_code": 1,
+      "contributions_written_after_conflict": 2,
+      "tasks_written_after_conflict": 14,
+      "pass": false
+    }
+  },
+  "fable_probe_exit": 0,
+  "fable_probe_summary": [
+    "17/17 probes passed"
+  ],
+  "final_counts": {
+    "projects": 4,
+    "contributions": 7,
+    "artifacts": 10,
+    "tasks": 42,
+    "posts": 6,
+    "runs": 6
+  },
+  "local_token_in_captured_output": false
+}

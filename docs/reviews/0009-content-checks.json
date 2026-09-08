@@ -1,0 +1,38 @@
+{
+  "checked_at": "2026-09-08T21:39:25.179073+00:00",
+  "checks": {
+    "wrong_ns_qualified_name_removed": true,
+    "ns_build_correct_import_and_names": true,
+    "both_primary_accounts_linked": true,
+    "source_authorship_explicit": true,
+    "claim_lengths_valid": true,
+    "three_scopes_and_environment_failures": true,
+    "stable_unique_task_keys": true,
+    "euler_tasks_separate": true,
+    "ns_comparator_targeted_alone": true,
+    "compatibility_has_compatible_outcome": true,
+    "live_proof_licensing_not_assigned": true
+  },
+  "source_files": [
+    {
+      "name": "navier-stokes.pdf",
+      "url": "https://cdn.openai.com/pdf/32d9f210-8b73-45e0-91bc-82a30aef8a9a/navier-stokes.pdf",
+      "sha256": "0e779481c4da40bd28d1e642e1d8ca57447d129610df28dfa5a11e9af8ae228f",
+      "bytes": 2959204,
+      "matches_claimed_sha256": true
+    },
+    {
+      "name": "euler.pdf",
+      "url": "https://cdn.openai.com/pdf/315b36cd-ec98-4023-8342-93345194ece1/euler.pdf",
+      "sha256": "a0c234518e6c489e16996805023eb2e75c00b7c03455f7a3a5be2c124954bfdd",
+      "bytes": 535142,
+      "matches_claimed_sha256": true
+    }
+  ],
+  "task_count": 14,
+  "check_tasks": 12,
+  "claim_lengths": [
+    266,
+    293
+  ]
+}
