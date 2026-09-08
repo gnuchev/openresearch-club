@@ -1,0 +1,23 @@
+{
+  "record_type": "deployed_runtime_review_receipt",
+  "record_version": 1,
+  "local_id": "0007-astra-deployed-review",
+  "kind": "review",
+  "outcome": "concerns",
+  "publication_status": "local_file_only",
+  "reviewer": {"name": "Astra", "harness": "Codex", "attribution": "self_reported"},
+  "target": {"api": "https://api.openresearch.club", "documented_checkout": "dea804b", "observed_worker_version": "e41d480c-cf9e-4be5-99ac-5207adcd86c7", "traffic_percentage": 100},
+  "checked_md": "Live public access with generic user-agent strings and actual Node/curl clients, contract retrieval, archived project reads, ordinary registration/authentication, run declaration, invalid and valid Ed25519 binding, two tiny uploads including a real client-chunked request, upload replay, and independent public byte/hash checks.",
+  "not_checked_md": "No maintainer-token access, production administrative regression suite, existing project mutation, exhaustive traffic/concurrency testing, crash recovery, snapshot production, or restore drill.",
+  "observations_md": "30 checks passed; 2 failed on the same data-host behavior. api.openresearch.club accepts the tested clients. data.openresearch.club returns 403/1010 to Python urllib but serves exact bytes to descriptive user agents and curl. Live chunked upload and Ed25519 binding succeeded.",
+  "independence": {"execution": "independent", "implementation": "shared", "data": "shared", "design": "shared"},
+  "relationships_md": "Same human operator as Fable and shared design. The Schur package also uses a separately authored published encoder as mathematical corroboration; no independent-operator claim is made.",
+  "finding_ids": ["D1-data-host-client-block"],
+  "closed_observations": ["Client-chunked upload without Content-Length succeeds end to end on the deployed API", "Live invalid/valid Ed25519 proof handling verified"],
+  "report_path": "docs/reviews/0007-astra-deployed-review.md",
+  "evidence_path": "docs/reviews/0007-deployed-probes.json",
+  "schur_package": "pilots/schur-six/README.md",
+  "schur_baseline_sha256": "968f91177ddf7cbe9ce0347c8f2be089c54a6b648c387a6080cbec1237636010",
+  "next_step": "Correct the data-host client exception, confirm ordinary-client artifact delivery, then seed the verified Schur package using the maintainer identity.",
+  "limitations": "This receipt is saved locally, not posted to the club. No blanket production acceptance or new Schur bound is claimed."
+}

@@ -1,0 +1,312 @@
+{
+  "generated_at": "2026-09-08T00:47:23.023362+00:00",
+  "base": "https://api.openresearch.club",
+  "checkout_commit": "dea804bca5b1de50a77fd310fcfc7a83b61b7a3c",
+  "checks": [
+    {
+      "name": "meta-client:Python-urllib/3.12",
+      "passed": true,
+      "expected": 200,
+      "actual": 200,
+      "detail": null
+    },
+    {
+      "name": "meta-client:python-requests/2.32.0",
+      "passed": true,
+      "expected": 200,
+      "actual": 200,
+      "detail": null
+    },
+    {
+      "name": "meta-client:node",
+      "passed": true,
+      "expected": 200,
+      "actual": 200,
+      "detail": null
+    },
+    {
+      "name": "meta-client:curl/8.0",
+      "passed": true,
+      "expected": 200,
+      "actual": 200,
+      "detail": null
+    },
+    {
+      "name": "meta-client:<empty>",
+      "passed": true,
+      "expected": 200,
+      "actual": 200,
+      "detail": null
+    },
+    {
+      "name": "meta-client:OpenResearchClub-DeployedReview/1.0",
+      "passed": true,
+      "expected": 200,
+      "actual": 200,
+      "detail": null
+    },
+    {
+      "name": "public-skill",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "public-openapi",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "openapi-matches-checkout-except-server-url",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "anonymous-me-refused",
+      "passed": true,
+      "expected": 401,
+      "actual": 401,
+      "detail": null
+    },
+    {
+      "name": "public-project-list",
+      "passed": true,
+      "expected": 200,
+      "actual": 200,
+      "detail": null
+    },
+    {
+      "name": "context:acc-88825734",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "export:acc-88825734",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "context:acc-scale-88825734",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "export:acc-scale-88825734",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "probe-registration",
+      "passed": true,
+      "expected": 201,
+      "actual": 201,
+      "detail": null
+    },
+    {
+      "name": "registration-does-not-return-bearer",
+      "passed": true,
+      "expected": false,
+      "actual": false,
+      "detail": null
+    },
+    {
+      "name": "probe-authentication",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "run-declaration",
+      "passed": true,
+      "expected": 201,
+      "actual": 201,
+      "detail": null
+    },
+    {
+      "name": "invalid-key-proof-refused",
+      "passed": true,
+      "expected": 400,
+      "actual": 400,
+      "detail": null
+    },
+    {
+      "name": "valid-ed25519-key-binding",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "register-artifact:length-declared",
+      "passed": true,
+      "expected": 201,
+      "actual": 201,
+      "detail": null
+    },
+    {
+      "name": "upload-idempotency-replay",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "upload:length-declared",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "public-artifact-bytes:length-declared:Python-urllib/3.12",
+      "passed": false,
+      "expected": true,
+      "actual": false,
+      "detail": {
+        "status": 403,
+        "body_if_error": "error code: 1010\n"
+      }
+    },
+    {
+      "name": "public-artifact-bytes:length-declared:OpenResearchClub-DeployedReview/1.0",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "status": 200,
+        "body_if_error": null
+      }
+    },
+    {
+      "name": "public-artifact-bytes:length-declared:curl/8.0",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "status": 200,
+        "body_if_error": null
+      }
+    },
+    {
+      "name": "register-artifact:chunked",
+      "passed": true,
+      "expected": 201,
+      "actual": 201,
+      "detail": null
+    },
+    {
+      "name": "upload:chunked",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": null
+    },
+    {
+      "name": "public-artifact-bytes:chunked:Python-urllib/3.12",
+      "passed": false,
+      "expected": true,
+      "actual": false,
+      "detail": {
+        "status": 403,
+        "body_if_error": "error code: 1010\n"
+      }
+    },
+    {
+      "name": "public-artifact-bytes:chunked:OpenResearchClub-DeployedReview/1.0",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "status": 200,
+        "body_if_error": null
+      }
+    },
+    {
+      "name": "public-artifact-bytes:chunked:curl/8.0",
+      "passed": true,
+      "expected": true,
+      "actual": true,
+      "detail": {
+        "status": 200,
+        "body_if_error": null
+      }
+    }
+  ],
+  "passed": 30,
+  "failed": 2,
+  "observations": {
+    "versions": {
+      "api_version": "1.1.1",
+      "schema_version": "1",
+      "skill_version": "1.1.1"
+    },
+    "openapi_canonical_sha256": "e052dc3e181a50572722fce1572667b020c2165a722e2ddd7f3a24f4444cbcc5",
+    "projects": [
+      {
+        "id": "01M1Z55AKM4GC9QJ6J3EM4289F",
+        "slug": "acc-88825734",
+        "status": "archived",
+        "kind": "challenge"
+      },
+      {
+        "id": "01M1Z55Y6K95F3V08K73FCW7AE",
+        "slug": "acc-scale-88825734",
+        "status": "archived",
+        "kind": "project"
+      }
+    ],
+    "export_counts": {
+      "acc-88825734": {
+        "contributions": 3,
+        "revisions": 4,
+        "receipts": 1,
+        "events": 30
+      },
+      "acc-scale-88825734": {
+        "contributions": 58,
+        "revisions": 58,
+        "receipts": 0,
+        "events": 60
+      }
+    },
+    "chunked_scope": "The client omitted Content-Length and sent HTTP/1.1 chunks. This observes end-to-end acceptance, not the headers Cloudflare forwarded internally."
+  },
+  "created_probe_records": {
+    "contributor": {
+      "id": "01M1Z7QNTMGFGD722RVK9G62CZ",
+      "handle": "astra-live-probe-d79b45189f"
+    },
+    "run_id": "01M1Z7QPQW4NGP2YVDFETPDZX0",
+    "artifacts": [
+      {
+        "id": "01M1Z7QQK6P8GJM2E88KGCG23F",
+        "mode": "length-declared",
+        "url": "https://data.openresearch.club/artifacts/01M1Z7QQK6P8GJM2E88KGCG23F",
+        "sha256": "aae9094881d33142ce25468a4694fcaf3387f57b33c8ada8044b3f318150e48d",
+        "byte_size": 34
+      },
+      {
+        "id": "01M1Z7QS7ACMCF4M5DPK2Y88Y0",
+        "mode": "chunked",
+        "url": "https://data.openresearch.club/artifacts/01M1Z7QS7ACMCF4M5DPK2Y88Y0",
+        "sha256": "aae9094881d33142ce25468a4694fcaf3387f57b33c8ada8044b3f318150e48d",
+        "byte_size": 34
+      }
+    ]
+  },
+  "scope": "Production public reads and, when requested, one limited non-maintainer identity with two tiny synthetic uploads and an ephemeral key binding. No project changes or maintainer-token access."
+}
