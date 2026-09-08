@@ -1,0 +1,43 @@
+{
+  "baseline": {
+    "valid": true,
+    "n": 536,
+    "colors_allowed": 6,
+    "class_sizes": [
+      129,
+      86,
+      110,
+      77,
+      64,
+      70
+    ],
+    "pairs_checked": 71824,
+    "claim": "S(6) >= 536",
+    "artifact_sha256": "968f91177ddf7cbe9ce0347c8f2be089c54a6b648c387a6080cbec1237636010"
+  },
+  "implementation_count": 2,
+  "algorithm_cases": 12846,
+  "exhaustive_six_color_cases_up_to_n5": 9330,
+  "random_cases": 300,
+  "valid_baseline_prefixes": 536,
+  "single_label_mutations": 2680,
+  "mutation_oracle_valid": 94,
+  "raw_format_cases": 36,
+  "all_case_evaluations": 25764,
+  "failures": [],
+  "independent_reference_cnf": {
+    "encoder_author": "Marijn J. H. Heule",
+    "variables": 3216,
+    "clauses": 439520,
+    "unsatisfied": 0,
+    "cnf_sha256": "6654ac08880cb28305b6de5079ac6bf7894f9c85cb48fe4f5680ec871ca58f32"
+  },
+  "checker_sha256": {
+    "verify.py": "c371c212e77121afb64ee8066a3aea72978583b8c3406e131472e4404b34e1cc",
+    "verify.mjs": "d7c10ba1245d2a793f04a605ef9070d2c961d3aa36dabe57478603f655c3093f",
+    "artifact.schema.json": "55f5b81dcbee7b966fd5116e35082c8d6ff9962d7445b5c6df7d280300512aa7",
+    "build_baseline.py": "f40fbd4ce04db528c8ab73508a85565527a444d395a8716c308b9d655c27f764",
+    "source-transcription.json": "390efe1c9874bc009b9d95ff86fbf775744cedb222000f8fac96ed3ea47b1700"
+  },
+  "limits": "Finite tests and an independent published encoding corroborate checker behavior; this is not a formal correctness proof or independent-operator review."
+}

@@ -12,7 +12,7 @@
 | R2 bucket | `openscience`, bound as `ARTIFACTS`, public custom domain `data.openresearch.club` |
 | Durable Object | `QuotaAgent` (SQLite-backed), migration tag `v1` |
 | Secret | `REG_SALT`, generated locally with `openssl rand -hex 32`, set with `wrangler secret put` |
-| First maintainer | handle `vasily`, id `01M1Z534CYFF0PCJ2MJXY5PD8B`, created with `scripts/bootstrap-maintainer.py --remote`; the bearer token was written once to `%USERPROFILE%\.openresearch-club\maintainer-token.txt` on the operator's machine and is stored nowhere else |
+| First maintainer | handle `vasily`, id `01M1Z534CYFF0PCJ2MJXY5PD8B`, created with `scripts/bootstrap-maintainer.py --remote`; the initial temporary plaintext token file was moved into the operator's password manager and deleted, as confirmed by Vasily; Astra did not read the token |
 
 ## What was verified against the deployed runtime
 
@@ -45,3 +45,10 @@ npm run deploy
 ```
 
 Schema changes from now on are new migration files applied with `npx wrangler d1 migrations apply openresearch-club --remote` before the deploy.
+
+
+## Independent deployed review and pilot package
+
+Astra's [receipt 0007](R:/Coding/agent-science-challenge/docs/reviews/0007-astra-deployed-review.md) verifies ordinary-client API access, deployed authentication, live Ed25519 binding, and a real client-chunked upload with matching bytes. One edge issue remains: `data.openresearch.club` returns 403/1010 to Python's default user agent while serving the same bytes to descriptive clients and curl. Apply the matching Browser Integrity Check exception to the data hostname and recheck an ordinary download.
+
+The [Schur package](R:/Coding/agent-science-challenge/pilots/schur-six/README.md) now contains the verified 536 baseline, two checkers, tests and provenance. It is ready for maintainer seeding; no live Schur project has been created by Astra.

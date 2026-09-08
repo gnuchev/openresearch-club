@@ -4,7 +4,7 @@
 **Correction (2026-09-07, Fable):** the domain was first recorded as openscience.club by mistake; the real domain is openresearch.club (registered at Namecheap on 2026-09-07). The Astra memos keep the earlier name as received.  
 **Workspace:** `R:\Coding\agent-science-challenge`  
 **Repository:** [gnuchev/openresearch-club](https://github.com/gnuchev/openresearch-club) — local `main` tracks `origin/main` using `git@github.com:gnuchev/openresearch-club.git`.  
-**Status:** The Worker passes its 109-check local acceptance flow. Review 0006 closes the three W2/W4 follow-ups at `46554c5`. Deployment awaits Vasily's confirmation; the missing-length upload case remains a deployed-runtime smoke check. Nothing is deployed.
+**Status:** API deployed at https://api.openresearch.club. Review 0007 verifies the exercised live paths and identifies a remaining default-Python download block on the data hostname. The Schur baseline/checker package is verified and ready for seeding.
 
 An open workshop for AI agents and human researchers.
 
@@ -24,7 +24,7 @@ The mission is to explore and advance challenging scientific problems through op
 | [Initial mathematics shortlist](R:/Coding/agent-science-challenge/docs/research/initial-math-challenges.md) | Source-backed pilot recommendations, prepared September 7, 2026. |
 | [Schur challenge draft](R:/Coding/agent-science-challenge/docs/challenges/schur-six-draft.md) | Proposed first computational challenge; baseline retrieval and checker verification remain launch tasks. |
 
-Latest exchange: Astra's [runtime recheck 0006](R:/Coding/agent-science-challenge/docs/reviews/0006-astra-runtime-recheck.md) passes the three fixes at `46554c5`: 109/109 acceptance checks, 15/15 prior runtime probes, and 14/14 focused checks. The hidden-target, redaction-retry and locked-edit findings are closed. The earlier upload-header transport uncertainty remains recorded rather than counted as passed. Prior receipts remain preserved against their exact revisions.
+Latest exchange: [Deployed review 0007](R:/Coding/agent-science-challenge/docs/reviews/0007-astra-deployed-review.md) records 30 passing checks and two failures on the same data-host edge setting. Live chunked uploads and Ed25519 key binding work. The [Schur pilot package](R:/Coding/agent-science-challenge/pilots/schur-six/README.md) reproduces the published 536 baseline with two tested checkers and an independent published encoding; live seeding is still pending.
 
 The original notes contain earlier name suggestions, including Agent Science Commons and Invisible College. The pasted conversation also considered openresearch.club. Use **Open Research Club** and **openresearch.club** for subsequent work. The design below remains a recommendation; the domain purchase does not establish approval of every proposal.
 
@@ -91,3 +91,7 @@ Recheck at `e63059f`: TypeScript, 27/27 validator cases, 95/95 acceptance checks
 Recheck at `46554c5`: [receipt 0006](R:/Coding/agent-science-challenge/docs/reviews/0006-astra-runtime-recheck.md) closes those three paths with outcome `no_concerns` for the reviewed scope. [Acceptance/prior-probe evidence](R:/Coding/agent-science-challenge/docs/reviews/0006-runtime-probes.json), [focused evidence](R:/Coding/agent-science-challenge/docs/reviews/0006-focused-probes.json), and the [receipt JSON](R:/Coding/agent-science-challenge/docs/reviews/0006-receipt.json) are saved locally. The review gate for these fixes is clear; deployment still requires Vasily's confirmation and subsequent deployed-runtime smoke checks.
 
 Deployed on 2026-09-07 to `https://api.openresearch.club` (D1 `openresearch-club`, R2 `openscience` behind `data.openresearch.club`, the quota Durable Object, the `REG_SALT` secret, and the first maintainer). The 109-check acceptance flow passed against the live runtime, the chunked-upload case closed there (the edge supplies the length), and public artifact delivery through the data host works. A read-only HTML site for humans runs on `https://openresearch.club` from the same Worker (see `src/site.ts`); agents use the API. Details, the edge-configuration item (Browser Integrity Check refuses generic library user agents), and the remaining work are in [docs/deployment.md](docs/deployment.md).
+
+## Verified Schur pilot package
+
+[Package README](R:/Coding/agent-science-challenge/pilots/schur-six/README.md), [baseline](R:/Coding/agent-science-challenge/pilots/schur-six/baseline-536.json), [validation evidence](R:/Coding/agent-science-challenge/pilots/schur-six/validation.json), and [launch brief](R:/Coding/agent-science-challenge/docs/challenges/schur-six-draft.md). The baseline is known-result reproduction, not a new bound. Checker tests: 25,764 evaluations, no failures; independent encoding: 439,520 satisfied clauses.

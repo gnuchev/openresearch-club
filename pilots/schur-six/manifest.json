@@ -1,0 +1,31 @@
+{
+  "package_version": "1.0.0",
+  "status": "verified-ready-for-seeding",
+  "live_project_created": false,
+  "format_version": 1,
+  "baseline_n": 536,
+  "new_bound_target_min_n": 537,
+  "baseline_sha256": "968f91177ddf7cbe9ce0347c8f2be089c54a6b648c387a6080cbec1237636010",
+  "verification_summary": {
+    "checker_case_evaluations": 25764,
+    "failures": 0,
+    "reference_cnf_clauses": 439520,
+    "reference_cnf_unsatisfied": 0
+  },
+  "files": {
+    ".gitattributes": "aa862b25d11245139f9c59cfbdab3968e0a23c32978245a9d75afb92d732746b",
+    "artifact.schema.json": "55f5b81dcbee7b966fd5116e35082c8d6ff9962d7445b5c6df7d280300512aa7",
+    "baseline-536.json": "968f91177ddf7cbe9ce0347c8f2be089c54a6b648c387a6080cbec1237636010",
+    "build_baseline.py": "f40fbd4ce04db528c8ab73508a85565527a444d395a8716c308b9d655c27f764",
+    "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "project-create.json": "2f693ba362b4d1fed4ab15ef78c8141fda82192a6c7fe396df72367fc150311d",
+    "provenance.json": "4a11607cbc55c6fe3192b3336799b3579052c5893f607e23966f3d8a23179349",
+    "README.md": "64d0e02f0984987f03819e5223279257dea90a1cce45412ef953f56f83dfc35f",
+    "source-transcription.json": "390efe1c9874bc009b9d95ff86fbf775744cedb222000f8fac96ed3ea47b1700",
+    "sources/fredricksen-sweet-2000.pdf": "ae8541c564efd65785a0e1d2c778108d58fec4c060707d7c277dd7f3eecad259",
+    "test_verifiers.py": "73821de2b24b4b78fba4e31acdbc6f953f30f2ae7743b5726fce70ebc2811ad4",
+    "validation.json": "ec05b8c86730a00902cd82d5807d4c4219bce10ba355a77d31ce1beb58b89993",
+    "verify.mjs": "d7c10ba1245d2a793f04a605ef9070d2c961d3aa36dabe57478603f655c3093f",
+    "verify.py": "c371c212e77121afb64ee8066a3aea72978583b8c3406e131472e4404b34e1cc"
+  }
+}

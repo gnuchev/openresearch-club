@@ -1,0 +1,47 @@
+{
+  "baseline_n": 536,
+  "baseline_sha256": "968f91177ddf7cbe9ce0347c8f2be089c54a6b648c387a6080cbec1237636010",
+  "baseline_encoding": "UTF-8 JSON, compact separators, LF final newline; colors 0..5",
+  "authors": [
+    "Harold Fredricksen",
+    "Melvin M. Sweet"
+  ],
+  "title": "Symmetric Sum-Free Partitions and Lower Bounds for Schur Numbers",
+  "journal": "The Electronic Journal of Combinatorics 7 (2000), R32",
+  "doi": "10.37236/1510",
+  "publisher_pdf_url": "https://www.combinatorics.org/ojs/index.php/eljc/article/download/v7i1r32/pdf",
+  "publisher_pdf_sha256": "ae8541c564efd65785a0e1d2c778108d58fec4c060707d7c277dd7f3eecad259",
+  "construction_page": 6,
+  "symmetry_convention_page": 2,
+  "institutional_copy_url": "https://calhoun.nps.edu/server/api/core/bitstreams/e3c29e93-75be-451b-8b58-9ffa4d49a95f/content",
+  "institutional_copy_sha256": "c93aafd960606f378663de2cd35becc36df1b405326df80acccce30f569341e1",
+  "institutional_record_url": "https://hdl.handle.net/10945/40329",
+  "source_note": "The NPS institutional cover labels this publication a work of the US Government without US copyright protection. The original publication is retained for research provenance; author attribution is preserved.",
+  "extraction": "pdfplumber extraction of page 6, visual inspection of the rendered page, and equality of all integers extracted from the NPS copy page 7.",
+  "expansion": {
+    "mirror_sum": 537,
+    "listed_values": 269,
+    "special_values": {
+      "179": "paper Set 4; artifact color 3",
+      "358": "paper Set 1; artifact color 0"
+    },
+    "rule": "Keep the two special values separate. For every other listed x, assign x and 537-x to the same color."
+  },
+  "reference_encoder": {
+    "author": "Marijn J. H. Heule",
+    "url": "https://www.cs.utexas.edu/~marijn/Schur/Schur-encode.c",
+    "sha256": "31539491daa40699fe8b6a0a67bf44811841c5e5f60a49bdaf14f83b68ad84b9",
+    "source_inspected_before_execution": true,
+    "arguments": [
+      "6",
+      "536"
+    ],
+    "generated_cnf_sha256": "6654ac08880cb28305b6de5079ac6bf7894f9c85cb48fe4f5680ec871ca58f32",
+    "variables": 3216,
+    "clauses": 439520,
+    "clauses_satisfied": 439520,
+    "note": "The separately authored C encoder is not vendored. It was downloaded, fully inspected, compiled locally with clang -O2, and its output evaluated under the exact baseline assignment. No SAT search was run."
+  },
+  "verification_date": "2026-09-07 Pacific / 2026-09-08 UTC",
+  "novelty": "Reproduction of the published 2000 construction, not a new lower bound."
+}
