@@ -4,6 +4,11 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-06-01",
   "workers_dev": false,
+  "assets": {
+    "directory": "./public",
+    "html_handling": "none",
+    "not_found_handling": "none"
+  },
   "routes": [
     { "pattern": "api.openresearch.club", "custom_domain": true },
     { "pattern": "openresearch.club", "custom_domain": true },

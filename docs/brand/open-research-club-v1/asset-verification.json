@@ -1,0 +1,192 @@
+{
+  "source": "Provided artwork; pixels unchanged",
+  "assets": [
+    {
+      "file": "favicon.ico",
+      "bytes": 4651,
+      "sha256": "817457d603edbab0b57641783ffc421cc53c0228a1665c860f3a9377138c6eb8",
+      "sizes": [
+        16,
+        32,
+        48
+      ]
+    },
+    {
+      "file": "icon-16.png",
+      "bytes": 601,
+      "sha256": "845720db2c7dee528bd552d0b24cf55d88a5eb934bcade27484dd47d48b15e1a",
+      "dimensions": [
+        16,
+        16
+      ]
+    },
+    {
+      "file": "icon-180.png",
+      "bytes": 26327,
+      "sha256": "55e8b98979055f5c186e91fec88592239f5c1625f441b9e970a29d3c49323b13",
+      "dimensions": [
+        180,
+        180
+      ]
+    },
+    {
+      "file": "icon-32.png",
+      "bytes": 1424,
+      "sha256": "4d7c7c611cd05a932494db4b888d916c7659dc0f406794a3e67884df8e2d08e9",
+      "dimensions": [
+        32,
+        32
+      ]
+    },
+    {
+      "file": "icon-48.png",
+      "bytes": 2572,
+      "sha256": "e0289a1480240a53676064d55fa0ca27422ca5697f19bddbbdc4259df7b1ef25",
+      "dimensions": [
+        48,
+        48
+      ]
+    },
+    {
+      "file": "icon-512.png",
+      "bytes": 213326,
+      "sha256": "f8e2875ae24edb8e3c5034890f7e43ea87029b17bd91c9b95f99cc08f5612984",
+      "dimensions": [
+        512,
+        512
+      ]
+    },
+    {
+      "file": "logo.png",
+      "bytes": 821698,
+      "sha256": "c9d8c50a96a49f41bd8457795b24ea4c5c3b96946461b90dd5246778be0bf1b3",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "local_http_checks": [
+    {
+      "path": "/brand/open-research-club-v1/logo.png",
+      "sha256": "c9d8c50a96a49f41bd8457795b24ea4c5c3b96946461b90dd5246778be0bf1b3",
+      "bytes": 821698,
+      "mime": "image/png",
+      "checks": [
+        "GET hash",
+        "HEAD",
+        "304",
+        "cache-control"
+      ]
+    },
+    {
+      "path": "/brand/open-research-club-v1/icon-16.png",
+      "sha256": "845720db2c7dee528bd552d0b24cf55d88a5eb934bcade27484dd47d48b15e1a",
+      "bytes": 601,
+      "mime": "image/png",
+      "checks": [
+        "GET hash",
+        "HEAD",
+        "304",
+        "cache-control"
+      ]
+    },
+    {
+      "path": "/brand/open-research-club-v1/icon-32.png",
+      "sha256": "4d7c7c611cd05a932494db4b888d916c7659dc0f406794a3e67884df8e2d08e9",
+      "bytes": 1424,
+      "mime": "image/png",
+      "checks": [
+        "GET hash",
+        "HEAD",
+        "304",
+        "cache-control"
+      ]
+    },
+    {
+      "path": "/brand/open-research-club-v1/icon-48.png",
+      "sha256": "e0289a1480240a53676064d55fa0ca27422ca5697f19bddbbdc4259df7b1ef25",
+      "bytes": 2572,
+      "mime": "image/png",
+      "checks": [
+        "GET hash",
+        "HEAD",
+        "304",
+        "cache-control"
+      ]
+    },
+    {
+      "path": "/brand/open-research-club-v1/icon-180.png",
+      "sha256": "55e8b98979055f5c186e91fec88592239f5c1625f441b9e970a29d3c49323b13",
+      "bytes": 26327,
+      "mime": "image/png",
+      "checks": [
+        "GET hash",
+        "HEAD",
+        "304",
+        "cache-control"
+      ]
+    },
+    {
+      "path": "/brand/open-research-club-v1/icon-512.png",
+      "sha256": "f8e2875ae24edb8e3c5034890f7e43ea87029b17bd91c9b95f99cc08f5612984",
+      "bytes": 213326,
+      "mime": "image/png",
+      "checks": [
+        "GET hash",
+        "HEAD",
+        "304",
+        "cache-control"
+      ]
+    },
+    {
+      "path": "/favicon.ico",
+      "sha256": "817457d603edbab0b57641783ffc421cc53c0228a1665c860f3a9377138c6eb8",
+      "bytes": 4651,
+      "mime": "image/vnd.microsoft.icon",
+      "checks": [
+        "GET hash",
+        "HEAD",
+        "304",
+        "cache-control"
+      ]
+    },
+    {
+      "path": "/v1/meta",
+      "status": 200
+    },
+    {
+      "path": "/",
+      "status": 200
+    },
+    {
+      "path": "/v1/me",
+      "status": 401
+    },
+    {
+      "path": "/missing-asset.png",
+      "status": 404
+    },
+    {
+      "path": "/_headers",
+      "status": 404
+    },
+    {
+      "path": "/site/skill",
+      "status": 200
+    }
+  ],
+  "browser": {
+    "desktop": "1280x800",
+    "mobile": "390x844",
+    "color_schemes": [
+      "light",
+      "dark"
+    ],
+    "navigation": "home to participation guide passed",
+    "page_errors": 0,
+    "console_errors": 0,
+    "horizontal_overflow": false
+  },
+  "deployment": "pending_owner_confirmation"
+}

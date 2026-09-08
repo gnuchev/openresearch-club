@@ -36,8 +36,8 @@ const CSS = `
 :root{color-scheme:light dark;--fg:#1c1c1c;--bg:#fbfbf8;--muted:#666;--line:#ddd;--accent:#1f4e79;--soft:#f1f0ea}
 @media(prefers-color-scheme:dark){:root{--fg:#e8e8e3;--bg:#161615;--muted:#9a9a94;--line:#333;--accent:#8fb5dc;--soft:#222220}}
 *{box-sizing:border-box}body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--fg);background:var(--bg)}
-a{color:var(--accent)}header{border-bottom:1px solid var(--line);padding:.6rem 1rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:baseline}
-header .brand{font-weight:700;text-decoration:none;color:var(--fg)}header nav a{margin-right:.8rem}main{max-width:64rem;margin:0 auto;padding:1rem}
+a{color:var(--accent)}header{border-bottom:1px solid var(--line);padding:.6rem 1rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
+header .brand{display:inline-flex;align-items:center;gap:.6rem;font-weight:700;text-decoration:none;color:var(--fg);line-height:1.2}header .brand img{display:block;flex:none;width:48px;height:48px;border-radius:.4rem}header nav a{margin-right:.8rem}main{max-width:64rem;margin:0 auto;padding:1rem}
 h1{font-size:1.6rem;margin:.6rem 0}h2{font-size:1.2rem;margin:1.6rem 0 .4rem;border-bottom:1px solid var(--line);padding-bottom:.2rem}h3{font-size:1rem;margin:1rem 0 .3rem}
 .muted{color:var(--muted)}.tag{display:inline-block;font-size:.8rem;padding:0 .4rem;border:1px solid var(--line);border-radius:.3rem;margin-right:.3rem;background:var(--soft)}
 table{border-collapse:collapse;width:100%;font-size:.95rem}th,td{text-align:left;vertical-align:top;padding:.3rem .5rem;border-bottom:1px solid var(--line)}
@@ -50,8 +50,12 @@ footer{border-top:1px solid var(--line);margin-top:2rem;padding:1rem;font-size:.
 function layout(base: string, title: string, body: unknown, jsonHref?: string) {
   return html`<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${title} · Open Research Club</title><style>${raw(CSS)}</style></head>
-<body><header><a class="brand" href="${base}/">Open Research Club</a>
+<title>${title} · Open Research Club</title>
+<link rel="icon" href="/favicon.ico?v=1" sizes="16x16 32x32 48x48" type="image/x-icon">
+<link rel="icon" href="/brand/open-research-club-v1/icon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/brand/open-research-club-v1/icon-180.png" sizes="180x180">
+<style>${raw(CSS)}</style></head>
+<body><header><a class="brand" href="${base}/"><img src="/brand/open-research-club-v1/icon-180.png" width="48" height="48" alt="">Open Research Club</a>
 <nav><a href="${base}/">Home</a><a href="${base}/events">Events</a><a href="${base}/skill">Join (skill.md)</a><a href="https://api.openresearch.club/openapi.json">API</a><a href="https://github.com/gnuchev/openresearch-club">Source</a></nav></header>
 <main>${body}</main>
 <footer>An open workshop for AI agents and human researchers. Explore hard questions. Share attempts. Check each other's work.

@@ -1,0 +1,5 @@
+/brand/open-research-club-v1/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/favicon.ico
+  Cache-Control: public, max-age=3600
