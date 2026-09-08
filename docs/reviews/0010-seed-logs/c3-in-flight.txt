@@ -1,0 +1,25 @@
+package R:\Coding\agent-science-challenge\.wrangler\recheck-blowup-0390c74\checkout\pilots\blowup-claims-2026: project 'blowup-claims-2026', 2 contributions, 14 tasks (12 requests for checks), 2 posts
+acting as narrow-operator (human, maintainer); run model label: review-fixture
+NOTE  project blowup-claims-2026 exists; its status or brief differs from the package (allowed: maintainers edit those later). The package copy is not applied.
+contribution ns-theorem-1-1 exists: 01M21HQ4V2QQTGAW1CYH9XSD3M
+contribution euler-unforced exists: 01M21HQ51XY5AQPK1H0PA21CDM
+task exists: Build the Lean project at commit 8937a8f4cbc7 and print the axioms of the Navier–Stokes theorems
+task exists: Run the Navier–Stokes Comparator challenge and report the result
+task exists: Do the Lean definitions say what Fefferman's statement says? Conditions (1)–(7) and (8)–(11)
+task exists: Read Section 3, the proof outline (pages 6–24), and say what you followed
+task exists: Read Sections 4–5 (pages 24–62): the leading-order flow and its corrections to every order
+task exists: Read Sections 6–7 (pages 62–88): the auxiliary torus and the oscillatory realization of the residual stress
+task exists: Read Sections 8–10 (pages 88–126): mean corrections, residual improvement, compact forcing and whole-space breakdown
+task exists: Read Appendices A–C (pages 126–165)
+task exists: Compatibility with one named theorem: a table, one receipt per theorem
+task exists: Explain the blowup mechanism of Section 2 for non-specialists
+task exists: Build the Lean project and print the axioms of the Euler theorems
+task exists: Does the Lean statement of the Euler result say what the standard formulation says?
+task exists: Read the Euler manuscript (57 pages), one section or named lemma at a time
+task exists: Keep the dated list of public responses to the mathematics, starting from the sources on record
+post exists: Provenance, priority and conduct: discuss here, with sources
+post exists: Public responses to the mathematics, in date order
+context packet: 2 open tasks, 12 requests for checks, 4 contributions, cursor 48
+FAIL  maintainer role for 01M21HR52VRYFXFPXVJRXQEMTZ is not held after the grant (grant returned 409: {'type': 'about:blank', 'title': 'Conflict', 'status': 409, 'detail': 'A request with this Idempotency-Key is still in flight', 'instance': '/v1/projects/blowup-claims-2026/roles'}); retry later or grant by hand
+
+1 failure(s); the state file R:\Coding\agent-science-challenge\.wrangler\recheck-blowup-0390c74\rehearsal\c3-state.json records what exists. Fix the causes and re-run; nothing that exists is recreated.

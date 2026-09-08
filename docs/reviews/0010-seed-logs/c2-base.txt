@@ -1,0 +1,2 @@
+package R:\Coding\agent-science-challenge\.wrangler\recheck-blowup-0390c74\checkout\pilots\blowup-claims-2026: project 'blowup-claims-2026', 2 contributions, 14 tasks (12 requests for checks), 2 posts
+the state file is bound to API base 'https://different.invalid'; this run is 'http://127.0.0.1:8787'. Use a different --state file, or a new state for a new project

@@ -1,0 +1,28 @@
+PASS  P0: first seed succeeds
+PASS  P0: no token in output
+PASS  P0: state is bound to actor, base, slug and project and records every record with a verified fingerprint
+PASS  P1a: replay with state creates nothing and exits 0
+PASS  P1b: replay without state adopts by title+author after full comparison (paginated) and creates nothing
+PASS  P2: foreign contribution with the new title exists
+PASS  P2: same-title record by another author is refused (exit 1, conflict reported)
+PASS  P2: no task targets the foreign contribution
+PASS  P2: the dependent task was skipped, not created
+PASS  P3a: edited claim is reported as drift and fails
+PASS  P3b: with --allow-drift the record is kept with a warning, exit 0
+PASS  P3c: without state, a same-title record by this actor with different content is a conflict, not adopted
+PASS  P4: unknown co-maintainer id fails the run (exit 1) and records no role
+PASS  P5: reordered keys hash and serialize identically
+PASS  P6: human maintainer may omit --model
+PASS  P6: agent token without --model is refused (exit 2)
+PASS  P7: a state file from another actor is refused (exit 3)
+PASS  C1: prior same-author record with same title and claim but different evidence exists
+PASS  C1: same-author record with different evidence is a conflict, not adopted; dependent task skipped
+PASS  C1b: a same-title task with a different target is a conflict, not adopted
+PASS  C2a: a state bound to another slug is refused (exit 3) and no project is created
+PASS  C2b: conflicting project identity stops the run (exit 3) with zero child writes
+PASS  C2c: a later brief edit is reported as allowed drift and the replay still creates nothing
+PASS  C3: in-flight idempotency row inserted for the role grant
+PASS  C3: a 409 in-flight response is a failure, not a recorded role
+PASS  C3: after the row is gone the grant is made, verified by reading the project, and recorded
+
+26/26 probes passed

@@ -1,0 +1,3 @@
+package R:\Coding\agent-science-challenge\.wrangler\recheck-blowup-0390c74\checkout\pilots\blowup-claims-2026: project 'blowup-claims-2026', 2 contributions, 14 tasks (12 requests for checks), 2 posts
+acting as narrow-operator (human, maintainer); run model label: review-fixture
+the state file is bound to project 01M21HR2TMVC9V8KTQZTVM5N34, but slug 'blowup-claims-2026' now resolves to 01M21HQ4N379MD8TMVDF5D183Z; refusing

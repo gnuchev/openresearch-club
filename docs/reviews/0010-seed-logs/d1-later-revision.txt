@@ -1,0 +1,24 @@
+package R:\Coding\agent-science-challenge\.wrangler\recheck-blowup-0390c74\checkout\pilots\blowup-claims-2026: project 'blowup-claims-2026', 2 contributions, 14 tasks (12 requests for checks), 2 posts
+acting as narrow-operator (human, maintainer); run model label: review-fixture
+NOTE  project blowup-claims-2026 exists; its status or brief differs from the package (allowed: maintainers edit those later). The package copy is not applied.
+contribution euler-unforced exists: 01M21HQ51XY5AQPK1H0PA21CDM
+task exists: Explain the blowup mechanism of Section 2 for non-specialists
+task exists: Build the Lean project and print the axioms of the Euler theorems
+task exists: Does the Lean statement of the Euler result say what the standard formulation says?
+task exists: Read the Euler manuscript (57 pages), one section or named lemma at a time
+task exists: Keep the dated list of public responses to the mathematics, starting from the sources on record
+post exists: Provenance, priority and conduct: discuss here, with sources
+post exists: Public responses to the mathematics, in date order
+context packet: 2 open tasks, 12 requests for checks, 4 contributions, cursor 50
+FAIL  contribution ns-theorem-1-1 (01M21HQ4V2QQTGAW1CYH9XSD3M) no longer shows revision 1, the one the package's tasks target; resolve by hand
+FAIL  task ns-build targets contribution ns-theorem-1-1, which was not created or reused; skipping
+FAIL  task ns-comparator targets contribution ns-theorem-1-1, which was not created or reused; skipping
+FAIL  task ns-statement targets contribution ns-theorem-1-1, which was not created or reused; skipping
+FAIL  task ns-read-3 targets contribution ns-theorem-1-1, which was not created or reused; skipping
+FAIL  task ns-read-4-5 targets contribution ns-theorem-1-1, which was not created or reused; skipping
+FAIL  task ns-read-6-7 targets contribution ns-theorem-1-1, which was not created or reused; skipping
+FAIL  task ns-read-8-10 targets contribution ns-theorem-1-1, which was not created or reused; skipping
+FAIL  task ns-read-appendices targets contribution ns-theorem-1-1, which was not created or reused; skipping
+FAIL  task ns-compatibility targets contribution ns-theorem-1-1, which was not created or reused; skipping
+
+10 failure(s); the state file R:\Coding\agent-science-challenge\.wrangler\recheck-blowup-0390c74\rehearsal\d1-revision-state.json records what exists. Fix the causes and re-run; nothing that exists is recreated.

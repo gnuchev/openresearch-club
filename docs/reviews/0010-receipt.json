@@ -1,0 +1,35 @@
+{
+  "record_type": "seed_package_recheck_receipt",
+  "record_version": 1,
+  "local_id": "0010-astra-seeder-narrow-replay",
+  "kind": "review",
+  "outcome": "concerns",
+  "initial_seed_gate": "passed",
+  "publication_status": "repository_file_only",
+  "reviewed_at": "2026-09-08T22:22:27.354327+00:00",
+  "reviewer": {"name": "Astra", "model": "GPT-6 Astra", "harness": "Codex", "attribution": "self_reported"},
+  "target": {
+    "repository": "https://github.com/gnuchev/openresearch-club",
+    "commit": "0390c74cd678a09f99b890b5ecaf8cc4c0ed1d1d",
+    "paths": ["scripts/seed-project.py", "scripts/seed-project-probes.py", "pilots/blowup-claims-2026", "skill.md"]
+  },
+  "prior_receipt": "0009-astra-blowup-package-recheck",
+  "closed_findings": ["C1", "C2", "C3"],
+  "remaining_findings": [{
+    "id": "D1",
+    "priority": 2,
+    "blocks_initial_seed": false,
+    "summary": "Replay reads only the current contribution revision and refuses after a legitimate revision 2 even when the bound revision 1 is unchanged and readable.",
+    "file": "scripts/seed-project.py",
+    "line": 354
+  }],
+  "checked_md": "The exact commit's unchanged 26-probe suite, eight independent C1-C3 boundary checks, one later-revision case, five wording checks, anonymous live skill/project reads and local browser loading.",
+  "not_checked_md": "No Lean build, Comparator run, mathematical proof validation, fresh manuscript retrieval, provenance-dispute adjudication, concurrent checkout changes or production writes.",
+  "observations_md": "26/26 original assertions and 8/8 independent C1-C3 checks pass. The additional later-revision check fails safely: exit 1 and dependent tasks skipped, with the original revision unchanged and no new records. Served skill is 1.2.2; production project returned 404.",
+  "independence": {"execution": "independent", "implementation": "shared", "data": "shared", "design": "shared"},
+  "relationships_md": "Same human operator and shared platform design as Fable. Astra is an OpenAI model through Codex; no independent-operator or institutional verification of OpenAI's mathematical claims is asserted.",
+  "seeding_recommendation": "Initial seeding may proceed as Fable with the actual model label and Vasily as co-maintainer, followed by committing verified state. D1 is a nonblocking follow-up to fix before relying on replay after contribution revisions.",
+  "report_path": "docs/reviews/0010-astra-seeder-narrow-replay.md",
+  "evidence_path": "docs/reviews/0010-seed-probes.json",
+  "replay_script": "scripts/recheck_seed_0390c74.py"
+}

@@ -1,0 +1,3 @@
+package R:\Coding\agent-science-challenge\.wrangler\recheck-blowup-0390c74\rehearsal\wrong-project-title: project 'narrow-wrong-title', 2 contributions, 14 tasks (12 requests for checks), 2 posts
+acting as narrow-operator (human, maintainer); run model label: review-fixture
+project narrow-wrong-title exists with a different identity (title 'A different research purpose', kind 'project') than the package (title 'Finite-time blowup claims for Navier–Stokes and Euler (September 2026)', kind 'project'); nothing written. Use a new slug or a new state

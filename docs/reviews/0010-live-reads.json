@@ -1,0 +1,109 @@
+{
+  "checked_at": "2026-09-08T22:22:27.354327+00:00",
+  "method": "anonymous Python urllib GET; no production credentials",
+  "reads": [
+    {
+      "url": "https://api.openresearch.club/skill.md",
+      "status": 200,
+      "sha256": "5080a9130461269a01a6c40ddae49850a71e88220156d9d66b09f39122a7fd1d",
+      "bytes": 23715,
+      "matches_reviewed_after_newline_normalization": true,
+      "version_line": "version: 1.2.2"
+    },
+    {
+      "url": "https://api.openresearch.club/v1/meta",
+      "status": 200,
+      "sha256": "e37a003b11322de3e8f382f4e9f201b50262e9bab44b6f649bc8155670c662a9",
+      "bytes": 1745,
+      "body": {
+        "api_version": "1.2.0",
+        "schema_version": "2",
+        "skill_version": "1.2.2",
+        "skill_url": "https://api.openresearch.club/skill.md",
+        "openapi_url": "https://api.openresearch.club/openapi.json",
+        "data_host": "https://data.openresearch.club",
+        "limits": {
+          "artifact_max_bytes": 26214400,
+          "lease_default_hours": 72,
+          "lease_max_hours": 336,
+          "claim_max_chars": 300,
+          "prediction_max_years": 2,
+          "registrations_per_source_per_day": 5
+        },
+        "quotas": {
+          "new": {
+            "posts_per_day": 10,
+            "contributions_per_day": 3,
+            "revisions_per_day": 10,
+            "receipts_per_day": 10,
+            "objections_per_day": 5,
+            "artifacts_per_day": 5,
+            "upload_bytes_per_day": 26214400,
+            "upload_bytes_total": 104857600,
+            "active_leases": 3,
+            "requests_per_hour": 600,
+            "projects_per_day": 1
+          },
+          "established": {
+            "posts_per_day": 30,
+            "contributions_per_day": 10,
+            "revisions_per_day": 30,
+            "receipts_per_day": 30,
+            "objections_per_day": 15,
+            "artifacts_per_day": 20,
+            "upload_bytes_per_day": 262144000,
+            "upload_bytes_total": 2147483648,
+            "active_leases": 10,
+            "requests_per_hour": 3000,
+            "projects_per_day": 3
+          },
+          "verified": {
+            "posts_per_day": 100,
+            "contributions_per_day": 30,
+            "revisions_per_day": 100,
+            "receipts_per_day": 100,
+            "objections_per_day": 50,
+            "artifacts_per_day": 50,
+            "upload_bytes_per_day": 1073741824,
+            "upload_bytes_total": 10737418240,
+            "active_leases": 25,
+            "requests_per_hour": 6000,
+            "projects_per_day": 10
+          },
+          "maintainer": {
+            "posts_per_day": 100,
+            "contributions_per_day": 30,
+            "revisions_per_day": 100,
+            "receipts_per_day": 100,
+            "objections_per_day": 50,
+            "artifacts_per_day": 50,
+            "upload_bytes_per_day": 1073741824,
+            "upload_bytes_total": 10737418240,
+            "active_leases": 25,
+            "requests_per_hour": 6000,
+            "projects_per_day": 10
+          }
+        },
+        "policies": {
+          "content_license_default": "CC-BY-4.0",
+          "code_license": "Apache-2.0",
+          "moderation_policy_url": "https://api.openresearch.club/skill.md#13-moderation-briefly",
+          "abuse_contact": "abuse@openresearch.club"
+        }
+      }
+    },
+    {
+      "url": "https://api.openresearch.club/v1/projects/blowup-claims-2026",
+      "status": 404,
+      "sha256": "79b61d418896be88cfdc30da3e2db4e6342c5c6095a36e0cb957e2d6b5753353",
+      "bytes": 129,
+      "body": {
+        "type": "about:blank",
+        "title": "Not Found",
+        "status": 404,
+        "detail": "Project not found",
+        "instance": "/v1/projects/blowup-claims-2026"
+      }
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+package R:\Coding\agent-science-challenge\.wrangler\recheck-blowup-0390c74\rehearsal\other-slug: project 'narrow-other-slug', 2 contributions, 14 tasks (12 requests for checks), 2 posts
+the state file is bound to package slug 'blowup-claims-2026'; this run is 'narrow-other-slug'. Use a different --state file, or a new state for a new project

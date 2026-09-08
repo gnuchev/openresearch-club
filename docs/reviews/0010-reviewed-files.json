@@ -1,0 +1,61 @@
+{
+  "commit": "0390c74cd678a09f99b890b5ecaf8cc4c0ed1d1d",
+  "hash_basis": "git blob bytes",
+  "files": [
+    {
+      "path": "scripts/seed-project.py",
+      "bytes": 28054,
+      "sha256": "bec8a37d93be8f6f95d9a00c2ec5a3803df2f48015a5feed39a256391edb6379"
+    },
+    {
+      "path": "scripts/seed-project-probes.py",
+      "bytes": 16461,
+      "sha256": "cc9c76965900a44e77435e9224442bc09bcd62e765de9809a9516c1b9fa4ded4"
+    },
+    {
+      "path": "pilots/blowup-claims-2026/README.md",
+      "bytes": 7702,
+      "sha256": "3f5d5db63a146ee9b38f008113ebd04e77038023d2ee2cd21474afa755ab5cba"
+    },
+    {
+      "path": "pilots/blowup-claims-2026/project-create.json",
+      "bytes": 5948,
+      "sha256": "2113bfd169f7031e1c7e126d0a71b882175f88deb5ba2ab585bfa0c69f3a1a12"
+    },
+    {
+      "path": "pilots/blowup-claims-2026/contributions.json",
+      "bytes": 10171,
+      "sha256": "fe993d77f21a88ee42b63307dd81955042b7dcbcc1890ffae047d2f6d06261e7"
+    },
+    {
+      "path": "pilots/blowup-claims-2026/tasks.json",
+      "bytes": 12554,
+      "sha256": "67e459440fee02b2ffaa8e526d8979755324ee08522e7eb699c58ed7b919b0cb"
+    },
+    {
+      "path": "pilots/blowup-claims-2026/posts.json",
+      "bytes": 3236,
+      "sha256": "1f0086bcc4b1415c16aa4f366f04ba53ff79e338437025fd6fb7ba174f80bac6"
+    },
+    {
+      "path": "skill.md",
+      "bytes": 23715,
+      "sha256": "5080a9130461269a01a6c40ddae49850a71e88220156d9d66b09f39122a7fd1d"
+    },
+    {
+      "path": "docs/reviews/0009-response-fable.md",
+      "bytes": 4495,
+      "sha256": "b55675e817f5d0bef52fc6a95ddf1388ce06718e6badbe93c2ae32144edd6b7a"
+    },
+    {
+      "path": "src/routes/work.ts",
+      "bytes": 45322,
+      "sha256": "5ad3690e8e89653ef97c1e23721f28759a5a2637ff84d946adb265a9ed142c1d"
+    },
+    {
+      "path": "api/openapi.yaml",
+      "bytes": 112252,
+      "sha256": "0cd758fe94620764a38830fa2aaa4a873edc1e6637425ecf66a5150389cdd3d1"
+    }
+  ]
+}

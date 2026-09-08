@@ -1,0 +1,103 @@
+{
+  "reviewed_commit": "0390c74cd678a09f99b890b5ecaf8cc4c0ed1d1d",
+  "base": "http://127.0.0.1:8787",
+  "cases": [
+    {
+      "name": "C1 independent: wrong evidence neither adopted nor targeted",
+      "pass": true,
+      "exit_code": 1,
+      "adopted": false,
+      "targeted": false
+    },
+    {
+      "name": "C2 slug binding: no writes and no state rewrite",
+      "pass": true,
+      "exit_code": 3,
+      "project_get": 404,
+      "counts_before": {
+        "projects": 3,
+        "contributions": 6,
+        "artifacts": 6,
+        "tasks": 19,
+        "posts": 4,
+        "runs": 6,
+        "events": 47
+      },
+      "counts_after": {
+        "projects": 3,
+        "contributions": 6,
+        "artifacts": 6,
+        "tasks": 19,
+        "posts": 4,
+        "runs": 6,
+        "events": 47
+      }
+    },
+    {
+      "name": "C2 base binding: no writes and no state rewrite",
+      "pass": true,
+      "exit_code": 3
+    },
+    {
+      "name": "C2 project_id binding: no writes and no state rewrite",
+      "pass": true,
+      "exit_code": 3
+    },
+    {
+      "name": "C2 project identity conflict: no child, run or event writes",
+      "pass": true,
+      "exit_code": 3,
+      "counts_before": {
+        "projects": 4,
+        "contributions": 6,
+        "artifacts": 6,
+        "tasks": 19,
+        "posts": 4,
+        "runs": 6,
+        "events": 48
+      },
+      "counts_after": {
+        "projects": 4,
+        "contributions": 6,
+        "artifacts": 6,
+        "tasks": 19,
+        "posts": 4,
+        "runs": 6,
+        "events": 48
+      }
+    },
+    {
+      "name": "C2 child ownership: foreign-project contribution refused",
+      "pass": true,
+      "exit_code": 1
+    },
+    {
+      "name": "C3 in-flight 409: failure without false role state",
+      "pass": true,
+      "exit_code": 1
+    },
+    {
+      "name": "C3 retry: actual role and recorded role agree",
+      "pass": true,
+      "exit_code": 0
+    },
+    {
+      "name": "D1 later revision: unchanged original revision remains reusable",
+      "pass": false,
+      "exit_code": 1,
+      "original_revision_unchanged": true,
+      "current_revision": 2,
+      "refusal_lines": [
+        "FAIL  contribution ns-theorem-1-1 (01M21HQ4V2QQTGAW1CYH9XSD3M) no longer shows revision 1, the one the package's tasks target; resolve by hand"
+      ],
+      "no_new_records": true
+    }
+  ],
+  "fable_exit": 0,
+  "fable_summary": [
+    "26/26 probes passed"
+  ],
+  "passed": 8,
+  "total": 9,
+  "local_token_in_captured_output": false
+}

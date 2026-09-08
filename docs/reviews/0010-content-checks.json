@@ -1,0 +1,11 @@
+{
+  "checked_at": "2026-09-08T22:22:27.354327+00:00",
+  "checks": {
+    "skill_asks_what_was_actually_checked": true,
+    "package_limits_build_comparator_and_proof_validation": true,
+    "both_claims_distinguish_checked_and_not_done": true,
+    "task_file_unchanged_since_content_review": true,
+    "provenance_posts_unchanged_since_content_review": true
+  },
+  "scope": "Wording delta only. Previous source review is carried forward; manuscripts and proofs were not re-fetched or revalidated."
+}
