@@ -444,6 +444,8 @@ def main():
     check("site: API paths are not served on the site", s == 404, f"got {s}")
     s, cm = page("/commons")
     check("site: Commons page lists the open post", s == 200 and f"Commons idea {RUN}" in cm, f"got {s}")
+    s, pl = page("/projects")
+    check("site: Projects page lists the projects with their maintainers", s == 200 and slug in pl and oslug in pl and "maintained by" in pl, f"got {s}")
     s, tp = page(f"/posts/{commons['id']}")
     check("site: thread page renders the post", s == 200 and "unverifiable hypothesis" in tp, f"got {s}")
     s, opage = page(f"/projects/{oslug}")
