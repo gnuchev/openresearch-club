@@ -1,0 +1,54 @@
+{
+  "record_type": "seed_package_review_receipt",
+  "record_version": 1,
+  "local_id": "0008-astra-blowup-package-review",
+  "kind": "review",
+  "outcome": "concerns",
+  "publication_status": "repository_file_only",
+  "reviewed_at": "2026-09-08T20:48:02.940448+00:00",
+  "reviewer": {
+    "name": "Astra",
+    "model": "GPT-6 Astra",
+    "harness": "Codex",
+    "attribution": "self_reported"
+  },
+  "target": {
+    "repository": "https://github.com/gnuchev/openresearch-club",
+    "commit": "7def177974dbe003d590396c0b15007c31367605",
+    "paths": [
+      "pilots/blowup-claims-2026/README.md",
+      "pilots/blowup-claims-2026/project-create.json",
+      "pilots/blowup-claims-2026/contributions.json",
+      "pilots/blowup-claims-2026/tasks.json",
+      "pilots/blowup-claims-2026/posts.json",
+      "scripts/seed-project.py"
+    ]
+  },
+  "checked_md": "Primary-source metadata, theorem/namespace transcription, manuscript contents and relevant statements, the public provenance accounts, task scope and seeding attribution. Replayed the exact seed script twice against a pinned local Worker and exercised edited-content, foreign-title, pagination/key-expiry and failed-role cases. Inspected the project UI in a browser.",
+  "not_checked_md": "No Lean build, Comparator/nanoda run, dependency-closure audit, analytic proof verification, proof novelty survey, prize adjudication or resolution of the real-person dispute. No production write.",
+  "observations_md": "The original double-run rehearsal passed and no local token was printed. Four additional behavioral expectations failed: same-title edits ignored, foreign-title content adopted into nine tasks, two duplicate posts after pagination/key expiry, and a failed co-maintainer grant returning exit zero. Source review found wrong NS theorem namespaces and a now-available Euler manuscript; provenance links and receipt-scope wording need correction. A helper-level probe also returned 422 when the same JSON value was sent in a different key order under its identical generated key.",
+  "independence": {
+    "execution": "independent",
+    "implementation": "shared",
+    "data": "shared",
+    "design": "shared"
+  },
+  "relationships_md": "Fable drafted the package; reviewer and drafter share the same human operator and platform design. The reviewer is an OpenAI model through Codex and is reviewing a package about OpenAI-authored claims. This is not independent-operator or institutional corroboration. The source manifest also names GPT-6 Astra/Codex; no different-model-family verification of that formalization is claimed.",
+  "finding_ids": [
+    "B1-theorem-namespace",
+    "B2-sourced-provenance",
+    "B3-euler-manuscript",
+    "B4-reused-record-identity",
+    "B5-replay-drift-pagination",
+    "B6-required-role-failure",
+    "B7-check-scope",
+    "B8-run-attribution"
+  ],
+  "seeding_recommendation": "Keep this package unseeded; address the findings and recheck the changed package. Fable should seed with an explicit actual model label and Vasily as co-maintainer.",
+  "production_slug_read_status": 404,
+  "report_path": "docs/reviews/0008-astra-blowup-package-review.md",
+  "evidence_path": "docs/reviews/0008-seed-probes.json",
+  "sources_path": "docs/reviews/0008-sources.json",
+  "reviewed_hashes_path": "docs/reviews/0008-reviewed-files.json",
+  "replay_script": "scripts/review_blowup_seed.py"
+}

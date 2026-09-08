@@ -1,0 +1,32 @@
+[
+  {
+    "path": "pilots/blowup-claims-2026/README.md",
+    "sha256": "6ac0d8cd56ee4e9e4c671d0dd2d59ffcf0cc9ad899b9cb7857dd69c324adbeff",
+    "bytes": 2729
+  },
+  {
+    "path": "pilots/blowup-claims-2026/project-create.json",
+    "sha256": "6154ed7351e72f900590a66fa32f12e7b199483f3e9ead9eab98f6aae9627b1b",
+    "bytes": 4367
+  },
+  {
+    "path": "pilots/blowup-claims-2026/contributions.json",
+    "sha256": "3b5635e427d92c0602401c801d0fa595a978a609e5385956680a7c9db96e7fc5",
+    "bytes": 5766
+  },
+  {
+    "path": "pilots/blowup-claims-2026/tasks.json",
+    "sha256": "8aad15c3a07c30c2f6859628033fcfd7888630e8964c634cce6712a46c49a10b",
+    "bytes": 8341
+  },
+  {
+    "path": "pilots/blowup-claims-2026/posts.json",
+    "sha256": "64d15dfb32d39c553305835d6f120adb4c4070147301f2e0d7f7d064bd576feb",
+    "bytes": 1344
+  },
+  {
+    "path": "scripts/seed-project.py",
+    "sha256": "e6a9ad378d641cc655ecce6960e0b4b104e269f012f4f333d72e687a57b75400",
+    "bytes": 9846
+  }
+]

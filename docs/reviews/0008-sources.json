@@ -1,0 +1,126 @@
+{
+  "fetched_at": "2026-09-08T20:14:31.938626+00:00",
+  "repository_commit": "8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538",
+  "files": [
+    {
+      "file": "navier-stokes.pdf",
+      "url": "https://cdn.openai.com/pdf/32d9f210-8b73-45e0-91bc-82a30aef8a9a/navier-stokes.pdf",
+      "bytes": 2959204,
+      "sha256": "0e779481c4da40bd28d1e642e1d8ca57447d129610df28dfa5a11e9af8ae228f"
+    },
+    {
+      "file": "clay-navierstokes.pdf",
+      "url": "https://www.claymath.org/wp-content/uploads/2022/06/navierstokes.pdf",
+      "bytes": 203736,
+      "sha256": "c1b5f27b1a64705cfaf1afceea513db5deedca8a18ca56ab32e7f86445a06d0c"
+    },
+    {
+      "file": "commit.json",
+      "url": "https://api.github.com/repos/openai/NavierStokesAndEuler/commits/8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538",
+      "bytes": 1233750,
+      "sha256": "6874377adf233c77070bcee8ed96774dff4c31b71d87bd40db431470444866b9"
+    },
+    {
+      "file": "repo/README.md",
+      "url": "https://raw.githubusercontent.com/openai/NavierStokesAndEuler/8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538/README.md",
+      "bytes": 2018,
+      "sha256": "2ca277a62b6bb6ce34686303c9c777e56d5b460160004a49a28e4e72086d781e"
+    },
+    {
+      "file": "repo/formalization.yaml",
+      "url": "https://raw.githubusercontent.com/openai/NavierStokesAndEuler/8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538/formalization.yaml",
+      "bytes": 4379,
+      "sha256": "6c6d30c58c70a0a04fa41a08a50ba7eb7e8a96a7f604a30b4bec6b921ea87dc3"
+    },
+    {
+      "file": "repo/NavierStokes.lean",
+      "url": "https://raw.githubusercontent.com/openai/NavierStokesAndEuler/8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538/NavierStokes.lean",
+      "bytes": 39,
+      "sha256": "ebe2349ab5b76f4f8b5d1e88a629337fb6bc59e2c5ef62a6f8fcf247b1be4e07"
+    },
+    {
+      "file": "repo/NavierStokes/ComparatorSolution.lean",
+      "url": "https://raw.githubusercontent.com/openai/NavierStokesAndEuler/8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538/NavierStokes/ComparatorSolution.lean",
+      "bytes": 1359,
+      "sha256": "52950d5d618a8d34c9bfbdb16641c81c276e97b6d7fd2a76c08577353f0b0227"
+    },
+    {
+      "file": "repo/ComparatorChallenges/NavierStokes.json",
+      "url": "https://raw.githubusercontent.com/openai/NavierStokesAndEuler/8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538/ComparatorChallenges/NavierStokes.json",
+      "bytes": 375,
+      "sha256": "7610ecead7b390d80ff7f4229a3ff8f18d630e046f7ad1de4f92c7e8e76845b8"
+    },
+    {
+      "file": "repo/ComparatorChallenges/Euler.json",
+      "url": "https://raw.githubusercontent.com/openai/NavierStokesAndEuler/8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538/ComparatorChallenges/Euler.json",
+      "bytes": 314,
+      "sha256": "56bc185a931f68d9a0f0265a3c00cb12771dccc85384eaf6546b37844b8adc84"
+    },
+    {
+      "file": "repo/ComparatorChallenges/README.md",
+      "url": "https://raw.githubusercontent.com/openai/NavierStokesAndEuler/8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538/ComparatorChallenges/README.md",
+      "bytes": 665,
+      "sha256": "f28c5f581d7bbc9504db467b88686a89ad5a94e4fd38b48a1866ae6224b5a1d8"
+    },
+    {
+      "file": "repo/lakefile.toml",
+      "url": "https://raw.githubusercontent.com/openai/NavierStokesAndEuler/8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538/lakefile.toml",
+      "bytes": 662,
+      "sha256": "97b2804da5b9a2cd0aaf44ce42b7c39e9947beff9d2ac01a11e0d3d867af1c09"
+    },
+    {
+      "file": "repo/lake-manifest.json",
+      "url": "https://raw.githubusercontent.com/openai/NavierStokesAndEuler/8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538/lake-manifest.json",
+      "bytes": 3810,
+      "sha256": "5ec1dc8e009008d0efb9601cd38f6ba54e753fd538b0e5f8c3e6c5ec72ee1e09"
+    },
+    {
+      "file": "repo/lean-toolchain",
+      "url": "https://raw.githubusercontent.com/openai/NavierStokesAndEuler/8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538/lean-toolchain",
+      "bytes": 29,
+      "sha256": "8190e75a201741065fe508b28955dd64dd72d090babe5f70ce6848879d68ae88"
+    },
+    {
+      "file": "repo/Euler.lean",
+      "url": "https://raw.githubusercontent.com/openai/NavierStokesAndEuler/8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538/Euler.lean",
+      "bytes": 30,
+      "sha256": "1f1dabe1950245aee0ae073e61eaeb3cfe47f0c18a9ba7b43ba325cb587964c7"
+    },
+    {
+      "file": "repo/Euler/Solution.lean",
+      "url": "https://raw.githubusercontent.com/openai/NavierStokesAndEuler/8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538/Euler/Solution.lean",
+      "bytes": 3529,
+      "sha256": "5dced6caecbfd85d952ff9537e420a85d4f38386e2c655a9c569a21b7139ea4f"
+    },
+    {
+      "file": "repo/LICENSE",
+      "url": "https://raw.githubusercontent.com/openai/NavierStokesAndEuler/8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538/LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "file": "euler.pdf",
+      "url": "https://cdn.openai.com/pdf/315b36cd-ec98-4023-8342-93345194ece1/euler.pdf",
+      "bytes": 535142,
+      "sha256": "a0c234518e6c489e16996805023eb2e75c00b7c03455f7a3a5be2c124954bfdd"
+    },
+    {
+      "file": "buckmaster-statement.pdf",
+      "url": "https://cims.nyu.edu/~tristanb/statement.pdf",
+      "bytes": 53497,
+      "sha256": "8d7723941bcda2fa55c1e74faa6298e04c706d17ff8abd2ad01878039c621f9d"
+    },
+    {
+      "file": "repo/ComparatorChallenges/NavierStokes.lean",
+      "url": "https://raw.githubusercontent.com/openai/NavierStokesAndEuler/8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538/ComparatorChallenges/NavierStokes.lean",
+      "bytes": 13031,
+      "sha256": "0cd193b8d5cbd0266e6e2f72e68dd5abcdcf2430ebd435dd9289737e9aa7da61"
+    },
+    {
+      "file": "repo/ComparatorChallenges/Euler.lean",
+      "url": "https://raw.githubusercontent.com/openai/NavierStokesAndEuler/8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538/ComparatorChallenges/Euler.lean",
+      "bytes": 9210,
+      "sha256": "b11e9bafc220c8126142a9c9281cfeab4872d8f74a7d4899fed206f7f6e1d4f7"
+    }
+  ]
+}

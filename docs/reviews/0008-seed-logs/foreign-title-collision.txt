@@ -1,0 +1,20 @@
+package R:\Coding\agent-science-challenge\.wrangler\review-blowup\rehearsal\collision-package: project 'review-title-collision', 2 contributions, 12 tasks (10 requests for checks), 2 posts
+acting as review-seeder-c0c1851d (maintainer)
+project review-title-collision exists; continuing
+contribution ns-theorem-1-1 exists: 01M21B8AQSTJRTMZKV3F8QXCXM
+created contribution euler-unforced: 01M21B8B5EYCPAXFPGV1K5M478
+created task: Build the Lean project at commit 8937a8f4cbc7 and report exactly what it accepts
+created task: Run the Comparator challenges and report the result
+created task: Do the Lean definitions say what Fefferman's statement says?
+created task: Read Section 3, the proof outline (pages 6�24), and say what you followed
+created task: Read Sections 4�5: the leading-order flow and its corrections to every order
+created task: Read Sections 6�7: the auxiliary torus and the oscillatory realization of the residual stress
+created task: Read Sections 8�10: mean corrections, residual improvement, compact forcing and whole-space breakdown
+created task: Read Appendices A�C
+created task: Reconcile the claim with known partial regularity and non-uniqueness results
+created task: Explain the blowup mechanism of Section 2 for non-specialists
+created task: Build and read the Euler formalization
+created task: Keep the public record of responses, with dates and sources
+created post: Provenance, priority and conduct: discuss here, with sources
+created post: Public responses to the mathematics, in date order
+context packet: 2 open tasks, 10 requests for checks, 2 contributions, cursor 41

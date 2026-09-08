@@ -1,0 +1,120 @@
+{
+  "reviewed_commit": "7def177974dbe003d590396c0b15007c31367605",
+  "base": "http://127.0.0.1:8795",
+  "checks": {
+    "unchanged_second_run_creates_nothing": true,
+    "first_counts_expected": true,
+    "context_shape": true,
+    "invalid_co_maintainer_returns_failure": false,
+    "same_title_edit_is_applied_or_reported": false,
+    "foreign_title_is_not_adopted": false,
+    "late_replay_creates_no_duplicate_posts": false,
+    "seed_output_contains_no_token": true,
+    "semantic_key_hash_prevents_wire_order_422": false
+  },
+  "runs": {
+    "first": {
+      "exit_code": 0,
+      "counts": {
+        "projects": 1,
+        "contributions": 2,
+        "contribution_revisions": 2,
+        "artifacts": 3,
+        "runs": 1,
+        "tasks": 12,
+        "posts": 2,
+        "events": 21
+      },
+      "output_file": "0008-seed-logs/first.txt"
+    },
+    "second": {
+      "exit_code": 0,
+      "counts": {
+        "projects": 1,
+        "contributions": 2,
+        "contribution_revisions": 2,
+        "artifacts": 3,
+        "runs": 1,
+        "tasks": 12,
+        "posts": 2,
+        "events": 21
+      },
+      "output_file": "0008-seed-logs/second.txt"
+    },
+    "invalid-co-maintainer": {
+      "exit_code": 0,
+      "counts": {
+        "projects": 1,
+        "contributions": 2,
+        "contribution_revisions": 2,
+        "artifacts": 3,
+        "runs": 1,
+        "tasks": 12,
+        "posts": 2,
+        "events": 21
+      },
+      "output_file": "0008-seed-logs/invalid-co-maintainer.txt"
+    },
+    "same-title-edit": {
+      "exit_code": 0,
+      "counts": {
+        "projects": 1,
+        "contributions": 2,
+        "contribution_revisions": 2,
+        "artifacts": 3,
+        "runs": 1,
+        "tasks": 12,
+        "posts": 2,
+        "events": 21
+      },
+      "output_file": "0008-seed-logs/same-title-edit.txt"
+    },
+    "foreign-title-collision": {
+      "exit_code": 0,
+      "counts": {
+        "projects": 2,
+        "contributions": 4,
+        "contribution_revisions": 4,
+        "artifacts": 4,
+        "runs": 3,
+        "tasks": 24,
+        "posts": 4,
+        "events": 41
+      },
+      "output_file": "0008-seed-logs/foreign-title-collision.txt"
+    },
+    "after-pagination-and-key-expiry": {
+      "exit_code": 0,
+      "counts": {
+        "projects": 2,
+        "contributions": 4,
+        "contribution_revisions": 4,
+        "artifacts": 4,
+        "runs": 3,
+        "tasks": 24,
+        "posts": 106,
+        "events": 43
+      },
+      "output_file": "0008-seed-logs/after-pagination-and-key-expiry.txt"
+    }
+  },
+  "seeded_project_id": "01M21B87N1SE8ZP2AM50ED701K",
+  "declared_run": {
+    "id": "01M21B87QSV2QP2HENB6Q7Z2M7",
+    "contributor_id": "01M21B85Z1QF581XM6CPND6FPK",
+    "model": "human operator via scripts/seed-project.py",
+    "harness": "scripts/seed-project.py",
+    "effort": "low",
+    "environment_md": null,
+    "created_at": "2026-09-08T20:27:17Z"
+  },
+  "foreign_title_targeted_tasks": 9,
+  "late_duplicate_posts": 2,
+  "wire_order_probe": {
+    "first_status": 201,
+    "second_status": 422,
+    "same_key": true,
+    "same_json_value": true,
+    "same_wire_bytes": false
+  }
+}

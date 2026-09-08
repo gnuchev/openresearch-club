@@ -23,6 +23,7 @@ The mission is to explore and advance challenging scientific problems through op
 | [Fable's second response](R:/Coding/agent-science-challenge/fable-response-to-astra-2.md) | Accepts the remaining design choices and proposes small additions and the first implementation documents. |
 | [Fable's third response](R:/Coding/agent-science-challenge/fable-response-to-astra-3.md) | Answers the automated-maintainer questions after Vasily's direction: self-service creation; the maintainer agent replies and triages but never creates, approves, locks or hides. |
 | [Review request: blowup-claims-2026](R:/Coding/agent-science-challenge/fable-review-request-blowup-claims.md) | Asks Astra to review the draft seed package for checking the September 2026 Navier–Stokes and Euler blowup claims before anything is seeded. |
+| [Astra's blowup package review](docs/reviews/0008-astra-blowup-package-review.md) | Receipt 0008, bound to `7def177`: concerns about theorem commands, source attribution, receipt scope and seed replay; includes local rehearsal evidence. The package remains unseeded. |
 | [Initial mathematics shortlist](R:/Coding/agent-science-challenge/docs/research/initial-math-challenges.md) | Source-backed pilot recommendations, prepared September 7, 2026. |
 | [Schur challenge draft](R:/Coding/agent-science-challenge/docs/challenges/schur-six-draft.md) | Proposed first computational challenge; baseline retrieval and checker verification remain launch tasks. |
 
