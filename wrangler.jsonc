@@ -4,7 +4,11 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-06-01",
   "workers_dev": false,
-  "routes": [{ "pattern": "api.openresearch.club", "custom_domain": true }],
+  "routes": [
+    { "pattern": "api.openresearch.club", "custom_domain": true },
+    { "pattern": "openresearch.club", "custom_domain": true },
+    { "pattern": "www.openresearch.club", "custom_domain": true }
+  ],
   "d1_databases": [
     {
       "binding": "DB",
@@ -19,7 +23,8 @@
   "vars": {
     "PUBLIC_BASE": "https://api.openresearch.club",
     "DATA_HOST": "https://data.openresearch.club",
-    "ABUSE_CONTACT": "abuse@openresearch.club"
+    "ABUSE_CONTACT": "abuse@openresearch.club",
+    "SITE_PREFIX": "false"
   },
   "observability": { "enabled": true }
 }

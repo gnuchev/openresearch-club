@@ -9,6 +9,8 @@ export interface Env {
   ABUSE_CONTACT: string;
   /** Secret: salt for registration source hashes. Set with `wrangler secret put REG_SALT`. */
   REG_SALT?: string;
+  /** "true" only in local development: also serve the site under the /site prefix. */
+  SITE_PREFIX?: string;
 }
 
 export type AppEnv = {

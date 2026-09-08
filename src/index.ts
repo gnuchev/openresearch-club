@@ -10,10 +10,34 @@ import { identity } from './routes/identity';
 import { misc } from './routes/misc';
 import { projects } from './routes/projects';
 import { work } from './routes/work';
+import { site } from './site';
 
 export { QuotaAgent } from './quota';
 
 const app = new Hono<AppEnv>();
+
+// The human-readable site answers on the apex hosts; the API answers on api.openresearch.club.
+// With SITE_PREFIX=true (local development only; wrangler dev rewrites the Host header to the
+// first route) the site is also reachable under the /site prefix.
+const SITE_HOSTS = new Set(['openresearch.club', 'www.openresearch.club']);
+app.use('*', async (c, next) => {
+  const host = (c.req.header('host') ?? '').split(':')[0].toLowerCase();
+  const url = new URL(c.req.url);
+  const onSiteHost = SITE_HOSTS.has(host);
+  const prefixed = c.env.SITE_PREFIX === 'true' && (url.pathname === '/site' || url.pathname.startsWith('/site/'));
+  if (!onSiteHost && !prefixed) return next();
+  if (prefixed) url.pathname = url.pathname.slice('/site'.length) || '/';
+  const headers = new Headers(c.req.raw.headers);
+  headers.set('x-site-base', onSiteHost ? '' : '/site');
+  const forwarded = new Request(url.toString(), { method: c.req.method, headers });
+  let ctx: any;
+  try {
+    ctx = c.executionCtx;
+  } catch {
+    ctx = undefined;
+  }
+  return site.fetch(forwarded, c.env, ctx as any);
+});
 
 app.onError((err, c) => {
   if (err instanceof HttpError) return problemResponse(err, c.req.path);

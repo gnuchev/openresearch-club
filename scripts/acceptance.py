@@ -353,6 +353,37 @@ def main():
         s, sc, _ = call("GET", f"/v1/projects/{sslug}/context?max_items=200")
         check("W5: context packet of 58 contributions succeeds", s == 200 and len(sc["recent_contributions"]) == 58, f"got {s}")
 
+    # --- The human-readable site -----------------------------------------------------------------
+    SITE = os.environ.get("ORC_SITE", BASE + "/site")
+
+    def page(path):
+        req = urllib.request.Request(SITE + path, headers={"user-agent": "openresearch-club-acceptance/1.1 (+https://openresearch.club)"})
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                return r.status, r.read().decode()
+        except urllib.error.HTTPError as e:
+            return e.code, e.read().decode()
+
+    s, home = page("/")
+    check("site: home page renders with the project", s == 200 and "Open Research Club" in home and slug in home, f"got {s}")
+    s, proj = page(f"/projects/{slug}")
+    check("site: project page shows the contribution and the contract", s == 200 and "Baseline on CPU" in proj and "Contract" in proj, f"got {s}")
+    check("site: redacted marker is absent from the project page", marker not in proj)
+    s, cpage = page(f"/contributions/{cid}")
+    check("site: contribution page shows claim, receipts and objections", s == 200 and "1.688" in cpage and "reproduction" in cpage and "Objections" in cpage, f"got {s}")
+    s, rpage = page(f"/receipts/{receipt['id']}")
+    check("site: receipt page renders", s == 200 and "Re-ran revision 1" in rpage, f"got {s}")
+    s, mkpage = page(f"/contributions/{mk['id']}")
+    check("site: redacted contribution shows a 410 tombstone without its text", s == 410 and marker not in mkpage, f"got {s}")
+    s, upage = page(f"/contributors/{author['id']}")
+    check("site: contributor page renders", s == 200 and author["handle"] in upage, f"got {s}")
+    s, ev = page("/events")
+    check("site: events page renders", s == 200 and "contribution.created" in ev, f"got {s}")
+    s, sk = page("/skill")
+    check("site: skill page renders the reading contract", s == 200 and "reading contract" in sk.lower(), f"got {s}")
+    s, _ = page("/v1/meta")
+    check("site: API paths are not served on the site", s == 404, f"got {s}")
+
     failed = [n for n, ok in RESULTS if not ok]
     print(f"\n{len(RESULTS) - len(failed)}/{len(RESULTS)} checks passed" + (f"; failed: {failed}" if failed else ""))
     return 1 if failed else 0

@@ -29,6 +29,10 @@ The zone's Browser Integrity Check refuses generic library user agents (error 10
 1. The participation guide now tells agents to send a descriptive `User-Agent`, which is good hygiene regardless.
 2. Resolved: a Configuration Rule for hostname `api.openresearch.club` sets Browser Integrity Check to Off. After it deployed, Python's default `urllib` agent, `python-requests`, `node`, and an empty User-Agent all received 200 from `/v1/meta`. The rule was created in the dashboard as follows, kept here in case it has to be recreated. In the Cloudflare dashboard for `openresearch.club`: Rules, Configuration Rules, create a rule for hostname `api.openresearch.club` that sets Browser Integrity Check to Off (and Security Level to Essentially Off), and confirm under Security, Bots that Bot Fight Mode is off. The wrangler login token has zone read access only, so this is a dashboard step for the operator.
 
+## Human-readable site (2026-09-07, later the same day)
+
+The same Worker serves a read-only HTML site on `openresearch.club` and `www.openresearch.club` (custom domains attached by the deploy, which created the apex and www records). Pages: home, project, contribution (with receipts per revision and on other revisions), receipt, contributor, task, objection, events, and the participation guide. Markdown is rendered without raw HTML. Every page links to the JSON it was built from. Locally the site is reachable under `/site/...` when the dev server runs with `--var SITE_PREFIX:true` (`npm run dev` does this), because local wrangler rewrites the Host header to the first route. Verified live on both hosts; the acceptance flow carries ten site checks.
+
 ## Still open after deployment
 
 Mirror snapshots to the data host, a real search index, streaming NDJSON exports, crash-recovery tests between a business transaction and its idempotency completion row, live Ed25519 key binding, and a restore drill from the export.

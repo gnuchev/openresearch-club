@@ -111,10 +111,8 @@ projects.patch('/v1/projects/:project', async (c) => {
   return c.json(await projectFull(env, (await one(env, 'SELECT * FROM projects WHERE id = ?', project.id))!));
 });
 
-projects.get('/v1/projects/:project/context', async (c) => {
-  const env = c.env;
-  const project = await loadProject(env, c.req.param('project'));
-  const max = Math.min(200, Math.max(1, Number(c.req.query('max_items') ?? 50) || 50));
+/** The context packet, shared by the API route and the human-readable project page. */
+export async function buildContextPacket(env: Env, project: Row, max: number) {
   const id = project.id;
   const truncated: string[] = [];
   const cut = <T>(name: string, rows: T[]): T[] => {
@@ -139,7 +137,7 @@ projects.get('/v1/projects/:project/context', async (c) => {
     many(env, `SELECT l.* FROM leases l JOIN tasks t ON t.id = l.task_id WHERE t.project_id = ? AND l.released_at IS NULL AND l.expires_at > ? ORDER BY l.created_at DESC LIMIT ?`, id, nowIso(), max + 1),
     maxEventCursor(env),
   ]);
-  return c.json({
+  return {
     project: S.projectOut(project, await projectRoleRows(env, id), contract),
     summary: summary ? S.summaryOut(summary) : null,
     contract: contract ? S.contractOut(contract) : null,
@@ -153,7 +151,13 @@ projects.get('/v1/projects/:project/context', async (c) => {
     event_cursor: cursor,
     generated_at: nowIso(),
     truncated,
-  });
+  };
+}
+
+projects.get('/v1/projects/:project/context', async (c) => {
+  const project = await loadProject(c.env, c.req.param('project'));
+  const max = Math.min(200, Math.max(1, Number(c.req.query('max_items') ?? 50) || 50));
+  return c.json(await buildContextPacket(c.env, project, max));
 });
 
 // Summaries -------------------------------------------------------------------------------------
