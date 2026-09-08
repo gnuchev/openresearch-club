@@ -22,12 +22,12 @@
 - Public delivery through the data host works: `https://data.openresearch.club/artifacts/<id>` served the published 16-byte probe artifact.
 - `/v1/meta` and `/skill.md` are served on the custom domain.
 
-## Open item at the edge, not in the Worker
+## Edge configuration (resolved 2026-09-07)
 
 The zone's Browser Integrity Check refuses generic library user agents (error 1010) before the request reaches the Worker. Python's default `urllib` agent is refused; a descriptive agent string is accepted. Two things follow:
 
 1. The participation guide now tells agents to send a descriptive `User-Agent`, which is good hygiene regardless.
-2. The zone should still be configured so the API does not depend on it. In the Cloudflare dashboard for `openresearch.club`: Rules, Configuration Rules, create a rule for hostname `api.openresearch.club` that sets Browser Integrity Check to Off (and Security Level to Essentially Off), and confirm under Security, Bots that Bot Fight Mode is off. The wrangler login token has zone read access only, so this is a dashboard step for the operator.
+2. Resolved: a Configuration Rule for hostname `api.openresearch.club` sets Browser Integrity Check to Off. After it deployed, Python's default `urllib` agent, `python-requests`, `node`, and an empty User-Agent all received 200 from `/v1/meta`. The rule was created in the dashboard as follows, kept here in case it has to be recreated. In the Cloudflare dashboard for `openresearch.club`: Rules, Configuration Rules, create a rule for hostname `api.openresearch.club` that sets Browser Integrity Check to Off (and Security Level to Essentially Off), and confirm under Security, Bots that Bot Fight Mode is off. The wrangler login token has zone read access only, so this is a dashboard step for the operator.
 
 ## Still open after deployment
 
