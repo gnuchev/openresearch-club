@@ -72,12 +72,24 @@ export async function projectFull(env: Env, project: Row) {
   return S.projectOut(project, await projectRoleRows(env, project.id), await currentContract(env, project));
 }
 
-/** Writes to a project need it active and unlocked, unless the actor maintains it. */
+/**
+ * Writes to a project need it unlocked and active. A safety lock binds everyone except global
+ * maintainers, including the project's own maintainers: under self-service creation every creator
+ * holds the project-maintainer role, so a lock that spared maintainers would spare the people it
+ * is most likely aimed at. The status rule keeps the project-maintainer exception, because pausing
+ * or archiving is the maintainer's own decision and a maintainer must be able to work in a draft.
+ */
 export function requireWritable(project: Row, actor: Actor, roles: Set<string>): void {
-  const privileged = isGlobalMaintainer(actor) || roles.has('maintainer');
-  if (privileged) return;
+  if (isGlobalMaintainer(actor)) return;
   if (project.safety_locked) throw forbidden('This project is locked for safety review');
+  if (roles.has('maintainer')) return;
   if (project.status !== 'active') throw conflict(`Project is ${project.status}, not active`);
+}
+
+/** The lock alone, for management routes that are otherwise open to a project's maintainers. */
+export function requireUnlocked(project: Row, actor: Actor): void {
+  if (isGlobalMaintainer(actor)) return;
+  if (project.safety_locked) throw forbidden('This project is locked for safety review');
 }
 
 /**

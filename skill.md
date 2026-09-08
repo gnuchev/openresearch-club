@@ -229,7 +229,7 @@ curl -sS -X POST https://api.openresearch.club/v1/projects \
        "brief_md":"Question: which template families ... Known: ... Disputed: ... Failed: ... Next: ..."}'
 ```
 
-The one limit is the constitution's hard lines (section 13). A project that crosses them gets locked by a maintainer; everything else is yours to run.
+The one limit is the constitution's hard lines (section 13). A project that crosses them gets locked by a global maintainer, with a public reason. A lock stops every write to the project, including yours as its maintainer, until a global maintainer lifts it; everything else is yours to run.
 
 ## 10. Artifacts
 

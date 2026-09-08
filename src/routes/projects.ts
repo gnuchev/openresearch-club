@@ -19,6 +19,7 @@ import {
   receiptFull,
   RECEIPT_OBJECTIONS_SQL,
   requireProjectWritable,
+  requireUnlocked,
   requireWritable,
   revisionFull,
   tasksFull,
@@ -108,6 +109,7 @@ projects.patch('/v1/projects/:project', async (c) => {
   const project = await loadProject(env, c.req.param('project'));
   const roles = await projectRoles(env, project.id, actor.id);
   if (!hasProjectRole(actor, roles, 'maintainer')) throw forbidden('Only project maintainers update a project');
+  requireUnlocked(project, actor);
   const req = body(c, 'ProjectPatch');
   if (req.status && req.status !== project.status && !TRANSITIONS[project.status].includes(req.status)) {
     throw conflict(`Cannot move a ${project.status} project to ${req.status}`);
@@ -188,6 +190,7 @@ projects.put('/v1/projects/:project/summary', async (c) => {
   const project = await loadProject(env, c.req.param('project'));
   const roles = await projectRoles(env, project.id, actor.id);
   if (!hasProjectRole(actor, roles, 'maintainer')) throw forbidden('Only project maintainers publish summaries');
+  requireUnlocked(project, actor);
   const expected = ifMatchVersion(c.req.header('if-match'));
   if (expected !== project.current_summary_version) throw conflict(`Summary version is ${project.current_summary_version}, not ${expected}`);
   const req = body(c, 'SummaryUpdate');
@@ -221,6 +224,7 @@ projects.put('/v1/projects/:project/contract', async (c) => {
   const project = await loadProject(env, c.req.param('project'));
   const roles = await projectRoles(env, project.id, actor.id);
   if (!hasProjectRole(actor, roles, 'maintainer')) throw forbidden('Only project maintainers publish contract versions');
+  requireUnlocked(project, actor);
   if (project.kind !== 'challenge') throw conflict('Only challenges carry an evaluation contract');
   const expected = ifMatchVersion(c.req.header('if-match'));
   if (expected !== project.contract_version) throw conflict(`Contract version is ${project.contract_version}, not ${expected}`);
@@ -244,6 +248,7 @@ projects.post('/v1/projects/:project/roles', async (c) => {
   const project = await loadProject(env, c.req.param('project'));
   const roles = await projectRoles(env, project.id, actor.id);
   if (!hasProjectRole(actor, roles, 'maintainer')) throw forbidden('Only project maintainers grant roles');
+  requireUnlocked(project, actor);
   const req = body(c, 'RoleGrant');
   const target = await one(env, 'SELECT id, handle FROM contributors WHERE id = ?', req.contributor_id);
   if (!target) throw notFound('Contributor not found');
@@ -262,6 +267,7 @@ projects.delete('/v1/projects/:project/roles/:contributor_id/:role', async (c) =
   const project = await loadProject(env, c.req.param('project'));
   const roles = await projectRoles(env, project.id, actor.id);
   if (!hasProjectRole(actor, roles, 'maintainer')) throw forbidden('Only project maintainers revoke roles');
+  requireUnlocked(project, actor);
   const contributorId = c.req.param('contributor_id');
   const role = c.req.param('role');
   const existing = await one(env, 'SELECT * FROM project_roles WHERE project_id = ? AND contributor_id = ? AND role = ?', project.id, contributorId, role);
@@ -528,6 +534,7 @@ projects.post('/v1/tasks/:id/close', async (c) => {
   if (!task) throw notFound('Task not found');
   const roles = await projectRoles(env, task.project_id, actor.id);
   if (!hasProjectRole(actor, roles, 'maintainer', 'reviewer')) throw forbidden('Only project maintainers and reviewers close tasks');
+  requireUnlocked((await one(env, 'SELECT * FROM projects WHERE id = ?', task.project_id))!, actor);
   if (task.status !== 'open') throw conflict('Task is already closed');
   const req = body(c, 'TaskClose');
   if (req.contribution_id && !(await one(env, 'SELECT id FROM contributions WHERE id = ?', req.contribution_id))) throw notFound('Contribution not found');
