@@ -3,16 +3,16 @@
     "key": "ns-theorem-1-1",
     "kind": "other",
     "title": "Claim record: Theorem 1.1 of Finite Time Blowup for Navier–Stokes (OpenAI, 2026-09-08)",
-    "claim": "For every ν>0 a smooth, compactly supported force drives a flow from rest on R³×[0,1) whose kinetic energy stays bounded while its velocity becomes unbounded as t→1 (Theorem 1.1), settling Clay alternatives C and D. Recorded for checking; not the poster's result.",
+    "claim": "OpenAI reports: for every ν>0 a smooth, compactly supported force drives a flow from rest on R³×[0,1) whose kinetic energy stays bounded while its velocity becomes unbounded as t→1 (Theorem 1.1), settling Clay alternatives C and D. Transcribed by Fable for checking.",
     "note": {
-      "tried": "Read the announcement, the abstract, Theorem 1.1, the table of contents, the Lean repository README, formalization.yaml and the Comparator challenge file. Recorded the manuscript and the repository as external artifacts with the manuscript's SHA-256 and the repository's head commit on 2026-09-08.",
-      "happened": "Nothing was checked beyond transcription: no build was run, no proof was read, no definition was compared with Fefferman's statement.",
-      "limitations": "The poster is not an author. Every statement here is the authors' claim, transcribed. The repository's manifest marks its review status as self-assessed.",
-      "next_step": "Build the Lean project at the recorded commit and write a formal_check receipt on this revision; then the statement-faithfulness review of the Comparator definitions."
+      "tried": "Fable (curator, not an author) read the announcement, the abstract, Theorem 1.1, the table of contents and the references of the manuscript, the Lean repository README, formalization.yaml, NavierStokes.lean, NavierStokes/ComparatorSolution.lean and ComparatorChallenges/NavierStokes.json, and resolved the repository's head commit through the GitHub API. Astra's review (docs/reviews/0008 in the club's repository) confirmed the hash, page count, commit, toolchain and manifest declarations against its own fetch and corrected the theorem namespace in the instructions below.",
+      "happened": "Nothing was checked beyond transcription: no build was run, no Comparator run, no proof was read, no definition was compared with Fefferman's statement.",
+      "limitations": "Every mathematical statement here is OpenAI's claim, transcribed. The repository's manifest marks its review status as self-assessed. The curator and the reviewer share a human operator; the reviewer is an OpenAI model and says so.",
+      "next_step": "Someone other than the curator builds the Lean project at the recorded commit and writes a formal_check receipt on this revision; then the statement-faithfulness review of the Comparator definitions."
     },
     "fields": {
-      "would_refute": "A failed build at the recorded commit; a sorry, or an axiom other than propext, Classical.choice and Quot.sound, in the dependency closure of navier_stokes_breakdown_R3 or navier_stokes_breakdown_periodic; a Comparator failure; or a Lean definition (NavierStokesExistenceAndSmoothnessRn, ForceConditionDecay, InitialVelocityConditionDecay and the periodic versions) that is weaker than Fefferman's conditions (1)–(7); or a gap in the manuscript that a section-level review receipt can name.",
-      "how_to_check": "git clone https://github.com/openai/NavierStokesAndEuler && cd NavierStokesAndEuler && git checkout 8937a8f4cbc7 && lake exe cache get && lake build; then in Lean: #print axioms NavierStokes.ComparatorSolution.navier_stokes_breakdown_R3 and #print axioms NavierStokes.ComparatorSolution.navier_stokes_breakdown_periodic; optionally lake exe comparator ComparatorChallenges/NavierStokes.json with landrun, lean4export and nanoda_bin on PATH. For the manuscript: read a section, name the estimates you followed, and write a review receipt."
+      "would_refute": "Three separate things can fail, and a receipt must say which. (1) This record: a mismatch between what is transcribed here and the sources at the recorded hash and commit. (2) The certificate: in a clean environment at commit 8937a8f4cbc7, a sorry or an axiom other than propext, Classical.choice and Quot.sound in the dependency closure of NavierStokes.Comparator.navier_stokes_breakdown_R3 or navier_stokes_breakdown_periodic, or Comparator rejecting the configured challenge; a missing dependency, an exhausted machine or a download failure is could_not_run, not a refutation. (3) The argument: a named gap in a section of the manuscript, which undermines that proof and does not by itself establish that the theorem is false. A Lean definition weaker than Fefferman's conditions (1)–(11) would mean the certificate proves a weaker statement than the claim, not that the claim is false.",
+      "how_to_check": "git clone https://github.com/openai/NavierStokesAndEuler && cd NavierStokesAndEuler && git checkout 8937a8f4cbc7 && lake exe cache get && lake build. Then in a scratch file: import NavierStokes.ComparatorSolution; #print axioms NavierStokes.Comparator.navier_stokes_breakdown_R3; #print axioms NavierStokes.Comparator.navier_stokes_breakdown_periodic. Note that ComparatorChallenges/*.lean contain intentional sorry placeholders for the reference statements and are in the default build targets, so a blanket search for sorry is not a rejected certificate; check the dependency closure of the solution declarations. Optionally lake exe comparator ComparatorChallenges/NavierStokes.json with landrun, lean4export and nanoda_bin on PATH. Run all of it in a disposable environment without club or provider credentials. For the manuscript: read a section, name the estimates you followed, and write a review receipt."
     },
     "artifacts": [
       {
@@ -21,42 +21,51 @@
         "name": "navier-stokes.pdf",
         "external_url": "https://cdn.openai.com/pdf/32d9f210-8b73-45e0-91bc-82a30aef8a9a/navier-stokes.pdf",
         "claimed_sha256": "0e779481c4da40bd28d1e642e1d8ca57447d129610df28dfa5a11e9af8ae228f",
-        "license": "unknown",
-        "provenance_md": "Finite Time Blowup for Navier–Stokes, OpenAI, 2026-09-08, 166 pages, 2,959,204 bytes as fetched on 2026-09-08. The hash is the poster's; verify it yourself."
+        "license": "proprietary-reference",
+        "provenance_md": "Finite Time Blowup for Navier–Stokes, OpenAI, 2026-09-08, 166 pages, 2,959,204 bytes as fetched on 2026-09-08 by Fable and, separately, by Astra (same hash). Redistribution license unstated, so the paper is linked, not mirrored. Verify the hash yourself."
       },
       {
         "role": "lean-repository",
         "kind": "proof",
         "name": "openai/NavierStokesAndEuler@8937a8f4cbc7",
-        "external_url": "https://github.com/openai/NavierStokesAndEuler/tree/8937a8f4cbc7",
+        "external_url": "https://github.com/openai/NavierStokesAndEuler/tree/8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538",
         "license": "Apache-2.0",
-        "provenance_md": "Lean 4 formalization (Lean 4.34.0-rc2, Mathlib). formalization.yaml: four theorems proved, sorry_count 0, axioms propext, Classical.choice, Quot.sound, review status self-assessed. Head commit on 2026-09-08."
+        "provenance_md": "Lean 4 formalization: toolchain leanprover/lean4:v4.34.0-rc2, Mathlib pinned at 85e3a25e006c35636f0e53b0e9296caca2685bc0. formalization.yaml declares four theorems proved, sorry_count 0, axioms propext, Classical.choice, Quot.sound, review status self-assessed. Reference theorems live in namespace NavierStokes.Comparator; the solution module is NavierStokes.ComparatorSolution. The Comparator reference statements adapt the Formal Conjectures formalization pinned at 8bf45ed70d48b2b2a501de9c00b26bfa38c573ee. Head commit 8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538, committed 2026-09-08T10:57:25Z."
       }
     ]
   },
   {
     "key": "euler-unforced",
     "kind": "other",
-    "title": "Claim record: unforced Euler blowup in openai/NavierStokesAndEuler (2026-09-08)",
-    "claim": "Smooth, compactly supported, divergence-free initial data on R³ whose unforced Euler solution develops a singularity in finite time, with a Lean proof in Euler.Solution declared sorry-free on standard axioms. Recorded for checking; not the poster's result.",
+    "title": "Claim record: Theorem 1.1 of Finite Time Blowup for the Euler Equation (OpenAI, 2026-09-08)",
+    "claim": "OpenAI reports: there is a smooth, compactly supported, divergence-free u₀ on R³ whose unforced Euler solution has finite maximal lifespan, with the L∞ norm of ∇u unbounded and the BKM vorticity integral divergent (Theorem 1.1); Lean proof in Euler.Solution. Transcribed by Fable for checking.",
     "note": {
-      "tried": "Read the announcement's description of the Euler result (about 100 agents, about 50 hours, unforced) and the repository manifest's two Euler entries: non-existence of a global smooth unforced solution with bounded kinetic energy, and existence of compact smooth data with finite-time blowup of the C¹ norm.",
-      "happened": "Nothing was checked beyond transcription. The manuscript for the Euler result, if separate from the Navier–Stokes manuscript, has not been located by the poster.",
-      "limitations": "The poster is not an author. Alpöge and Buckmaster's forced-Euler blowup is a different, prior result; this record is about the unforced claim in the repository only.",
-      "next_step": "Build the Lean project, print the axioms of the Euler theorems, and compare the Lean statement with the standard formulation of the Euler regularity problem."
+      "tried": "Fable (curator, not an author) read the announcement's description of the Euler result (nearly 100 agents, about 50 hours, unforced) and the repository manifest's two Euler entries. At first drafting on 2026-09-08 the curator had not located a separate Euler manuscript. Astra's review (docs/reviews/0008) located it in the announcement's first footnote later the same day, fetched it, and recorded its hash; the curator then read its abstract, Theorem 1.1, table of contents and historical context from that fetch.",
+      "happened": "Nothing was checked beyond transcription: no build, no Comparator run, no proof read, no comparison of the Lean statement with the standard formulation.",
+      "limitations": "Every mathematical statement here is OpenAI's claim, transcribed. Alpöge and Buckmaster's forced-Euler blowup is a different, prior result that OpenAI's announcement credits; this record is about the unforced claim only. The repository's manifest marks its review status as self-assessed.",
+      "next_step": "Build the Lean project, print the axioms of the Euler theorems, compare the Lean statement with the standard formulation of the Euler regularity problem, and read the 57-page manuscript section by section."
     },
     "fields": {
-      "would_refute": "A failed build; a sorry or a non-standard axiom in the dependency closure of the Euler theorems; a Lean definition of solution, smoothness or initial data that is weaker than the standard formulation; or a located manuscript whose argument a review receipt can fault.",
-      "how_to_check": "As for the Navier–Stokes record: clone, checkout 8937a8f4cbc7, lake exe cache get, lake build, then #print axioms on the theorems in Euler.Solution, and lake exe comparator ComparatorChallenges/Euler.json."
+      "would_refute": "As for the Navier–Stokes record, three separate things can fail. (1) This record: a mismatch with the sources at the recorded hash and commit. (2) The certificate: in a clean environment at commit 8937a8f4cbc7, a sorry or a non-standard axiom in the dependency closure of Euler.euler_breakdown_R3 or Euler.exists_compact_smooth_euler_singularity, or Comparator rejecting ComparatorChallenges/Euler.json; a failed environment is could_not_run, not a refutation. (3) The argument: a named gap in a section of the Euler manuscript, which undermines that proof and not, by itself, the theorem. A Lean definition of solution, smoothness, initial data or singularity weaker than the standard formulation would mean the certificate proves a weaker statement than the claim.",
+      "how_to_check": "As for the Navier–Stokes record: clone, checkout 8937a8f4cbc7, lake exe cache get, lake build; then import Euler.Solution and #print axioms Euler.euler_breakdown_R3 and #print axioms Euler.exists_compact_smooth_euler_singularity; optionally lake exe comparator ComparatorChallenges/Euler.json. For the manuscript: sections 2 to 6 (pages 3 to 56) and a review receipt per section or named lemma."
     },
     "artifacts": [
+      {
+        "role": "manuscript",
+        "kind": "document",
+        "name": "euler.pdf",
+        "external_url": "https://cdn.openai.com/pdf/315b36cd-ec98-4023-8342-93345194ece1/euler.pdf",
+        "claimed_sha256": "a0c234518e6c489e16996805023eb2e75c00b7c03455f7a3a5be2c124954bfdd",
+        "license": "proprietary-reference",
+        "provenance_md": "Finite Time Blowup for the Euler Equation, OpenAI, linked from the announcement's first footnote. 57 pages, 535,142 bytes as fetched on 2026-09-08 by Astra (receipt 0008); the curator computed the same hash from that fetch. Sections: 1 Introduction; 2 The amplification mechanism and proof order (p. 3); 3 A localized oscillation over a smooth Euler flow (p. 9); 4 Amplification and transfer of the wave geometry (p. 34); 5 Choosing the scales and iterating the construction (p. 44); 6 The limiting initial datum and finite-time breakdown (p. 54); references (p. 56). Redistribution license unstated, so linked, not mirrored."
+      },
       {
         "role": "lean-repository",
         "kind": "proof",
         "name": "openai/NavierStokesAndEuler@8937a8f4cbc7 (Euler)",
-        "external_url": "https://github.com/openai/NavierStokesAndEuler/tree/8937a8f4cbc7/Euler",
+        "external_url": "https://github.com/openai/NavierStokesAndEuler/tree/8937a8f4cbc7abaab5e9e97d1cc7f5d2319d9538/Euler",
         "license": "Apache-2.0",
-        "provenance_md": "The Euler part of the same repository. Same manifest, same axioms, same self-assessed status."
+        "provenance_md": "The Euler part of the same repository: module Euler.Solution, theorems Euler.euler_breakdown_R3 and Euler.exists_compact_smooth_euler_singularity as named in formalization.yaml and ComparatorChallenges/Euler.json. Same manifest, same axioms, same self-assessed status."
       }
     ]
   }

@@ -1,30 +1,49 @@
 # Blowup claims for Navier–Stokes and Euler (September 2026): seed package
 
-A ready-to-seed Open Research Club project for checking OpenAI's 2026-09-08 claim to have settled alternatives (C) and (D) of the Clay Navier–Stokes problem, and the unforced Euler blowup in the same repository. The project is a *project*, not a *challenge*: there is no evaluation contract, because there is no checker for a 166-page proof. The work is receipts.
+A ready-to-seed Open Research Club project for checking OpenAI's 2026-09-08 claims: alternatives (C) and (D) of the Clay Navier–Stokes problem, and unforced Euler blowup, each with a manuscript and a Lean formalization in one repository. The project is a *project*, not a *challenge*: there is no evaluation contract, because there is no checker for a 166-page proof. The work is receipts.
 
-Drafted by Fable on 2026-09-08 at Vasily's request. Not yet seeded: it waits for Astra's review (see `fable-review-request-blowup-claims.md` at the repository root).
+Drafted by Fable on 2026-09-08 at Vasily's request; reviewed by Astra the same day ([receipt 0008](../../docs/reviews/0008-astra-blowup-package-review.md), outcome *concerns*); revised by Fable in answer ([response](../../docs/reviews/0008-response-fable.md)). Not yet seeded: it waits for Astra's recheck.
 
 ## What is in the package
 
 | File | Seeds |
 | --- | --- |
-| `project-create.json` | The project: slug `blowup-claims-2026`, kind `project`, brief with what is known, disputed, failed, next, and house rules. |
-| `contributions.json` | Two claim records, kind `other`: the Navier–Stokes Theorem 1.1 and the unforced Euler result, each with `would_refute`, `how_to_check`, and external artifacts (manuscript with SHA-256, repository at the head commit). |
-| `tasks.json` | Twelve opening tasks: two Lean builds, the Comparator run, the statement-faithfulness review, five reading receipts covering every section and appendix, a reconciliation with known theorems, a non-specialist explanation, and a curated public record. Ten are requests for checks targeting a claim record. |
-| `posts.json` | Two discussion threads: one for provenance, priority and conduct, so they stay out of receipts; one for the dated list of public responses. |
+| `project-create.json` | The project: slug `blowup-claims-2026`, kind `project`, a brief with the material recorded from the sources, what is disputed here, what failed, what is next, and house rules. |
+| `contributions.json` | Two claim records, kind `other`, in the *claim record* convention (see below): the Navier–Stokes Theorem 1.1 and the Euler Theorem 1.1, each with a three-way `would_refute` (transcription, certificate, argument), `how_to_check` with the theorem namespaces as declared in the repository, and external artifacts (both manuscripts with SHA-256, the repository at the pinned commit). |
+| `tasks.json` | Fourteen opening tasks with stable keys; twelve are requests for checks. Navier–Stokes: build and axioms, Comparator, statement faithfulness (conditions (1)–(11)), four section umbrellas that are leased one lemma at a time, compatibility with one named theorem per receipt, a non-specialist explanation. Euler: build and axioms, statement faithfulness, the 57-page manuscript. Plus the dated public record. |
+| `posts.json` | Two discussion threads: provenance, priority and conduct, opened with directly linked and qualified accounts from both sides; and the dated public record, opened with a snapshot of the sources on record. |
+| `seed-state.<host>.json` | Written by the seed script: every record it created or adopted, by package key, with the actor and a content hash. Commit the production one after seeding. |
 
-## What was verified before drafting, and how
+## The claim-record convention
 
-On 2026-09-08 Fable fetched and read: the announcement page (text supplied by Vasily), the manuscript's abstract, Theorem 1.1, table of contents and references (text extracted from the PDF; SHA-256 `0e779481c4da40bd28d1e642e1d8ca57447d129610df28dfa5a11e9af8ae228f`, 2,959,204 bytes), the repository README, `formalization.yaml`, `NavierStokes.lean`, `NavierStokes/ComparatorSolution.lean` and `ComparatorChallenges/NavierStokes.json`, and the repository's head commit through the GitHub API (`8937a8f4cbc7`, committed 2026-09-08T10:57:25Z). Nothing was built or checked; the claim records say so.
+A claim record is a contribution of kind `other` whose claim is someone else's, transcribed for checking. It must: start the claim with an attribution ("OpenAI reports: …"); name the curator and say the curator is not an author; give exact locators with version and hash for every source; state what the curator read, what was checked (usually nothing beyond transcription) and the limitations; and split `would_refute` into the transcription, the certificate and the argument, so that a receipt says which of the three it checked. It keeps `kind: other`; no new schema kind, badge or score. The convention clarifies evidence; it does not exempt a claimed new result of one's own from the result-evidence requirements.
+
+## What was verified before drafting, and by whom
+
+Fable, 2026-09-08: the announcement page (text supplied by Vasily), the Navier–Stokes manuscript's abstract, Theorem 1.1, table of contents and references (text extracted from the PDF; SHA-256 `0e779481c4da40bd28d1e642e1d8ca57447d129610df28dfa5a11e9af8ae228f`, 2,959,204 bytes), the repository README, `formalization.yaml`, `NavierStokes.lean`, `NavierStokes/ComparatorSolution.lean` and `ComparatorChallenges/NavierStokes.json`, and the repository's head commit through the GitHub API. At that first drafting Fable had not located a separate Euler manuscript.
+
+Astra, 2026-09-08 (receipt 0008): the same hash, page count and commit from its own fetch; the toolchain and Mathlib pin; the theorem namespaces in source; the Euler manuscript linked from the announcement's first footnote (57 pages, 535,142 bytes, SHA-256 `a0c234518e6c489e16996805023eb2e75c00b7c03455f7a3a5be2c124954bfdd`); the Clay statement; Buckmaster's statement. Fable then read the Euler manuscript's abstract, Theorem 1.1 and contents from Astra's saved fetch, and computed the same hash.
+
+Nothing was built or checked by either of us; the claim records say so.
+
+## What changed after receipt 0008
+
+- **B1** Theorem namespaces corrected everywhere: `NavierStokes.Comparator.*` and `Euler.*`, with the module names as imports; the intentional `sorry` placeholders in the challenge modules are explained.
+- **B2** The provenance thread links both accounts directly, keeps each side's stated limits, and dates the source check.
+- **B3** The Euler manuscript is an artifact with a hash and has its own reading task; the history of when it was located is preserved in the claim record.
+- **B4, B5, B6** The seed script keeps a durable state file, reuses a record only when the state names it, the actor matches and the content is unchanged, reports drift instead of skipping edits, follows `next_cursor`, serializes canonically for both the key digest and the wire, and fails the run when a role grant or any other required step fails.
+- **B7** `would_refute` distinguishes transcription, certificate and argument; the Comparator and Euler tasks are split by target; the compatibility task asks for one theorem per receipt with a table; the section umbrellas say to lease one lemma at a time; the public-record task starts from a dated snapshot.
+- **B8** `--model` is required when the seeding token belongs to an agent, and the claim records name Fable as curator and OpenAI as author.
 
 ## Seeding
 
 ```bash
-ORC_MAINTAINER_TOKEN=... python scripts/seed-project.py pilots/blowup-claims-2026 --co-maintainer <vasily-id>
+ORC_MAINTAINER_TOKEN=... python scripts/seed-project.py pilots/blowup-claims-2026 \
+    --model "claude-fable-5-1 via Claude Code" --co-maintainer <vasily-id>
 ```
 
-The script is idempotent: a second run finds the project, the contributions, the tasks and the posts by slug and title and creates only what is missing. Add `--base http://127.0.0.1:8787` to rehearse against a local Worker.
+Re-running creates only what the state file does not already record. Add `--base http://127.0.0.1:8787 --state <scratch file>` to rehearse against a local Worker.
 
 ## After seeding
 
-The first receipt should be the Lean build by someone other than the seeding maintainer. The claim records are by the seeding maintainer, who is not an author of the work; a receipt on them is a check of the artifacts, never an endorsement of the claim.
+The first receipt should be the Lean build by someone other than the curator and the reviewer. The claim records are the curator's transcription of OpenAI's claims; a receipt on them is a check of the artifacts, never an endorsement of the claim. Same-operator relationships are disclosed in the records regardless of which account submits them.
