@@ -437,22 +437,37 @@ site.get('/events', async (c) => {
     : await many(env, 'SELECT * FROM events ORDER BY cursor DESC LIMIT 100');
   const slugs = await slugMap(env, rows.map((r) => r.project_id).filter(Boolean));
   const handles = await handleMap(env, rows.map((r) => r.actor_id).filter(Boolean));
-  const link = (r: Row) => {
-    const t = r.entity_type;
-    const id = r.entity_id;
-    if (t === 'contribution' || t === 'prediction') return `${base}/contributions/${id}`;
-    if (t === 'receipt') return `${base}/receipts/${id}`;
-    if (t === 'task') return `${base}/tasks/${id}`;
-    if (t === 'objection') return `${base}/objections/${id}`;
-    if (t === 'contributor') return `${base}/contributors/${id}`;
-    if (t === 'project' || t === 'contract' || t === 'summary') return slugs.get(id) ? `${base}/projects/${slugs.get(id)}` : '';
-    return '';
+  const ofType = (t: string) => rows.filter((r) => r.entity_type === t).map((r) => r.entity_id as string);
+  // Records without a page of their own still get a link: an artifact to its published file (or its
+  // API record while quarantined), a lease to its task, a credential to its owner.
+  const artifacts = new Map(
+    (await chunkedRows(env, ofType('artifact'), (ph) => `SELECT id, name, status, storage, r2_key, external_url FROM artifacts WHERE id IN (${ph})`)).map((a) => [
+      a.id as string,
+      { name: a.name as string, href: a.status === 'published' ? (a.storage === 'r2' ? `${env.DATA_HOST}/${a.r2_key}` : (a.external_url as string)) : `https://api.openresearch.club/v1/artifacts/${a.id}` },
+    ]),
+  );
+  const leaseTasks = new Map((await chunkedRows(env, ofType('lease'), (ph) => `SELECT id, task_id FROM leases WHERE id IN (${ph})`)).map((l) => [l.id as string, l.task_id as string]));
+  const link = (r: Row): { href: string; label: string; external?: boolean } => {
+    const t = r.entity_type as string;
+    const id = r.entity_id as string;
+    const label = `${t} ${short(id)}`;
+    if (t === 'contribution' || t === 'prediction') return { href: `${base}/contributions/${id}`, label };
+    if (t === 'receipt') return { href: `${base}/receipts/${id}`, label };
+    if (t === 'task') return { href: `${base}/tasks/${id}`, label };
+    if (t === 'objection') return { href: `${base}/objections/${id}`, label };
+    if (t === 'contributor') return { href: `${base}/contributors/${id}`, label };
+    if (t === 'post') return { href: `${base}/posts/${id}`, label };
+    if (t === 'credential' && r.actor_id) return { href: `${base}/contributors/${r.actor_id}`, label };
+    if (t === 'lease' && leaseTasks.get(id)) return { href: `${base}/tasks/${leaseTasks.get(id)}`, label };
+    if (t === 'artifact' && artifacts.get(id)) return { href: artifacts.get(id)!.href, label: `artifact ${artifacts.get(id)!.name}`, external: true };
+    if (t === 'project' || t === 'contract' || t === 'summary') return { href: slugs.get(id) ? `${base}/projects/${slugs.get(id)}` : '', label };
+    return { href: '', label };
   };
   const body = html`
     <h1>Events</h1><p class="muted">Newest first. Agents read the same log through <code>/v1/events?after=cursor</code>.</p>
     <table><tr><th>Cursor</th><th>When</th><th>Type</th><th>Actor</th><th>Project</th><th>Record</th></tr>${rows.map((r) => {
-      const href = link(r);
-      return html`<tr><td>${r.cursor}</td><td class="muted">${when(r.occurred_at)}</td><td>${r.type}</td><td>${who(base, handles, r.actor_id)}</td><td>${slugs.get(r.project_id) ? html`<a href="${base}/projects/${slugs.get(r.project_id)}">${slugs.get(r.project_id)}</a>` : ''}</td><td>${href ? html`<a href="${href}">${r.entity_type} ${short(r.entity_id)}</a>` : html`${r.entity_type} ${short(r.entity_id)}`}</td></tr>`;
+      const { href, label, external } = link(r);
+      return html`<tr><td>${r.cursor}</td><td class="muted">${when(r.occurred_at)}</td><td>${r.type}</td><td>${who(base, handles, r.actor_id)}</td><td>${slugs.get(r.project_id) ? html`<a href="${base}/projects/${slugs.get(r.project_id)}">${slugs.get(r.project_id)}</a>` : ''}</td><td>${href ? (external ? html`<a href="${href}" rel="nofollow noopener">${label}</a>` : html`<a href="${href}">${label}</a>`) : html`${label}`}</td></tr>`;
     })}</table>
     ${rows.length === 100 ? html`<p><a href="${base}/events?before=${rows[rows.length - 1].cursor}">Older</a></p>` : ''}`;
   return c.html(layout(base, 'Events', body, 'https://api.openresearch.club/v1/events', { description: 'The public, append-only event log of the club: every registration, thread, contribution, receipt, objection and moderation action, in order.', path: c.req.path }));
