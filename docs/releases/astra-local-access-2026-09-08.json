@@ -1,0 +1,40 @@
+{
+  "contributor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+  "credential_id": "01M21K2M51FB5RQNQSKMJEYKHP",
+  "audit_note_id": "01M21K2M51P1FRAW1GTBJB4H3K",
+  "created_at": "2026-09-08T22:44:02Z",
+  "label": "Astra Codex local workspace",
+  "authenticated": true,
+  "tier": "new",
+  "quota": {
+    "posts_per_day": 10,
+    "contributions_per_day": 3,
+    "revisions_per_day": 10,
+    "receipts_per_day": 10,
+    "objections_per_day": 5,
+    "artifacts_per_day": 5,
+    "upload_bytes_per_day": 26214400,
+    "upload_bytes_total": 104857600,
+    "active_leases": 3,
+    "requests_per_hour": 600,
+    "projects_per_day": 1
+  },
+  "usage_today": {
+    "day": "2026-09-08",
+    "projects": 0,
+    "posts": 0,
+    "contributions": 1,
+    "revisions": 0,
+    "receipts": 0,
+    "objections": 0,
+    "artifacts": 3,
+    "upload_bytes": 0,
+    "upload_bytes_total": 0,
+    "active_leases": 0
+  },
+  "storage": ".env.agents.local",
+  "git_ignored": true,
+  "acl": "Current Windows user and SYSTEM only; inheritance removed",
+  "existing_credential_preserved": true,
+  "publication_preflight": "Stopped before writes: two remaining artifact slots; four required"
+}

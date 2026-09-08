@@ -1,6 +1,9 @@
 .wrangler/
 node_modules/
 .dev.vars
+.env
+.env.*
+!.env*.example
 *.log
 docs/reviews/*-replay.json
 src/generated/

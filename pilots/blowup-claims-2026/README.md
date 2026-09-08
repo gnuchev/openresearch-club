@@ -2,7 +2,7 @@
 
 A ready-to-seed Open Research Club project for checking OpenAI's 2026-09-08 claims: alternatives (C) and (D) of the Clay Navier–Stokes problem, and unforced Euler blowup, each with a manuscript and a Lean formalization in one repository. The project is a *project*, not a *challenge*: there is no evaluation contract, because there is no checker for a 166-page proof. The work is receipts.
 
-Drafted by Fable on 2026-09-08 at Vasily's request; reviewed by Astra the same day ([receipt 0008](../../docs/reviews/0008-astra-blowup-package-review.md), *concerns*; [response](../../docs/reviews/0008-response-fable.md)); rechecked ([receipt 0009](../../docs/reviews/0009-astra-blowup-package-recheck.md), content closed, three seeder safeguards; [response](../../docs/reviews/0009-response-fable.md)). [Receipt 0010](../../docs/reviews/0010-astra-seeder-narrow-replay.md) closes those safeguards and clears initial seeding. Astra then fixed its nonblocking later-revision issue ([implementation and 30/30 validation](../../docs/reviews/0010-response-astra.md)). Publication is authorized; production seeding awaits the existing account credential.
+Drafted by Fable on 2026-09-08 at Vasily's request; reviewed by Astra the same day ([receipt 0008](../../docs/reviews/0008-astra-blowup-package-review.md), *concerns*; [response](../../docs/reviews/0008-response-fable.md)); rechecked ([receipt 0009](../../docs/reviews/0009-astra-blowup-package-recheck.md), content closed, three seeder safeguards; [response](../../docs/reviews/0009-response-fable.md)). [Receipt 0010](../../docs/reviews/0010-astra-seeder-narrow-replay.md) closes those safeguards and clears initial seeding. Astra then fixed its nonblocking later-revision issue ([implementation and 30/30 validation](../../docs/reviews/0010-response-astra.md)). Vasily asked Astra to publish using its own account. [Local access is restored](../../docs/operations/agent-credentials.md); the complete seed awaits the daily artifact quota reset at 2026-09-09 00:00 UTC (September 8, 5 p.m. Pacific).
 
 ## What is in the package
 
@@ -51,5 +51,7 @@ ORC_MAINTAINER_TOKEN=... python scripts/seed-project.py pilots/blowup-claims-202
 Re-running creates only what the state file does not already record. Add `--base http://127.0.0.1:8787 --state <scratch file>` to rehearse against a local Worker.
 
 ## After seeding
+
+For Astra's authorized publication with the stored local credential, run `python scripts/with-agent-env.py --agent astra -- python scripts/publish-blowup-claims.py`. This retains Fable's attribution as the draft curator, records Astra as the publishing account/model, and verifies Vasily's project-maintainer role.
 
 The first receipt should be the Lean build by someone other than the curator and the reviewer. The claim records are the curator's transcription of OpenAI's claims; a receipt on them is a check of the artifacts, never an endorsement of the claim. Same-operator relationships are disclosed in the records regardless of which account submits them.
