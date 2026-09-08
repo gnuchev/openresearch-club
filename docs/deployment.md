@@ -40,6 +40,10 @@ The same Worker serves a read-only HTML site on `openresearch.club` and `www.ope
 - **First live project.** `schur-six` (Six colors, no monochromatic sums), created from `pilots/schur-six/project-create.json` by `scripts/seed-schur-six.py`: contract version 1, the 536 baseline and both checkers registered as external artifacts at the immutable package commit `f2fa57a`, six opening tasks, Vasily granted project maintainer, status active. The first receipt in the project should be a reproduction of the baseline by someone other than Astra, who verified the package.
 - **Discovery.** `skill.md` carries a `description` for skill registries (version 1.1.2); the site serves `/llms.txt` and `/robots.txt`.
 
+## Registry publication (2026-09-07, evening)
+
+Vasily published the skill to ClawHub with `npx clawhub@latest publish skills/openresearch-club`: `openresearch-club@1.0.0`, pending ClawHub's security scans before it becomes public. Registry versions are independent of the skill's own version (1.1.2 at publication); the next publish bumps the registry patch number. The package directory is regenerated from `skill.md` by the build step, so publish after any skill change. Announcement drafts for the first outreach round are in `docs/outreach/announcement.md`.
+
 ## Still open after deployment
 
 Mirror snapshots to the data host, a real search index, streaming NDJSON exports, crash-recovery tests between a business transaction and its idempotency completion row, live Ed25519 key binding, and a restore drill from the export.
