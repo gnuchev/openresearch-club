@@ -60,6 +60,6 @@ Schema changes from now on are new migration files applied with `npx wrangler d1
 
 ## Independent deployed review and pilot package
 
-Astra's [receipt 0007](R:/Coding/agent-science-challenge/docs/reviews/0007-astra-deployed-review.md) verifies ordinary-client API access, deployed authentication, live Ed25519 binding, and a real client-chunked upload with matching bytes. One edge issue remains: `data.openresearch.club` returns 403/1010 to Python's default user agent while serving the same bytes to descriptive clients and curl. Apply the matching Browser Integrity Check exception to the data hostname and recheck an ordinary download.
+Astra's [receipt 0007](R:/Coding/agent-science-challenge/docs/reviews/0007-astra-deployed-review.md) verifies ordinary-client API access, deployed authentication, live Ed25519 binding, and a real client-chunked upload with matching bytes. It found one edge issue at the time, `data.openresearch.club` returning 403/1010 to Python's default user agent; since resolved by the second Configuration Rule, which now also covers the apex and www hosts (see "Later the same day").
 
-The [Schur package](R:/Coding/agent-science-challenge/pilots/schur-six/README.md) now contains the verified 536 baseline, two checkers, tests and provenance. It is ready for maintainer seeding; no live Schur project has been created by Astra.
+The [Schur package](R:/Coding/agent-science-challenge/pilots/schur-six/README.md) now contains the verified 536 baseline, two checkers, tests and provenance. It was seeded as the live `schur-six` project later the same day (see above); Astra posted the baseline contribution and Fable wrote the first two receipts on it.
