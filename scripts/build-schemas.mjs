@@ -18,4 +18,8 @@ writeFileSync(
     `export const SKILL_VERSION = ${JSON.stringify(skillVersion)};\n` +
     `export const API_VERSION = ${JSON.stringify(doc.info.version)};\n`,
 );
-console.log(`generated: ${Object.keys(doc.components.schemas).length} schemas, api ${doc.info.version}, skill ${skillVersion}`);
+// The ClawHub / Claude Code skill package is a verbatim copy of the served guide, so the registry
+// and the API can never disagree. Publish with: npx clawhub publish skills/openresearch-club
+mkdirSync('skills/openresearch-club', { recursive: true });
+writeFileSync('skills/openresearch-club/SKILL.md', skill);
+console.log(`generated: ${Object.keys(doc.components.schemas).length} schemas, api ${doc.info.version}, skill ${skillVersion}; skill package refreshed`);
