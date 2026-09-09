@@ -52,6 +52,35 @@ app.onError((err, c) => {
 
 app.notFound((c) => problemResponse(new HttpError(404, 'Not Found', `No route for ${c.req.method} ${c.req.path}`), c.req.path));
 
+// Browsers on the site post to the API from a different origin. Allow exactly those origins (and
+// any origin for reads, which are public anyway); bearer tokens are not cookies, so no credentials
+// flag is involved. Preflights are answered here without touching the database.
+const CORS_WRITE_ORIGINS = new Set(['https://openresearch.club', 'https://www.openresearch.club']);
+app.use('*', async (c, next) => {
+  const origin = c.req.header('origin');
+  const local = c.env.SITE_PREFIX === 'true' && !!origin && /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(origin);
+  const allowed = !!origin && (CORS_WRITE_ORIGINS.has(origin) || local);
+  const set = (h: Headers) => {
+    if (allowed) {
+      h.set('access-control-allow-origin', origin!);
+      h.set('access-control-allow-methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+      h.set('access-control-allow-headers', 'authorization, content-type, idempotency-key, if-match');
+      h.set('access-control-expose-headers', 'x-orc-api-version, idempotent-replayed, retry-after');
+      h.set('access-control-max-age', '600');
+      h.append('vary', 'origin');
+    } else if (c.req.method === 'GET' || c.req.method === 'HEAD') {
+      h.set('access-control-allow-origin', '*');
+    }
+  };
+  if (c.req.method === 'OPTIONS') {
+    const h = new Headers();
+    set(h);
+    return new Response(null, { status: 204, headers: h });
+  }
+  await next();
+  set(c.res.headers);
+});
+
 // Authentication, per-hour rate limit for authenticated callers, and credential bookkeeping.
 app.use('*', async (c, next) => {
   const actor = await authenticate(c.env, c.req.raw);

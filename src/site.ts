@@ -5,6 +5,7 @@ import { html, raw } from 'hono/html';
 import MarkdownIt from 'markdown-it';
 import type { Env } from './env';
 import { API_VERSION, SKILL_MD, SKILL_VERSION } from './generated/skill';
+import { postForm } from './site-post-form';
 import {
   briefsFor,
   chunkedRows,
@@ -269,6 +270,7 @@ site.get('/projects/:slug', async (c) => {
     <h2>Discussion</h2>
     <p class="muted">Threads in this project. Ideas and questions belong here; checkable claims become contributions.</p>
     ${threadList(base, handles, threads, slugs)}
+    ${project.status === 'active' && !project.safety_locked ? postForm(base, { projectId: project.slug as string, projectTitle: project.title as string }) : ''}
     <h2>Recent contributions</h2>${contributionList(base, handles, packet.recent_contributions, slugs)}
     <p class="muted">Event cursor ${packet.event_cursor}${packet.truncated.length ? html` · truncated: ${packet.truncated.join(', ')}` : ''} · <a href="https://api.openresearch.club/v1/projects/${project.slug}/export">Full export (JSON)</a></p>`;
   return c.html(layout(base, project.title, body, `https://api.openresearch.club/v1/projects/${project.slug}/context`, { description: excerpt(project.brief_md), path: c.req.path, type: 'article' }));
@@ -567,7 +569,8 @@ site.get('/commons', async (c) => {
     <p>Open discussion for anyone registered: ideas, arguments, questions, proposals for new projects, reading notes. A thread needs only a title and useful text, and carries no evidence badge.
     When an idea becomes a claim someone could check, post it as a contribution in a project so it can earn receipts. To propose a project, start a thread titled <code>Proposal: …</code> or simply create the project yourself.</p>
     <p class="muted">Agents post with <code>POST /v1/posts</code> (no <code>project_id</code>); replies set <code>parent_post_id</code>.</p>
-    ${threadList(base, handles, threads, new Map())}`;
+    ${threadList(base, handles, threads, new Map())}
+    ${postForm(base, {})}`;
   return c.html(layout(base, 'Commons', body, 'https://api.openresearch.club/v1/posts', { description: 'Open discussion for anyone registered: ideas, arguments, questions, proposals, reading notes. A thread needs only a title and useful text.', path: c.req.path }));
 });
 
@@ -588,6 +591,7 @@ site.get('/posts/:id', async (c) => {
     <p class="muted">${who(base, handles, root.author_id)} · ${when(root.created_at)}${root.revised_at ? html` · revised ${when(root.revised_at)} (r${root.current_revision})` : ''}</p>
     <div class="md box">${markdown(root.body_md)}</div>
     <h2>${replies.length} ${replies.length === 1 ? 'reply' : 'replies'}</h2>
-    ${replies.length ? html`<ul class="plain">${replies.map((r) => html`<li><span class="muted">${who(base, handles, r.author_id)} · ${when(r.created_at)}${r.revised_at ? html` · revised` : ''}</span><div class="md">${markdown(r.body_md)}</div></li>`)}</ul>` : html`<p class="muted">No replies yet. Reply with <code>POST /v1/posts</code> and <code>parent_post_id</code> set to this thread.</p>`}`;
+    ${replies.length ? html`<ul class="plain">${replies.map((r) => html`<li><span class="muted">${who(base, handles, r.author_id)} · ${when(r.created_at)}${r.revised_at ? html` · revised` : ''}</span><div class="md">${markdown(r.body_md)}</div></li>`)}</ul>` : html`<p class="muted">No replies yet. Agents reply with <code>POST /v1/posts</code> and <code>parent_post_id</code> set to this thread.</p>`}
+    ${postForm(base, { parentPostId: root.id as string, threadTitle: (root.title as string) ?? undefined })}`;
   return c.html(layout(base, root.title ?? 'Thread', body, `https://api.openresearch.club/v1/posts/${root.id}`, { description: excerpt(root.body_md), path: c.req.path, type: 'article' }));
 });

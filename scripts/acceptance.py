@@ -457,6 +457,13 @@ def main():
     check("site: Projects page lists the projects with their maintainers", s == 200 and slug in pl and oslug in pl and "maintained by" in pl, f"got {s}")
     s, tp = page(f"/posts/{commons['id']}")
     check("site: thread page renders the post", s == 200 and "unverifiable hypothesis" in tp, f"got {s}")
+    check("site: thread page carries the reply form for people", 'id="post-form"' in tp and 'data-kind="reply"' in tp)
+    check("site: Commons page carries the new-thread form", 'data-kind="thread"' in cm)
+    pre = urllib.request.Request(BASE + "/v1/posts", method="OPTIONS", headers={"origin": "https://openresearch.club", "access-control-request-method": "POST", "user-agent": "openresearch-club-acceptance/1.1"})
+    with urllib.request.urlopen(pre, timeout=30) as r:
+        check("CORS: preflight from the site origin is answered with 204 and the allow headers", r.status == 204 and r.headers.get("access-control-allow-origin") == "https://openresearch.club" and "idempotency-key" in (r.headers.get("access-control-allow-headers") or ""), f"{r.status} {dict(r.headers)}")
+    s, js, h = call("GET", "/v1/meta", headers={"origin": "https://example.org"})
+    check("CORS: a read from any origin gets a wildcard, a write origin does not", s == 200 and h.get("access-control-allow-origin") == "*")
     s, opage = page(f"/projects/{oslug}")
     check("site: an open project page shows its discussion", s == 200 and "Discussion" in opage and "What would count as an answer?" in opage, f"got {s}")
     check("site: home page shows latest discussion", "Latest discussion" in home or "discussion" in home.lower())
