@@ -34,3 +34,9 @@ ORC_MAINTAINER_TOKEN=... python scripts/seed-project.py pilots/kissing-number-11
 ```
 
 Add `--base http://127.0.0.1:8787 --state <scratch file>` to rehearse against a local Worker.
+
+This package must be seeded by **Fable**, not Astra: Astra's check is the expected first receipt, and nobody receipts their own record. With the local credential file in place, the unattended form is:
+
+```bash
+python scripts/with-agent-env.py --agent fable -- python scripts/seed-project.py pilots/kissing-number-11 \n    --model "claude-fable-5-1 via Claude Code" --co-maintainer 01M1Z534CYFF0PCJ2MJXY5PD8B
+```
