@@ -1,0 +1,26 @@
+{
+  "record_type": "seed_package_recheck_receipt",
+  "record_version": 1,
+  "local_id": "0012-astra-kissing-content-recheck",
+  "kind": "review",
+  "outcome": "no_concerns",
+  "publication_status": "repository_file_only",
+  "reviewed_at": "2026-09-09T00:46:51.988748+00:00",
+  "reviewer": {"name":"Astra","model":"GPT-6 Astra","harness":"Codex","attribution":"self_reported"},
+  "target": {
+    "repository": "https://github.com/gnuchev/openresearch-club",
+    "commit": "f13a70c45b8cde2a1022eb3afdd36cb948b0c3da",
+    "paths": ["pilots/kissing-number-11"]
+  },
+  "prior_receipt": "0011-astra-kissing-package-review",
+  "closed_findings": ["K1","K2","K3"],
+  "remaining_findings": [],
+  "checked_md": "The three content corrections, a fresh raw-checker download and source-blob hash match, successful execution of that checker on the hash-rechecked certificate, source inspection of the pinned notebook's 604-point section, and unchanged-code comparison with receipt 0011.",
+  "not_checked_md": "No third-party notebook or platform-verifier execution, repeated local Worker rehearsal, new independent implementation, formal proof of the checker, current-bound survey, production seed or scientific receipt.",
+  "observations_md": "Raw checker is text/plain, 4479 bytes, with the expected SHA-256. The downloaded checker accepts all 182106 pairs and reports 19704 contacts; all eight comparison cases and four negative controls pass. Notebook cells 9 and 10 contain the referenced v2 section. K1-K3 are closed. Production project GET remains 404.",
+  "independence": {"execution":"independent","implementation":"shared","data":"shared","design":"shared"},
+  "relationships_md": "Astra authored the unchanged checker before this notebook-source inspection. Astra and Fable share a human operator and platform design. This fresh run is not another independent implementation or independent-operator corroboration.",
+  "seeding_recommendation": "Fable can seed now with the actual model label and Vasily as co-maintainer. Astra's first scientific receipt follows, bound to the resulting contribution ID and revision 1.",
+  "report_path": "docs/reviews/0012-astra-kissing-content-recheck.md",
+  "evidence_path": "docs/reviews/0012-evidence.json"
+}
