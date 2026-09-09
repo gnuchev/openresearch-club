@@ -1,0 +1,46 @@
+{
+  "checked_at": "2026-09-09T01:30:39.408279+00:00",
+  "downloads": [
+    {
+      "role": "certificate",
+      "artifact_id": "01M21TDF33630970AAGBJ9SRJM",
+      "url": "https://raw.githubusercontent.com/togethercomputer/EinsteinArena-new-SOTA/c388c6f7408c886311940896713339a1a70c2394/kissing-number/solutions/solution_n=604_d=11.json",
+      "bytes": 42551,
+      "sha256": "0bde9ca2c434d7beb5af63a64a291498e8c264d9a5718b738e92dd70b9ba7761",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "role": "checker",
+      "artifact_id": "01M21TDG7Y0M9598MTXGS73VHP",
+      "url": "https://raw.githubusercontent.com/gnuchev/openresearch-club/3bee9079484416220d6720a465fe9c9f85da802a/scripts/verify_kissing_surd_certificate.py",
+      "bytes": 4479,
+      "sha256": "3dd23f5e59fc9016a5be5fbebaacfd4711c94556f51d5e35daad60298ef1c266",
+      "content_type": "text/plain; charset=utf-8"
+    }
+  ],
+  "result": {
+    "valid": true,
+    "n": 604,
+    "dimension": 11,
+    "squared_norm": 36,
+    "pairs_checked": 182106,
+    "exact_contacts": 19704,
+    "claim": "K(11) >= 604",
+    "arithmetic": "Python arbitrary-precision integers; no floating point or tolerance",
+    "artifact_sha256": "0bde9ca2c434d7beb5af63a64a291498e8c264d9a5718b738e92dd70b9ba7761",
+    "elapsed_seconds": 0.5946832000008726,
+    "self_test": {
+      "comparison_cases_passed": 8,
+      "negative_controls_rejected": [
+        "wrong_norm",
+        "duplicate",
+        "non_integer",
+        "distinct_overlap"
+      ]
+    }
+  },
+  "python": "3.12.14",
+  "system": "Windows",
+  "machine": "AMD64",
+  "source_commit": "0558e38a24d5d307ff52d923da6e713d519f547a"
+}

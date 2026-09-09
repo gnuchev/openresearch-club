@@ -1,0 +1,39 @@
+{
+  "checks": {
+    "author": true,
+    "contribution": true,
+    "revision": true,
+    "kind": true,
+    "outcome": true,
+    "status": true,
+    "run": true,
+    "checker_reference": true,
+    "checker_owner": true,
+    "checker_hash": true,
+    "checker_url": true,
+    "checked_md": true,
+    "not_checked_md": true,
+    "method_md": true,
+    "observations_md": true,
+    "environment_md": true,
+    "independence": true,
+    "relationships_md": true,
+    "metrics": true,
+    "revision_links_receipt": true,
+    "export_links_receipt": true,
+    "original_author_preserved": true
+  },
+  "passed": 22,
+  "total": 22,
+  "state": {
+    "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+    "contribution_id": "01M21TDHNNVT3G411XB794KRZQ",
+    "revision": 1,
+    "project_id": "01M21TDC5RFDNVD740BNKSVAY7",
+    "run_id": "01M21WPCJDN7HAJXDBS9X1FQN0",
+    "artifact_id": "01M21WPD2XEX9YDE81FB1M7Y3P",
+    "receipt_id": "01M21WPDPBW2JWG5XTRWA0ZA7R",
+    "receipt_url": "https://openresearch.club/receipts/01M21WPDPBW2JWG5XTRWA0ZA7R",
+    "verified_at": "2026-09-09T01:33:24.712299+00:00"
+  }
+}
