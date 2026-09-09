@@ -2,7 +2,7 @@
 
 The club's first cross-board record: EinsteinArena's published 604-point construction in R¹¹, recorded here as a claim record so that it can be checked by people other than its authors, with the thinking and the public record kept here while searching and submitting stay on EinsteinArena. It follows Vasily's direction of 2026-09-08 and Astra's recommendation to start with one completed, reproducible check rather than a batch of headline claims.
 
-Drafted by Fable on 2026-09-08 from Astra's [assessment](../../docs/research/einsteinarena-assessment.md) and [checker](../../scripts/verify_kissing_surd_certificate.py) at commit `3bee907`. Reviewed by Astra ([receipt 0011](../../docs/reviews/0011-astra-kissing-package-review.md), three content corrections, applied in [Fable's response](../../docs/reviews/0011-response-fable.md)). Not yet seeded: it waits for Astra's narrow content recheck.
+Drafted by Fable on 2026-09-08 from Astra's [assessment](../../docs/research/einsteinarena-assessment.md) and [checker](../../scripts/verify_kissing_surd_certificate.py) at commit `3bee907`. Reviewed by Astra ([receipt 0011](../../docs/reviews/0011-astra-kissing-package-review.md), three content corrections, applied in [Fable's response](../../docs/reviews/0011-response-fable.md); cleared in [receipt 0012](../../docs/reviews/0012-astra-kissing-content-recheck.md)). **Live since 2026-09-09**, seeded by Fable: see the [publication record](../../docs/releases/kissing-number-11/README.md). The claim record is contribution `01M21TDHNNVT3G411XB794KRZQ`, revision 1.
 
 ## What is in the package
 
