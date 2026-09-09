@@ -4,7 +4,7 @@ import { LIMITS } from '../env';
 import openapi from '../generated/openapi.json';
 import { API_VERSION, SKILL_MD, SKILL_VERSION } from '../generated/skill';
 import { isGlobalMaintainer, requireActor } from '../lib/auth';
-import { body, loadProject, pageParams, scrubStmts } from '../lib/common';
+import { OBJECTION_PROJECT_SQL, body, loadProject, pageParams, scrubStmts } from '../lib/common';
 import { batch, constraintMessage, eventStmt, many, one, stmt } from '../lib/db';
 import { badRequest, conflict, forbidden, notFound } from '../lib/errors';
 import { nowIso, today, ulid } from '../lib/ids';
@@ -75,28 +75,37 @@ misc.get('/v1/events', async (c) => {
   return c.json({ items: items.map(S.eventOut), cursor, has_more: rows.length > limit });
 });
 
-misc.get('/v1/search', async (c) => {
-  const env = c.env;
-  const q = (c.req.query('q') ?? '').trim();
-  if (!q) throw badRequest('q is required');
+/** One search for the API and the site: substring match over titles and texts of public records. */
+export async function searchRecords(env: AppEnv['Bindings'], q: string, opts: { type?: string; projectId?: string | null; limit: number }) {
   const like = `%${q.replace(/[%_]/g, ' ').slice(0, 200)}%`;
-  const { limit } = pageParams(c);
-  const type = c.req.query('type');
-  const projectKey = c.req.query('project');
-  const projectId = projectKey ? (await loadProject(env, projectKey)).id : null;
+  const projectId = opts.projectId ?? null;
   const scope = (col: string) => (projectId ? ` AND ${col} = '${projectId}'` : '');
   const queries: Array<[string, string, unknown[]]> = [
     ['project', `SELECT id, id AS project_id, title, substr(brief_md, 1, 200) AS snippet FROM projects WHERE (title LIKE ? OR brief_md LIKE ?)${scope('id')}`, [like, like]],
     ['task', `SELECT id, project_id, title, substr(body_md, 1, 200) AS snippet FROM tasks WHERE (title LIKE ? OR body_md LIKE ?)${scope('project_id')}`, [like, like]],
     ['post', `SELECT id, project_id, COALESCE(title, '') AS title, substr(body_md, 1, 200) AS snippet FROM posts WHERE status = 'visible' AND (title LIKE ? OR body_md LIKE ?)${scope('project_id')}`, [like, like]],
     ['contribution', `SELECT c.id, c.project_id, r.title, r.claim AS snippet FROM contributions c JOIN contribution_revisions r ON r.contribution_id = c.id AND r.revision = c.current_revision WHERE c.status NOT IN ('hidden','redacted') AND (r.title LIKE ? OR r.claim LIKE ?)${scope('c.project_id')}`, [like, like]],
+    ['receipt', `SELECT rc.id, c.project_id, (rc.kind || ': ' || rc.outcome) AS title, substr(rc.checked_md, 1, 200) AS snippet FROM receipts rc JOIN contributions c ON c.id = rc.contribution_id WHERE rc.status NOT IN ('hidden','redacted') AND c.status NOT IN ('hidden','redacted') AND (rc.checked_md LIKE ? OR rc.observations_md LIKE ? OR rc.method_md LIKE ?)${scope('c.project_id')}`, [like, like, like]],
+    ['objection', `SELECT o.id, (${OBJECTION_PROJECT_SQL}) AS project_id, (o.kind || ' objection') AS title, substr(o.body_md, 1, 200) AS snippet FROM objections o WHERE o.status <> 'hidden' AND o.body_md LIKE ?`, [like]],
   ];
-  const items: unknown[] = [];
+  const items: { type: string; id: string; project_id: string | null; title: string; snippet: string }[] = [];
   for (const [t, sql, params] of queries) {
-    if (type && type !== t) continue;
-    for (const r of await many(env, `${sql} ORDER BY id DESC LIMIT ?`, ...params, limit)) items.push({ type: t, id: r.id, project_id: r.project_id ?? null, title: r.title, snippet: r.snippet });
+    if (opts.type && opts.type !== t) continue;
+    for (const r of await many(env, `${sql} ORDER BY 1 DESC LIMIT ?`, ...params, opts.limit)) items.push({ type: t, id: r.id as string, project_id: (r.project_id as string) ?? null, title: String(r.title ?? ''), snippet: String(r.snippet ?? '') });
   }
-  return c.json({ items: items.slice(0, limit), next_cursor: null });
+  return items.slice(0, opts.limit);
+}
+
+
+misc.get('/v1/search', async (c) => {
+  const env = c.env;
+  const q = (c.req.query('q') ?? '').trim();
+  if (!q) throw badRequest('q is required');
+  const { limit } = pageParams(c);
+  const projectKey = c.req.query('project');
+  const projectId = projectKey ? (await loadProject(env, projectKey)).id : null;
+  const items = await searchRecords(env, q, { type: c.req.query('type'), projectId, limit });
+  return c.json({ items, next_cursor: null });
 });
 
 misc.get('/v1/snapshots/latest', async (c) => {

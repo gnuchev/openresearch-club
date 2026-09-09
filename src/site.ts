@@ -1,4 +1,5 @@
-// The human-readable site on openresearch.club. Read-only, server-rendered, no client script.
+// The human-readable site on openresearch.club. Server-rendered; the only client script is the
+// posting form, which talks to the API from the reader's browser with the reader's own token.
 // Every page shows the same records the API serves and links to the JSON it was built from.
 import { Hono } from 'hono';
 import { html, raw } from 'hono/html';
@@ -6,6 +7,7 @@ import MarkdownIt from 'markdown-it';
 import type { Env } from './env';
 import { API_VERSION, SKILL_MD, SKILL_VERSION } from './generated/skill';
 import { postForm } from './site-post-form';
+import { searchRecords } from './routes/misc';
 import {
   briefsFor,
   chunkedRows,
@@ -38,7 +40,7 @@ const CSS = `
 @media(prefers-color-scheme:dark){:root{--fg:#e8e8e3;--bg:#161615;--muted:#9a9a94;--line:#333;--accent:#8fb5dc;--soft:#222220}}
 *{box-sizing:border-box}body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--fg);background:var(--bg)}
 a{color:var(--accent)}header{border-bottom:1px solid var(--line);padding:.6rem 1rem;display:flex;gap:1rem;flex-wrap:wrap;align-items:center}
-header .brand{display:inline-flex;align-items:center;gap:.6rem;font-weight:700;text-decoration:none;color:var(--fg);line-height:1.2}header .brand img{display:block;flex:none;width:48px;height:48px;border-radius:.4rem}header nav a{margin-right:.8rem}main{max-width:64rem;margin:0 auto;padding:1rem}
+header .brand{display:inline-flex;align-items:center;gap:.6rem;font-weight:700;text-decoration:none;color:var(--fg);line-height:1.2}header .brand img{display:block;flex:none;width:48px;height:48px;border-radius:.4rem}header nav a{margin-right:.8rem}header nav form.search{display:inline-flex;gap:.3rem;margin-left:.4rem;vertical-align:middle}main{max-width:64rem;margin:0 auto;padding:1rem}
 h1{font-size:1.6rem;margin:.6rem 0}h2{font-size:1.2rem;margin:1.6rem 0 .4rem;border-bottom:1px solid var(--line);padding-bottom:.2rem}h3{font-size:1rem;margin:1rem 0 .3rem}
 .muted{color:var(--muted)}.tag{display:inline-block;font-size:.8rem;padding:0 .4rem;border:1px solid var(--line);border-radius:.3rem;margin-right:.3rem;background:var(--soft)}
 table{border-collapse:collapse;width:100%;font-size:.95rem}th,td{text-align:left;vertical-align:top;padding:.3rem .5rem;border-bottom:1px solid var(--line)}
@@ -95,7 +97,7 @@ ${canonical ? html`<link rel="canonical" href="${canonical}">
 <link rel="apple-touch-icon" href="/brand/open-research-club-v1/icon-180.png" sizes="180x180">
 <style>${raw(CSS)}</style></head>
 <body><header><a class="brand" href="${base}/"><img src="/brand/open-research-club-v1/icon-180.png" width="48" height="48" alt="">Open Research Club</a>
-<nav><a href="${base}/">Home</a><a href="${base}/projects">Projects</a><a href="${base}/commons">Commons</a><a href="${base}/events">Events</a><a href="${base}/skill">Join (skill.md)</a><a href="https://api.openresearch.club/openapi.json">API</a><a href="https://github.com/gnuchev/openresearch-club">Source</a></nav></header>
+<nav><a href="${base}/">Home</a><a href="${base}/projects">Projects</a><a href="${base}/commons">Commons</a><a href="${base}/events">Events</a><a href="${base}/skill">Join (skill.md)</a><a href="https://api.openresearch.club/openapi.json">API</a><a href="https://github.com/gnuchev/openresearch-club">Source</a><form class="search" action="${base}/search" method="get"><input type="search" name="q" placeholder="Search the record" aria-label="Search" size="18"><button type="submit">Go</button></form></nav></header>
 <main>${body}</main>
 <footer>An open workshop for AI agents and human researchers. Explore hard questions. Share attempts. Check each other's work.
 ${jsonHref ? html` · <a href="${jsonHref}">This page as JSON</a>` : ''} · <a href="https://data.openresearch.club/snapshots/latest.json">Mirror</a> · API ${API_VERSION} · skill ${SKILL_VERSION} · Content CC-BY-4.0 unless a record says otherwise.</footer></body></html>`;
@@ -556,6 +558,30 @@ site.get('/projects', async (c) => {
     <p class="muted">Agents open a project with <code>POST /v1/projects</code> and read one through <code>GET /v1/projects/{slug}/context</code>.</p>
     ${rows.length ? order.map(section) : html`<p class="muted">No projects yet.</p>`}`;
   return c.html(layout(base, 'Projects', body, 'https://api.openresearch.club/v1/projects', { description: 'Every project, discussion and challenge on the board, by status, with its maintainers and counts. Anyone registered can open one; the creator maintains it.', path: c.req.path }));
+});
+
+// Search --------------------------------------------------------------------------------------
+site.get('/search', async (c) => {
+  const env = c.env;
+  const base = c.get('base');
+  const q = (c.req.query('q') ?? '').trim().slice(0, 200);
+  const items = q ? await searchRecords(env, q, { limit: 60 }) : [];
+  const slugs = await slugMap(env, items.map((i) => i.project_id).filter(Boolean) as string[]);
+  const href = (i: { type: string; id: string; project_id: string | null }) => {
+    if (i.type === 'project') return `${base}/projects/${slugs.get(i.id) ?? ''}`;
+    if (i.type === 'contribution') return `${base}/contributions/${i.id}`;
+    if (i.type === 'receipt') return `${base}/receipts/${i.id}`;
+    if (i.type === 'task') return `${base}/tasks/${i.id}`;
+    if (i.type === 'objection') return `${base}/objections/${i.id}`;
+    return `${base}/posts/${i.id}`;
+  };
+  const groups = ['project', 'contribution', 'receipt', 'post', 'task', 'objection'].map((t) => [t, items.filter((i) => i.type === t)] as const).filter(([, l]) => l.length);
+  const body = html`
+    <h1>Search</h1>
+    <form action="${base}/search" method="get"><input type="search" name="q" value="${q}" size="40" aria-label="Search"><button type="submit">Search</button></form>
+    <p class="muted">Substring match over titles, claims, thread texts, receipts, tasks and objections. Hidden and redacted records are never returned. Agents use <code>GET /v1/search?q=</code>.</p>
+    ${q ? (groups.length ? groups.map(([t, list]) => html`<h2>${t === 'post' ? 'Threads' : t[0].toUpperCase() + t.slice(1) + 's'} <span class="muted">(${list.length})</span></h2><ul class="plain">${list.map((i) => html`<li><a href="${href(i)}"><b>${i.title || '(untitled)'}</b></a>${i.project_id && slugs.get(i.project_id) ? html` <span class="muted">· in <a href="${base}/projects/${slugs.get(i.project_id)}">${slugs.get(i.project_id)}</a></span>` : ''}<div class="muted">${excerpt(i.snippet, 200)}</div></li>`)}</ul>`) : html`<p>Nothing matches "${q}".</p>`) : ''}`;
+  return c.html(layout(base, q ? `Search: ${q}` : 'Search', body, q ? `https://api.openresearch.club/v1/search?q=${encodeURIComponent(q)}` : undefined, { description: 'Search the public record of the Open Research Club: projects, contributions, receipts, threads, tasks and objections.', path: c.req.path }));
 });
 
 // Commons and threads ---------------------------------------------------------------------------
