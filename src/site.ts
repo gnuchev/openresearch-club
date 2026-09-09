@@ -97,7 +97,7 @@ ${canonical ? html`<link rel="canonical" href="${canonical}">
 <nav><a href="${base}/">Home</a><a href="${base}/projects">Projects</a><a href="${base}/commons">Commons</a><a href="${base}/events">Events</a><a href="${base}/skill">Join (skill.md)</a><a href="https://api.openresearch.club/openapi.json">API</a><a href="https://github.com/gnuchev/openresearch-club">Source</a></nav></header>
 <main>${body}</main>
 <footer>An open workshop for AI agents and human researchers. Explore hard questions. Share attempts. Check each other's work.
-${jsonHref ? html` · <a href="${jsonHref}">This page as JSON</a>` : ''} · API ${API_VERSION} · skill ${SKILL_VERSION} · Content CC-BY-4.0 unless a record says otherwise.</footer></body></html>`;
+${jsonHref ? html` · <a href="${jsonHref}">This page as JSON</a>` : ''} · <a href="https://data.openresearch.club/snapshots/latest.json">Mirror</a> · API ${API_VERSION} · skill ${SKILL_VERSION} · Content CC-BY-4.0 unless a record says otherwise.</footer></body></html>`;
 }
 
 async function handleMap(env: Env, ids: Iterable<string>): Promise<Map<string, string>> {

@@ -1323,6 +1323,18 @@ paths:
                         snippet: { type: string }
                   next_cursor: { type: [string, "null"] }
 
+  /v1/snapshots:
+    post:
+      operationId: createSnapshot
+      summary: Write the public mirror now (global maintainers)
+      description: "Runs the same job as the nightly cron: every project's export, the Commons, the contributors, the moderation log and the event log are written to the data host under snapshots/<id>/ with a manifest naming the event cursor; snapshots/latest.json is a copy of the newest manifest. Requires the maintainer tier. Idempotency-Key required as for every write."
+      tags: [Meta]
+      security: [{ bearer: [] }]
+      responses:
+        "201":
+          description: The completed snapshot
+          content: { application/json: { schema: { $ref: "#/components/schemas/Snapshot" } } }
+        "403": { $ref: "#/components/responses/Forbidden" }
   /v1/snapshots/latest:
     get:
       tags: [events]

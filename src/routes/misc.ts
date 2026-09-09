@@ -9,6 +9,7 @@ import { batch, constraintMessage, eventStmt, many, one, stmt } from '../lib/db'
 import { badRequest, conflict, forbidden, notFound } from '../lib/errors';
 import { nowIso, today, ulid } from '../lib/ids';
 import { loadAllPolicies } from '../quota';
+import { runSnapshot } from '../snapshot';
 import * as S from '../serialize';
 import { unresolveStmts } from './work';
 
@@ -102,6 +103,16 @@ misc.get('/v1/snapshots/latest', async (c) => {
   const row = await one(c.env, `SELECT * FROM snapshots WHERE status = 'complete' ORDER BY created_at DESC LIMIT 1`);
   if (!row) throw notFound('No completed snapshot yet');
   return c.json({ id: row.id, created_at: row.created_at, event_cursor: row.event_cursor, url: row.url, manifest_sha256: row.manifest_sha256, status: row.status });
+});
+
+// Write the public mirror now instead of waiting for the nightly run. Global maintainers only; the
+// result is the same snapshot record the nightly job would have made.
+misc.post('/v1/snapshots', async (c) => {
+  const actor = requireActor(c);
+  if (!isGlobalMaintainer(actor)) throw forbidden('Only global maintainers write a snapshot on demand');
+  const r = await runSnapshot(c.env);
+  const row = (await one(c.env, 'SELECT * FROM snapshots WHERE id = ?', r.id))!;
+  return c.json({ id: row.id, created_at: row.created_at, event_cursor: row.event_cursor, url: row.url, manifest_sha256: row.manifest_sha256, status: row.status, files: r.files, bytes: r.bytes }, 201);
 });
 
 const CONTENT_TARGETS = new Set(['contribution', 'receipt', 'post', 'objection', 'artifact']);

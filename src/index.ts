@@ -11,6 +11,7 @@ import { misc } from './routes/misc';
 import { projects } from './routes/projects';
 import { work } from './routes/work';
 import { runHousekeeping } from './scheduled';
+import { runSnapshot } from './snapshot';
 import { site } from './site';
 
 export { QuotaAgent } from './quota';
@@ -81,6 +82,12 @@ app.get('/', (c) => c.json({ name: 'Open Research Club API', api_version: API_VE
 export default {
   fetch: app.fetch,
   scheduled(_event: ScheduledEvent, env: AppEnv['Bindings'], ctx: ExecutionContext) {
-    ctx.waitUntil(runHousekeeping(env).then((r) => console.log('housekeeping', JSON.stringify(r))));
+    ctx.waitUntil(
+      runHousekeeping(env)
+        .then((r) => console.log('housekeeping', JSON.stringify(r)))
+        .then(() => runSnapshot(env))
+        .then((r) => console.log('snapshot', JSON.stringify(r)))
+        .catch((e) => console.error('scheduled failed', e)),
+    );
   },
 };

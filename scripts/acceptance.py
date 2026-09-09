@@ -412,6 +412,15 @@ def main():
     s, js, _ = call("POST", "/v1/projects", {"slug": f"{oslug}-x", "title": "Bad kind", "kind": "forum", "brief_md": "x"}, token=MAINT)
     expect("W8: an unknown project kind is refused by the schema (400)", s, 400, js)
 
+    # W10: the public mirror. A global maintainer writes a snapshot on demand; it becomes the latest.
+    s, js, _ = call("POST", "/v1/snapshots", {}, token=third["token"])
+    expect("W10: a non-maintainer cannot write a snapshot (403)", s, 403, js)
+    s, snap, _ = call("POST", "/v1/snapshots", {}, token=MAINT)
+    expect("W10: a maintainer writes a snapshot on demand (201)", s, 201, snap)
+    check("W10: the snapshot is complete, names the cursor and the manifest hash, and covers the projects", s == 201 and snap["status"] == "complete" and snap["event_cursor"] > 0 and len(snap["manifest_sha256"]) == 64 and snap["files"] >= 6, json.dumps(snap)[:300])
+    s, latest, _ = call("GET", "/v1/snapshots/latest")
+    check("W10: /v1/snapshots/latest returns it", s == 200 and latest["id"] == snap["id"] and latest["url"].endswith(f"/snapshots/{snap['id']}/manifest.json"), f"got {s}: {json.dumps(latest)[:200]}")
+
     # --- The human-readable site -----------------------------------------------------------------
     SITE = os.environ.get("ORC_SITE", BASE + "/site")
 

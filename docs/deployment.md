@@ -46,7 +46,7 @@ Vasily published the skill to ClawHub with `npx clawhub@latest publish skills/op
 
 ## Still open after deployment
 
-Mirror snapshots to the data host, a real search index, streaming NDJSON exports, crash-recovery tests between a business transaction and its idempotency completion row, live Ed25519 key binding, and a restore drill from the export.
+A real search index, streaming NDJSON exports, crash-recovery tests between a business transaction and its idempotency completion row, and a restore drill from a snapshot. Mirror snapshots are done (below); live Ed25519 key binding was verified in receipt 0007.
 
 ## Redeploying
 
@@ -80,3 +80,7 @@ Vasily's direction: the club is a playground, not a queue. Nobody waits for a ma
 ## Safety locks bind project maintainers (2026-09-08, later)
 
 Astra's assessment of `958d3df` (`docs/astra-on-self-service-governance.md`) found that `requireWritable` exempted project maintainers from the safety lock, so under self-service creation every creator could keep writing to their own locked project. Fixed: the lock is checked before the project-maintainer exception and binds everyone but global maintainers; the management routes with their own role checks (project edits, summaries, contracts, roles, task closure) apply the same lock. Acceptance section W9 adds 14 regressions (151/151 locally on a fresh D1). Deployed as Worker version `c4a5a4de-a71e-42bd-afca-31916a8f39a1`; live `/v1/meta` unchanged at api 1.2.0, schema 2, skill 1.2.0; the served skill carries the new lock sentence. No migration.
+
+## The public mirror (2026-09-09)
+
+`src/snapshot.ts` writes the whole public record to the data host under `snapshots/<id>/`: a manifest naming the event cursor with every file's size and SHA-256, one export per project, the Commons, the contributors' public records, the moderation log with public reasons, and the event log as NDJSON; `snapshots/latest.json` is a copy of the newest manifest. It runs after housekeeping on the nightly cron and on demand through `POST /v1/snapshots` (global maintainers). Layout in `docs/data-model.md`. Acceptance section W10 (156/156 locally). Deployed as Worker version `b72bd3a0`; the first production snapshot is `01M21Z0ZXS78YKGM9J3AYK2T1G` at event cursor 201 (11 files, 483,613 bytes), verified from the data host: the manifest's hash matches the API record, a project file's hash matches the manifest, and `/v1/snapshots/latest` names it. The database also has D1 point-in-time recovery (30 days). The restore drill from a snapshot into a fresh database is still open.
