@@ -1,0 +1,170 @@
+{
+  "records": {
+    "artifact:ns-theorem-1-1-0": {
+      "id": "01M21QK5PE6Q14BADTYX6NNRS8",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "e16c8f72faafcfe1df5f9fa60afe47660642c27345e2146b307ee8ced34924aa",
+      "verified_sha256": "e16c8f72faafcfe1df5f9fa60afe47660642c27345e2146b307ee8ced34924aa"
+    },
+    "artifact:ns-theorem-1-1-1": {
+      "id": "01M21QK6V4F0QHGQXS6M72XT0W",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "78d9c3a8106d6dc14cebeef530bfdfd65266c9275201bb82efa73e6649a9b36d",
+      "verified_sha256": "78d9c3a8106d6dc14cebeef530bfdfd65266c9275201bb82efa73e6649a9b36d"
+    },
+    "contribution:ns-theorem-1-1": {
+      "id": "01M21QK8FHASGDGQ61HJE3QJKG",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "3c2453cde686c599bdb36f0b70bc990dad37000ae44c75fe5cc2a4b3d51fb285",
+      "verified_sha256": "3c2453cde686c599bdb36f0b70bc990dad37000ae44c75fe5cc2a4b3d51fb285",
+      "revision": 1
+    },
+    "artifact:euler-unforced-0": {
+      "id": "01M21QKB4T665QRGK7VSRT2HKS",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "0eef74f16d1ee1e0f6caae500f46fa81f457f6f4a32df4c6eb82b25633269d2e",
+      "verified_sha256": "0eef74f16d1ee1e0f6caae500f46fa81f457f6f4a32df4c6eb82b25633269d2e"
+    },
+    "artifact:euler-unforced-1": {
+      "id": "01M21QKBZMS8XSA78F1896FXRE",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "f87e7fa2c578c46588999eaace65bc928dc8fb89239b6602d569808a595bddd6",
+      "verified_sha256": "f87e7fa2c578c46588999eaace65bc928dc8fb89239b6602d569808a595bddd6"
+    },
+    "contribution:euler-unforced": {
+      "id": "01M21QKE3NZBQT6EKAR0TMGCDX",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "639c921e28cfb6999c64fe64ab1b9171773d7dc2c3a20f1d69adf87f38ef5afb",
+      "verified_sha256": "639c921e28cfb6999c64fe64ab1b9171773d7dc2c3a20f1d69adf87f38ef5afb",
+      "revision": 1
+    },
+    "task:ns-build": {
+      "id": "01M21QKJFJ4XJ90J7JZTG66AFG",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "e208977492a1041c1b7da70164f783b948f6e29c459ddc819e1c40d7733e67c6",
+      "verified_sha256": "e208977492a1041c1b7da70164f783b948f6e29c459ddc819e1c40d7733e67c6"
+    },
+    "task:ns-comparator": {
+      "id": "01M21QKKFD3TVG664RTBJJWS91",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "21d795f91d687e935a7590853af6870d0597df9436e71f88f9c54aa0391527c8",
+      "verified_sha256": "21d795f91d687e935a7590853af6870d0597df9436e71f88f9c54aa0391527c8"
+    },
+    "task:ns-statement": {
+      "id": "01M21QKMFFE2R2W9N56GQ9CF0J",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "cdc3ba61fe587c14734dc36cdc55730e8c6f6a2be1c2c9fd97b6a1ff3038ec51",
+      "verified_sha256": "cdc3ba61fe587c14734dc36cdc55730e8c6f6a2be1c2c9fd97b6a1ff3038ec51"
+    },
+    "task:ns-read-3": {
+      "id": "01M21QKNX64GT0FXZKXG2S3TS0",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "77e7e7057311975e2942cff7dfd1b01008d55cc8e835932a1bfe892c8b297eb7",
+      "verified_sha256": "77e7e7057311975e2942cff7dfd1b01008d55cc8e835932a1bfe892c8b297eb7"
+    },
+    "task:ns-read-4-5": {
+      "id": "01M21QKPTWJCPFJ2G5W5SX26DE",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "e491fc708a12185fc2f05bdd0f2c8def965d191da586220cd6103f811160a485",
+      "verified_sha256": "e491fc708a12185fc2f05bdd0f2c8def965d191da586220cd6103f811160a485"
+    },
+    "task:ns-read-6-7": {
+      "id": "01M21QKQQE7HCS01CPS6DN6K64",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "c4e5460281889aea1418b162dc9d59dfbd2920b42d8a7805f068488c5f1376ea",
+      "verified_sha256": "c4e5460281889aea1418b162dc9d59dfbd2920b42d8a7805f068488c5f1376ea"
+    },
+    "task:ns-read-8-10": {
+      "id": "01M21QKRK93Y7TV26S2345PE1B",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "11392e12408b7d868b8cdb055cffcc554e37c217e378c88c8b0eae44c5287552",
+      "verified_sha256": "11392e12408b7d868b8cdb055cffcc554e37c217e378c88c8b0eae44c5287552"
+    },
+    "task:ns-read-appendices": {
+      "id": "01M21QKS42A1JSDTPV8BWCXTTK",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "a481a73113419b047c24e8d854306dff2d30bd2e0ac3364230ad6113563caa61",
+      "verified_sha256": "a481a73113419b047c24e8d854306dff2d30bd2e0ac3364230ad6113563caa61"
+    },
+    "task:ns-compatibility": {
+      "id": "01M21QKSRTA387ZWRES722RNF8",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "0290a765d286f86cc5a04268ace115ca5a1fce5694d8cc71894b8105b50ebe76",
+      "verified_sha256": "0290a765d286f86cc5a04268ace115ca5a1fce5694d8cc71894b8105b50ebe76"
+    },
+    "task:ns-mechanism": {
+      "id": "01M21QKTP0KXQYYZV6AY8SW9QE",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "f8abf5d3714551471e53e478cd9ac3fe469031e2720c7cb05588245f3df6a4b7",
+      "verified_sha256": "f8abf5d3714551471e53e478cd9ac3fe469031e2720c7cb05588245f3df6a4b7"
+    },
+    "task:euler-build": {
+      "id": "01M21QKVPXYFRNM0MWRD421DQ2",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "b9ad09c254ba5cb812cb9af02e705641571f68d0fea9ad687827764049e2a3a2",
+      "verified_sha256": "b9ad09c254ba5cb812cb9af02e705641571f68d0fea9ad687827764049e2a3a2"
+    },
+    "task:euler-statement": {
+      "id": "01M21QKWMD3FAE099Q7ECT6J9N",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "46f2405e1023ae3745f0dd5a3d2cdfb48ff59e383099b4e4b7ae93315f84b3bc",
+      "verified_sha256": "46f2405e1023ae3745f0dd5a3d2cdfb48ff59e383099b4e4b7ae93315f84b3bc"
+    },
+    "task:euler-read": {
+      "id": "01M21QKXJKEYEXPG27ABGAVYF4",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "d2f597d4c0e8a7a6e8ff3f4bf1f2296010da261ebbdf0191960d960000600266",
+      "verified_sha256": "d2f597d4c0e8a7a6e8ff3f4bf1f2296010da261ebbdf0191960d960000600266"
+    },
+    "task:public-record": {
+      "id": "01M21QKYKWFJFC6V4GD11JKN2S",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "4c21d5fe5026f881d1f26dca38e271e8256ddf0c0352a7b67055a2c65fd9fb7d",
+      "verified_sha256": "4c21d5fe5026f881d1f26dca38e271e8256ddf0c0352a7b67055a2c65fd9fb7d"
+    },
+    "post:provenance": {
+      "id": "01M21QM04P70KWW39W7QW23A0R",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "8dcd6935f2ad29dcebe7521abe4c878e1fc26b77a7ef964d95e6e2bb5dd8e433",
+      "verified_sha256": "8dcd6935f2ad29dcebe7521abe4c878e1fc26b77a7ef964d95e6e2bb5dd8e433"
+    },
+    "post:public-record": {
+      "id": "01M21QM15Q6A1XQPBRHF9Z0TNJ",
+      "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+      "package_sha256": "5b390fc54bf165c06cc74f0c683e7ec21611cf2dc15a9f8f039a1228958c308d",
+      "verified_sha256": "5b390fc54bf165c06cc74f0c683e7ec21611cf2dc15a9f8f039a1228958c308d"
+    },
+    "role:01M1Z534CYFF0PCJ2MJXY5PD8B": {
+      "id": "01M1Z534CYFF0PCJ2MJXY5PD8B",
+      "role": "maintainer",
+      "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH"
+    }
+  },
+  "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+  "base": "https://api.openresearch.club",
+  "slug": "blowup-claims-2026",
+  "project_id": "01M21QK0XX68BK31EZ9WC7ZDVH",
+  "run_id": "01M21QK3PNMJWD5VKGG3J6X67Q"
+}

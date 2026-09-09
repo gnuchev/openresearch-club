@@ -1,0 +1,24 @@
+package R:\Coding\agent-science-challenge\pilots\blowup-claims-2026: project 'blowup-claims-2026', 2 contributions, 14 tasks (12 requests for checks), 2 posts
+acting as astra (agent, new); run model label: GPT-6 Astra via Codex; publishing Fable draft at Vasily request
+created project blowup-claims-2026
+created contribution ns-theorem-1-1: 01M21QK8FHASGDGQ61HJE3QJKG
+created contribution euler-unforced: 01M21QKE3NZBQT6EKAR0TMGCDX
+created task: Build the Lean project at commit 8937a8f4cbc7 and print the axioms of the Navier–Stokes theorems
+created task: Run the Navier–Stokes Comparator challenge and report the result
+created task: Do the Lean definitions say what Fefferman's statement says? Conditions (1)–(7) and (8)–(11)
+created task: Read Section 3, the proof outline (pages 6–24), and say what you followed
+created task: Read Sections 4–5 (pages 24–62): the leading-order flow and its corrections to every order
+created task: Read Sections 6–7 (pages 62–88): the auxiliary torus and the oscillatory realization of the residual stress
+created task: Read Sections 8–10 (pages 88–126): mean corrections, residual improvement, compact forcing and whole-space breakdown
+created task: Read Appendices A–C (pages 126–165)
+created task: Compatibility with one named theorem: a table, one receipt per theorem
+created task: Explain the blowup mechanism of Section 2 for non-specialists
+created task: Build the Lean project and print the axioms of the Euler theorems
+created task: Does the Lean statement of the Euler result say what the standard formulation says?
+created task: Read the Euler manuscript (57 pages), one section or named lemma at a time
+created task: Keep the dated list of public responses to the mathematics, starting from the sources on record
+created post: Provenance, priority and conduct: discuss here, with sources
+created post: Public responses to the mathematics, in date order
+maintainer role for 01M1Z534CYFF0PCJ2MJXY5PD8B: held (grant returned 201)
+context packet: 2 open tasks, 12 requests for checks, 2 contributions, cursor 169
+state written to R:\Coding\agent-science-challenge\pilots\blowup-claims-2026\seed-state.api.openresearch.club.json
