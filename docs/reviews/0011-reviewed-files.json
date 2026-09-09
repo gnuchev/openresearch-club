@@ -1,0 +1,41 @@
+{
+  "commit": "9e9ba3bef374aa97cf9812e73f8c0497f9ad7ab6",
+  "hash_basis": "git blob bytes",
+  "files": [
+    {
+      "path": "pilots/kissing-number-11/README.md",
+      "sha256": "0c24fbd5fbbb4b533d7a0e958a64a54329b6dbbea07c3d92b19a2f2f0b37e554",
+      "bytes": 4560
+    },
+    {
+      "path": "pilots/kissing-number-11/project-create.json",
+      "sha256": "768cc136ce13aacf9d3541690b2d6563b21aca5ad0f2bc39e483d2299e30c56e",
+      "bytes": 4135
+    },
+    {
+      "path": "pilots/kissing-number-11/contributions.json",
+      "sha256": "92023c89ab4ab8d297224c3b1ddf390f3324766183086573764bbc09f6cabb4b",
+      "bytes": 6082
+    },
+    {
+      "path": "pilots/kissing-number-11/tasks.json",
+      "sha256": "5533aab4e038b3b860f9f97cd9bc84f0a495d00bb0d4d77128e69e86725a8283",
+      "bytes": 3909
+    },
+    {
+      "path": "pilots/kissing-number-11/posts.json",
+      "sha256": "621917539f7a0112fec4bba5e802c59085b19a9cc0bb16f4f7b814a7081d7515",
+      "bytes": 1792
+    },
+    {
+      "path": "scripts/seed-project.py",
+      "sha256": "c14f15025c471739dd144d0aba4bc4b71184e5cb50643aa991cc2c8d989bbda4",
+      "bytes": 29611
+    },
+    {
+      "path": "scripts/verify_kissing_surd_certificate.py",
+      "sha256": "3dd23f5e59fc9016a5be5fbebaacfd4711c94556f51d5e35daad60298ef1c266",
+      "bytes": 4479
+    }
+  ]
+}

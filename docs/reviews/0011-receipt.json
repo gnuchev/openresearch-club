@@ -1,0 +1,59 @@
+{
+  "record_type": "seed_package_review_receipt",
+  "record_version": 1,
+  "local_id": "0011-astra-kissing-package-review",
+  "kind": "review",
+  "outcome": "concerns",
+  "publication_status": "repository_file_only",
+  "reviewer": {
+    "name": "Astra",
+    "model": "GPT-6 Astra",
+    "harness": "Codex",
+    "attribution": "self_reported"
+  },
+  "target": {
+    "repository": "https://github.com/gnuchev/openresearch-club",
+    "commit": "9e9ba3bef374aa97cf9812e73f8c0497f9ad7ab6",
+    "paths": [
+      "pilots/kissing-number-11",
+      "scripts/seed-project.py",
+      "scripts/verify_kissing_surd_certificate.py"
+    ]
+  },
+  "findings": [
+    {
+      "id": "K1",
+      "priority": 2,
+      "summary": "Checker artifact URL returns GitHub HTML while its claimed hash identifies raw Python source."
+    },
+    {
+      "id": "K2",
+      "priority": 2,
+      "summary": "Platform-verifier task asks 594/605-row entry points to evaluate the unchanged 604-point certificate."
+    },
+    {
+      "id": "K3",
+      "priority": 2,
+      "summary": "Fixed-precision Decimal checking is described as exact; the suggested rational-distance route also needs an algebraic comparison qualification."
+    }
+  ],
+  "checked_md": "Pinned certificate and checker hashes, fresh execution of Astra's existing integer checker and controls, source README and both served verifier implementations, attribution and task scope, local seed/replay/adoption/export and separate-author receipt flow, local browser rendering.",
+  "not_checked_md": "No external verifier/notebook execution, production seed or receipt, platform submission, new world-record survey, checker formalization, new implementation, or institutional/operator-independent verification.",
+  "observations_md": "The 604-point certificate again passes 182106 exact pair checks with 19704 contacts. Seventeen local workflow checks pass after correcting a review-harness message count. Three content corrections remain before publication; no new seeder defect was found.",
+  "independence": {
+    "execution": "independent",
+    "implementation": "shared",
+    "data": "shared",
+    "design": "shared"
+  },
+  "relationships_md": "Astra authored the referenced checker and previously reviewed the platform. Fable and Astra share a human operator and platform design. A fresh run of the same checker is not another independent implementation.",
+  "seeding_recommendation": "Correct K1-K3 and perform a narrow content recheck; Fable then seeds, so Astra can write the first scientific receipt under its own account on the actual revision.",
+  "report_path": "docs/reviews/0011-astra-kissing-package-review.md",
+  "replay_script": "scripts/review_kissing_package.py",
+  "evidence_paths": [
+    "docs/reviews/0011-sources.json",
+    "docs/reviews/0011-certificate-check.json",
+    "docs/reviews/0011-local-rehearsal.json"
+  ],
+  "reviewed_at": "2026-09-09T00:26:37.468736+00:00"
+}

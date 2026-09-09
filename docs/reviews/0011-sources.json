@@ -1,0 +1,83 @@
+{
+  "checked_at": "2026-09-09T00:21:23.115264+00:00",
+  "sources": [
+    {
+      "name": "certificate.json",
+      "url": "https://raw.githubusercontent.com/togethercomputer/EinsteinArena-new-SOTA/c388c6f7408c886311940896713339a1a70c2394/kissing-number/solutions/solution_n=604_d=11.json",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "bytes": 42551,
+      "sha256": "0bde9ca2c434d7beb5af63a64a291498e8c264d9a5718b738e92dd70b9ba7761"
+    },
+    {
+      "name": "results-README.md",
+      "url": "https://raw.githubusercontent.com/togethercomputer/EinsteinArena-new-SOTA/c388c6f7408c886311940896713339a1a70c2394/kissing-number/README.md",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "bytes": 2059,
+      "sha256": "5014e4fd439241c5a41221f823e6a8fe5352d247a5cc3f1e53268f3bf70c1c2c"
+    },
+    {
+      "name": "problem-594.json",
+      "url": "https://einsteinarena.com/api/problems/kissing-number-d11",
+      "status": 200,
+      "content_type": "application/json",
+      "bytes": 3816,
+      "sha256": "6a7154363b5035ef7c4d943fa36e781ac2fde550a3b35f97f57dfa040577fc4c"
+    },
+    {
+      "name": "problem-605.json",
+      "url": "https://einsteinarena.com/api/problems/kissing-number-d11-605",
+      "status": 200,
+      "content_type": "application/json",
+      "bytes": 3671,
+      "sha256": "b7549ad535e63e5ec98f2cae800fcd68e8287767451b00f0009e14ee8f1af430"
+    },
+    {
+      "name": "checker-blob.html",
+      "url": "https://github.com/gnuchev/openresearch-club/blob/3bee907/scripts/verify_kissing_surd_certificate.py",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 311136,
+      "sha256": "764d43b2a51c2d35f0d1b001836037a5bc9420e135a540ccfd23cd4e83268600"
+    },
+    {
+      "name": "checker-raw.py",
+      "url": "https://raw.githubusercontent.com/gnuchev/openresearch-club/3bee9079484416220d6720a465fe9c9f85da802a/scripts/verify_kissing_surd_certificate.py",
+      "status": 200,
+      "content_type": "text/plain; charset=utf-8",
+      "bytes": 4479,
+      "sha256": "3dd23f5e59fc9016a5be5fbebaacfd4711c94556f51d5e35daad60298ef1c266"
+    }
+  ],
+  "foreign_verifier_executed": false,
+  "verifier_shapes": {
+    "594": [
+      594,
+      11
+    ],
+    "605": [
+      605,
+      11
+    ]
+  },
+  "verifier_precision_decimal_digits": 80,
+  "findings": {
+    "checker_blob_is_html": true,
+    "checker_raw_matches_expected_sha256": true,
+    "neither_public_verifier_accepts_604_rows_unmodified": true,
+    "scaled_distances_can_remain_irrational": {
+      "pair": [
+        16,
+        496
+      ],
+      "inner_product": "9 + 6 sqrt(2)",
+      "scaled_squared_distance": "6 - (4/3) sqrt(2)"
+    }
+  },
+  "production_project_get": {
+    "url": "https://api.openresearch.club/v1/projects/kissing-number-11",
+    "status": 404,
+    "checked_at": "2026-09-09T00:26:37.468736+00:00"
+  }
+}

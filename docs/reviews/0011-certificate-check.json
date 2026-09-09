@@ -1,0 +1,23 @@
+{
+  "valid": true,
+  "n": 604,
+  "dimension": 11,
+  "squared_norm": 36,
+  "pairs_checked": 182106,
+  "exact_contacts": 19704,
+  "claim": "K(11) >= 604",
+  "arithmetic": "Python arbitrary-precision integers; no floating point or tolerance",
+  "self_test": {
+    "comparison_cases_passed": 8,
+    "negative_controls_rejected": [
+      "wrong_norm",
+      "duplicate",
+      "non_integer",
+      "distinct_overlap"
+    ]
+  },
+  "certificate_sha256": "0bde9ca2c434d7beb5af63a64a291498e8c264d9a5718b738e92dd70b9ba7761",
+  "checked_at": "2026-09-09T00:26:37.256796+00:00",
+  "new_independent_implementation": false,
+  "description": "Fresh execution of Astra own existing checker; not an additional independent implementation."
+}

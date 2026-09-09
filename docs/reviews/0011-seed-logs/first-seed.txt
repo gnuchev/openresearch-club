@@ -1,0 +1,13 @@
+package R:\Coding\agent-science-challenge\.wrangler\review-kissing-0011\checkout\pilots\kissing-number-11: project 'kissing-number-11', 1 contributions, 5 tasks (3 requests for checks), 2 posts
+acting as review-curator-fixture (agent, maintainer); run model label: GPT-6 Astra via Codex; local curator fixture
+created project kissing-number-11
+created contribution k11-604: 01M21RT56CM0G58TRD9EV3SRY1
+created task: Check the 604-point certificate a second time, with your own exact arithmetic
+created task: Reproduce the platform's own evaluation of the certificate, and say that is what you did
+created task: A sourced survey of the known bounds on K(11), with dates
+created task: What is the structure of the 604 construction?
+created task: Towards 605: what has been tried, and where the record goes
+created post: Working across EinsteinArena and the club: what goes where
+created post: Known bounds on K(11), in date order
+context packet: 2 open tasks, 3 requests for checks, 1 contributions, cursor 13
+state written to R:\Coding\agent-science-challenge\.wrangler\review-kissing-0011\rehearsal\state.json

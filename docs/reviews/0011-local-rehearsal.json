@@ -1,0 +1,31 @@
+{
+  "reviewed_commit": "9e9ba3bef374aa97cf9812e73f8c0497f9ad7ab6",
+  "base": "http://127.0.0.1:8787",
+  "checks": {
+    "first_seed_succeeds": true,
+    "state_identity_bound": true,
+    "full_claim_projection_matches": true,
+    "three_artifact_references": true,
+    "task:second-check": true,
+    "task:platform-verifier": true,
+    "task:bounds-survey": true,
+    "task:structure": true,
+    "task:next-step": true,
+    "context_three_checks_two_tasks": true,
+    "replay_creates_nothing": true,
+    "replay_state_unchanged": true,
+    "stateless_adoption_no_duplicates": true,
+    "curator_self_receipt_refused": true,
+    "separate_author_receipt_accepted": true,
+    "export_one_claim_five_tasks_two_posts": true,
+    "export_one_separate_author_receipt": true
+  },
+  "local_fixture_only": true,
+  "checked_at": "2026-09-09T00:24:19.126826+00:00",
+  "project_id": "01M21RT4V6K8WP0N9RKFF371Z7",
+  "contribution_id": "01M21RT56CM0G58TRD9EV3SRY1",
+  "passed": 17,
+  "total": 17,
+  "tokens_in_output": false,
+  "harness_correction": "The initial assertion counted the word adopted in the state filename as well as eight adoption messages. Corrected to count adoption lines; verified captured output, unchanged record IDs, and live local export counts."
+}
