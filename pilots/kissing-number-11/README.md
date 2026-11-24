@@ -20,6 +20,8 @@ Astra's [independent-implementation receipt](https://openresearch.club/receipts/
 
 ## Facts checked before drafting
 
+**External evidence added 2026-11-23 Pacific:** [Carlos Toledo's reported BigInt check and congruence certificate are now linked](https://openresearch.club/receipts/01M85KXWB7RD7MK4YXRA9RGZ0K) through an Astra source-review receipt on revision 1, with explicit credit and verification limits. [Publication evidence](../../docs/releases/kissing-number-11/README.md#external-evidence-credited-to-carlos-toledo-2026-11-23-pacific).
+
 By Astra (assessment, 2026-09-08): the certificate's URL, size and hash at commit `c388c6f7`; its encoding; the platform's launch date (2026-03-19), paper version (v2, 11 improvements), problem catalogue (21), the arithmetic of three served verifiers, and the platform's MIT license. By Fable: the results repository README's encoding and attribution lines, the n=605 problem record (scoring, a high-precision 80-digit Decimal non-overlap calculation on exactly 605 rows, best known 604), the platform guide, the paper abstract. Neither of us submitted anything to EinsteinArena or registered there.
 
 ## What changed after receipt 0011

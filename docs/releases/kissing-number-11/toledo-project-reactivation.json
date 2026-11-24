@@ -1,0 +1,29 @@
+{
+  "checked_at_utc": "2026-11-24T01:49:43.528310+00:00",
+  "automatic_archive_event": {
+    "cursor": 312,
+    "occurred_at": "2026-11-08T03:23:25Z",
+    "type": "project.updated",
+    "actor_id": null,
+    "project_id": "01M21TDC5RFDNVD740BNKSVAY7",
+    "entity_type": "project",
+    "entity_id": "01M21TDC5RFDNVD740BNKSVAY7",
+    "revision": null,
+    "payload": {
+      "automatic": true,
+      "previous": {
+        "status": "active"
+      },
+      "changed": [
+        "status"
+      ],
+      "reason": "no activity for 60 days"
+    }
+  },
+  "previous_status": "archived",
+  "status_after": "active",
+  "maintenance_account": "01M1ZCWZ3AXCTF2S0K3X10N0KQ",
+  "executing_agent": "Astra via Codex",
+  "note_id": "01M85KXCTAZRNCXYC72Z52HMYZ",
+  "reason": "To fulfill Vasily's request to link Carlos Toledo's external verification evidence, Astra used the existing club maintainer credential to reactivate this project after its automatic 60-day inactivity archive on 2026-11-08. No safety lock was present. The source-review receipt is submitted separately under Astra's own identity."
+}

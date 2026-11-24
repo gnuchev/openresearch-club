@@ -1,0 +1,116 @@
+{
+  "checked_at_utc": "2026-11-24T01:43:54.985469+00:00",
+  "source_author": "Carlos Toledo",
+  "source_repository_commit": "e1642c50622cfc908d3cb8f9eb7036172eb7ae8d",
+  "sources": [
+    {
+      "name": "report.html",
+      "url": "https://carlostoledo.co/reports/kissing.html",
+      "status": 200,
+      "bytes": 191891,
+      "sha256": "9906308034c30a73d22f49516c70436f7e91905f14756d1de868db06cb19b8c6",
+      "content_type": "text/html; charset=utf-8"
+    },
+    {
+      "name": "congruence-site.json",
+      "url": "https://carlostoledo.co/certs/kissing-congruence.json",
+      "status": 200,
+      "bytes": 4716,
+      "sha256": "813d0847147710cded4a15894973aefe8877525b0756272c233a4eeca7b6e3d5",
+      "content_type": "application/json; charset=utf-8"
+    },
+    {
+      "name": "congruence-pinned.json",
+      "url": "https://raw.githubusercontent.com/carlostoledo1891/cert-machine/e1642c50622cfc908d3cb8f9eb7036172eb7ae8d/certs/kissing-congruence.json",
+      "status": 200,
+      "bytes": 4716,
+      "sha256": "813d0847147710cded4a15894973aefe8877525b0756272c233a4eeca7b6e3d5",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "name": "ledger.json",
+      "url": "https://raw.githubusercontent.com/carlostoledo1891/cert-machine/e1642c50622cfc908d3cb8f9eb7036172eb7ae8d/certs/kissing-ledger.json",
+      "status": 200,
+      "bytes": 178110,
+      "sha256": "5c823b21ac43b5bdb3ad4b91a46e909cbf86a192e4cf382e2d8c5be2b29f611f",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "name": "fields.js",
+      "url": "https://raw.githubusercontent.com/carlostoledo1891/cert-machine/e1642c50622cfc908d3cb8f9eb7036172eb7ae8d/instruments/kissing/fields.js",
+      "status": 200,
+      "bytes": 7643,
+      "sha256": "d0f69cfb1aa4df9f158f780acb016766d9700adeecdac48e61b3c5f5904afb49",
+      "content_type": "text/plain; charset=utf-8"
+    },
+    {
+      "name": "kissing.js",
+      "url": "https://raw.githubusercontent.com/carlostoledo1891/cert-machine/e1642c50622cfc908d3cb8f9eb7036172eb7ae8d/instruments/kissing/kissing.js",
+      "status": 200,
+      "bytes": 12333,
+      "sha256": "b7ce5d0ac5eb54f5578fb10fe7bec96ea78af933de172ab79cbd28bfd9aed2da",
+      "content_type": "text/plain; charset=utf-8"
+    }
+  ],
+  "comment": {
+    "url": "https://github.com/vinid/einstein-arena/issues/64#issuecomment-5587738318",
+    "author": "carlostoledo1891",
+    "created_at": "2026-09-08T15:35:12Z",
+    "updated_at": "2026-09-08T15:35:12Z",
+    "body_sha256": "cb228fbb9ee6c8ecf6921d4f2b8effeaa7eec5089b6184d047dc3a7be4c252e4"
+  },
+  "input_sha256": "0bde9ca2c434d7beb5af63a64a291498e8c264d9a5718b738e92dd70b9ba7761",
+  "reported_ledger_row": {
+    "id": "ea-604",
+    "verdict": "CERTIFIED",
+    "n": 604,
+    "dim": 11,
+    "pairs": 182106,
+    "contacts": 19704,
+    "upstream_sha256": "0bde9ca2c434d7beb5af63a64a291498e8c264d9a5718b738e92dd70b9ba7761",
+    "upstream_commit": "c388c6f7408c886311940896713339a1a70c2394",
+    "form": "p + q*sqrt2 integer pairs (22 integers per vector), shell norm exactly 36",
+    "congruence_station_1": {
+      "verdict": "CONGRUENT",
+      "isometry": "signed coordinate permutation",
+      "nodes": 11,
+      "refines": 24,
+      "edgeColours": 22,
+      "ms": 1063
+    }
+  },
+  "structure_checks": {
+    "same_input_hash": true,
+    "site_certificate_matches_pinned_repository": true,
+    "bijection_604": true,
+    "orthogonal_signed_coordinate_permutation": true,
+    "scale": 2,
+    "zero_based_coordinate_permutation": [
+      0,
+      8,
+      3,
+      6,
+      2,
+      4,
+      10,
+      7,
+      9,
+      1,
+      5
+    ],
+    "signs": [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      1,
+      -1,
+      -1,
+      -1,
+      -1
+    ]
+  },
+  "verification_limits": "Only source/hash correspondence and certificate structure checked. Neither Toledo JS nor the Station vector mapping was executed or independently verified."
+}

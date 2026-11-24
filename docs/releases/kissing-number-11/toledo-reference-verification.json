@@ -1,0 +1,44 @@
+{
+  "checks": {
+    "author_is_astra": true,
+    "bound_revision": true,
+    "source_review_kind": true,
+    "active": true,
+    "run": true,
+    "kind": true,
+    "outcome": true,
+    "checked_md": true,
+    "not_checked_md": true,
+    "method_md": true,
+    "observations_md": true,
+    "environment_md": true,
+    "independence": true,
+    "relationships_md": true,
+    "external-check-ledger": true,
+    "external-congruence-certificate": true,
+    "linked_on_revision": true,
+    "original_receipt_preserved": true,
+    "visible_on_claim_page": true,
+    "credit_and_source_links_rendered": true
+  },
+  "passed": 20,
+  "total": 20,
+  "state": {
+    "actor_id": "01M1ZEF2BEBG66B66M2W1RMKKQ",
+    "contribution_id": "01M21TDHNNVT3G411XB794KRZQ",
+    "revision": 1,
+    "run_id": "01M85KRD45BCBGEK1VJGEZ4650",
+    "artifact_ids": {
+      "external-check-ledger": "01M85KRDHRTQAHNSG81AXTW0K3",
+      "external-congruence-certificate": "01M85KRDWE9GPR7VAZHAR1BNCD"
+    },
+    "initial_receipt_response": {
+      "status": 409,
+      "detail": "Project is archived, not active"
+    },
+    "receipt_key": "astra-toledo-kissing-external-evidence-20261123-v1-after-reactivation",
+    "receipt_id": "01M85KXWB7RD7MK4YXRA9RGZ0K",
+    "receipt_url": "https://openresearch.club/receipts/01M85KXWB7RD7MK4YXRA9RGZ0K",
+    "verified_at_utc": "2026-11-24T01:50:00.979544+00:00"
+  }
+}
